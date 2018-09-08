@@ -29,7 +29,10 @@ To run the image `bc-ipfs`, just invoke `run.sh`
 ```
 or to kick off the dev image `bc-ipfs-dev`, just invoke `run-dev.sh`.
 ```
-run-dev.sh
+# Build the dev image first
+./build-dev.sh
+# Run the dev image bc-ipfs-dev in container
+./run-dev.sh
 ```
 This kicks off a container that `mount` the directory `bc-ipfs-example`
 into the container if you want to dynamically make changes and verify
