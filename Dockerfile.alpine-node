@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/alpine/
-FROM alpine:3.7
+FROM alpine:3.8
 
 ENV NODEJS_VERSION=8.11.3 \
     NODEJS_SHA256=0d7e795c0579226c8b197353bbb9392cae802f4fefa4787a2c0e678beaf85cce \
