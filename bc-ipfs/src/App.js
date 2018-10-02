@@ -6,6 +6,7 @@ import { Button, Form, Grid } from 'react-bootstrap';
 
 import lib_ipfs from './lib_ipfs';
 import lib_web3 from './lib_web3';
+import lib_contract from './lib_contract';
 import sha256coder from './lib_hash';
 
 class App extends Component {
@@ -107,10 +108,15 @@ class App extends Component {
     const tmp_fqueue = this.file_queue;
     const tmp_iqueue = this.ipfshash_queue;
 
+    const contract_address= lib_contract.options.address;
+    console.log('Identified contract address = ' + contract_address);
+    let submit_acct = '';
+
     try {
       lib_web3.eth.getAccounts( function(err, accounts) { 
         console.log(accounts);
-        console.log('Applying eth account: ' + accounts[0]);
+        submit_acct = accounts[0];
+        console.log('Applying eth account: ' + submit_acct + ' for contract ' + contract_address);
       });
     }
     catch(error) {
@@ -118,27 +124,37 @@ class App extends Component {
     }
 
     for(let i = 0; i < tmp_fqueue.length; i++) {
-      // The metadata file is generated on the fly on IPFS
+      // The metadata file is generated on the fly on IPFS before it gets registered 
+      let real_fsize = tmp_iqueue[i].size;
+      let ipfs_realhash = '' + tmp_iqueue[i].hash;
+      let encrypted_idx = sha256coder(ipfs_realhash);
+      let ipfsmid = '';
       let ipfsmeta_json = '{'
       + '"description": ' + ipfsmeta
-      + '"filesize": ' + tmp_iqueue[i].size
-      + '"encrypted": ' + sha256coder('' + tmp_iqueue[i].hash)
+      + '"filesize": ' + real_fsize
+      + '"encrypted": ' + encrypted_idx
       '}';
       let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
       console.log('File JSON metadata=' + ipfsmeta_norm);
-      let ipfsMId = '';
       lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
       .then((resp) => {
         console.log(resp);
-        ipfsMId = resp[0].hash;
-        console.log('ipfs metadata hash=' + ipfsMId);
+        ipfsmid = resp[0].hash;
+        console.log('ipfs metadata hash=' + ipfsmid);
         console.log('Submitted file=' + tmp_fqueue[i].name);
-        console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsMId);
+        console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+        console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + encrypted_idx + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
+        console.log('Submitting from ' + submit_acct);
+        lib_contract.methods.encryptIPFS(ipfsmid, encrypted_idx, ipfs_realhash, real_fsize).send({
+          from: submit_acct
+        }, (error, transactionHash) => {
+          console.log(transactionHash);
+        }); //submit to contract 
       }).catch((err) => {
         console.error(err);
-      });
-    }
-  }
+      }); // end of current file submission and registration
+    } // end of for loop
+  } // end of registerToBC
   /* jshint ignore:end */
 
   /* jshint ignore:start */
