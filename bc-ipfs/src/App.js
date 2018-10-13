@@ -21,6 +21,9 @@ class App extends Component {
     this.idx_queue = []; // keep track of duplicates
     this.file_queue = [];
     this.ipfshash_queue = [];
+    // keep track of duplicate registration, if the user refresh the browser,
+    // everything will be reset as well
+    this.bc_register = []; // per entry is {"ipfsMetaData":"", "encryptedIdx":""}
 
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
@@ -107,6 +110,7 @@ class App extends Component {
     event.preventDefault();
     const tmp_fqueue = this.file_queue;
     const tmp_iqueue = this.ipfshash_queue;
+    const bc_queue = this.bc_register;
 
     const contract_address= lib_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
@@ -114,9 +118,9 @@ class App extends Component {
 
     try {
       lib_web3.eth.getAccounts( function(err, accounts) { 
-        console.log(accounts);
+        console.log("All available accounts: " + accounts);
         submit_acct = accounts[0];
-        console.log('Applying eth account: ' + submit_acct + ' for contract ' + contract_address);
+        console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
       });
     }
     catch(error) {
@@ -133,26 +137,39 @@ class App extends Component {
       + '"description": ' + ipfsmeta
       + '"filesize": ' + real_fsize
       + '"encrypted": ' + encrypted_idx
-      '}';
+      + '}';
       let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
       console.log('File JSON metadata=' + ipfsmeta_norm);
-      lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
-      .then((resp) => {
-        console.log(resp);
-        ipfsmid = resp[0].hash;
-        console.log('ipfs metadata hash=' + ipfsmid);
-        console.log('Submitted file=' + tmp_fqueue[i].name);
-        console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
-        console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + encrypted_idx + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
-        console.log('Submitting from ' + submit_acct);
-        lib_contract.methods.encryptIPFS(ipfsmid, encrypted_idx, ipfs_realhash, real_fsize).send({
-          from: submit_acct
-        }, (error, transactionHash) => {
-          console.log(transactionHash);
-        }); //submit to contract 
-      }).catch((err) => {
-        console.error(err);
-      }); // end of current file submission and registration
+      if(typeof bc_queue[encrypted_idx] === 'undefined') {
+        lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
+        .then((resp) => {
+          console.log(resp);
+          ipfsmid = resp[0].hash;
+          console.log('ipfs metadata hash=' + ipfsmid);
+          console.log('Submitted file=' + tmp_fqueue[i].name);
+          console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+          console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + encrypted_idx + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
+            console.log('Submitting from ' + submit_acct);
+            lib_contract.methods.encryptIPFS(ipfsmid, encrypted_idx, ipfs_realhash, real_fsize).send({
+              from: submit_acct
+            }, (error, transactionHash) => {
+              if(transactionHash) {
+                console.log("blockchain confirmed tx=" + transactionHash);
+                bc_queue[encrypted_idx] = {
+                  "ipfsMetaData": ipfsmid,
+                  "encryptedIdx": encrypted_idx
+                };
+                console.log("Registration completed for ipfsMetadata=" + bc_queue[encrypted_idx].ipfsMetaData + ' encryptedIdx=' + bc_queue[encrypted_idx].encryptedIdx);
+              } else {
+                console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + encrypted_idx);
+              }
+            }); //submit to contract
+        }).catch((err) => {
+          console.error(err);
+        }); // end of current file submission and registration
+      } else {
+        console.log("Skipping file " + tmp_fqueue[i].name + " with same metadata info " + ipfsmid);
+      }
     } // end of for loop
   } // end of registerToBC
   /* jshint ignore:end */
