@@ -7,7 +7,9 @@ import { Button, Form, Grid, Row, Col } from 'react-bootstrap';
 import lib_ipfs from './lib_ipfs';
 import lib_web3 from './lib_web3';
 import lib_contract from './lib_contract';
+import bcutils from './lib_bcutils';
 import sha256coder from './lib_hash';
+import crypto_js from './lib_crypto';
 
 class App extends Component {
   constructor () {
@@ -138,72 +140,85 @@ class App extends Component {
       console.log(error);
     }
 
-    if(tmp_fqueue.length <= 0) {
-      // single file upload and registration only
-      let encrypted_idx = sha256coder(ipfs_single_realhash);
-      lib_web3.eth.getAccounts( function(err, accounts) { 
-        console.log("All available accounts: " + accounts);
-        submit_acct = accounts[0];
-        console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
-        console.log('Submitting from ' + submit_acct);
-      }).then(() => {
-        lib_contract.methods.encryptIPFS(ipfs_single_mhash, encrypted_idx, ipfs_single_realhash, ipfs_single_fsize).send({
-          from: submit_acct
-        }, (error, transactionHash) => {
-          if(transactionHash) {
-            console.log("blockchain confirmed tx=" + transactionHash);
-            console.log("Registration completed for ipfsMetadata=" + ipfs_single_mhash + ' encryptedIdx=' + encrypted_idx);
-          } else {
-            console.log("Registration canceled for ipfsMetadata=" + ipfs_single_mhash + ' encryptedIdx=' + encrypted_idx);
-          }
-        }); //submit to contract
-      });
-    } else {
-      for(let i = 0; i < tmp_fqueue.length; i++) {
-        // The metadata file is generated on the fly on IPFS before it gets registered 
-        let real_fsize = tmp_iqueue[i].size;
-        let ipfs_realhash = '' + tmp_iqueue[i].hash;
-        let encrypted_idx = sha256coder(ipfs_realhash);
-        let ipfsmid = '';
-        let ipfsmeta_json = '{'
-        + '"description": ' + ipfsmeta
-        + '"filesize": ' + real_fsize
-        + '"encrypted": ' + encrypted_idx
-        + '}';
-        let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
-        console.log('File JSON metadata=' + ipfsmeta_norm);
-        if(typeof bc_queue[encrypted_idx] === 'undefined') {
-          lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
-          .then((resp) => {
-            console.log(resp);
-            ipfsmid = resp[0].hash;
-            console.log('ipfs metadata hash=' + ipfsmid);
-            console.log('Submitted file=' + tmp_fqueue[i].name);
-            console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
-            console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + encrypted_idx + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
-              console.log('Submitting from ' + submit_acct);
-              lib_contract.methods.encryptIPFS(ipfsmid, encrypted_idx, ipfs_realhash, real_fsize).send({
-                from: submit_acct
-              }, (error, transactionHash) => {
-                if(transactionHash) {
-                  console.log("blockchain confirmed tx=" + transactionHash);
-                  bc_queue[encrypted_idx] = {
-                    "ipfsMetaData": ipfsmid,
-                    "encryptedIdx": encrypted_idx
-                  };
-                  console.log("Registration completed for ipfsMetadata=" + bc_queue[encrypted_idx].ipfsMetaData + ' encryptedIdx=' + bc_queue[encrypted_idx].encryptedIdx);
-                } else {
-                  console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + encrypted_idx);
-                }
-              }); //submit to contract
-          }).catch((err) => {
-            console.error(err);
-          }); // end of current file submission and registration
-        } else {
-          console.log("Skipping file " + tmp_fqueue[i].name + " with same metadata info " + ipfsmid);
-        }
-      } // end of for loop
-    } // end multiple file uploads
+    for(let i = 0; i < tmp_fqueue.length; i++) {
+      // The metadata file is generated on the fly on IPFS before it gets registered 
+      let real_fsize = tmp_iqueue[i].size;
+      let ipfs_realhash = '' + tmp_iqueue[i].hash;
+      let bc_utilities = new bcutils();
+      let potential_key = bc_utilities.genRandomKey();
+      let min = 128; // you can redefine the range here
+      let max = 1024; // you can redefine the range here
+      let l_rand = Math.floor(Math.random() * (max - min + 1) + min);
+      let ipfssha256 = sha256coder(ipfs_realhash);
+      let key2ndIdx = bc_utilities.shuffleString(l_rand + ipfssha256 + sha256coder(potential_key));
+      console.log('l_rand=' + l_rand + ' potential_key=' + potential_key + ' ipfssha256='+ipfssha256);
+      console.log('key2ndIdx=' + key2ndIdx);
+      let ipfsmid = '';
+      let ipfsmeta_json = '{'
+      + '"description": ' + ipfsmeta
+      + '"filesize": ' + real_fsize
+      + '"encrypted": ' + ipfssha256
+      + '}';
+      let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
+      let c_rand = 0;
+      let realKey = '';
+      let encryptedIPFSHash = '';
+      console.log('File JSON metadata=' + ipfsmeta_norm);
+      if(typeof bc_queue[ipfssha256] === 'undefined') {
+        lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
+        .then((resp) => {
+          console.log(resp);
+          ipfsmid = resp[0].hash;
+          console.log('ipfs metadata hash=' + ipfsmid);
+          console.log('Submitted file=' + tmp_fqueue[i].name);
+          console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+          console.log('Registering: ipfsMetadata=' + ipfsmid + ' ipfssha256=' + ipfssha256 + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
+          console.log('Submitting from ' + submit_acct);
+          // Store seed to generate remote random number on block chain
+          lib_contract.methods.generateLocalRand(key2ndIdx, l_rand).send({
+            from: submit_acct
+          }, (error, transactionHash) => {
+            if(transactionHash) {
+              console.log("blockchain confirmed tx=" + transactionHash);
+              console.log("generateLocalRand completed for ipfssha256=" + ipfssha256);
+            } else {
+              console.log("generateLocalRand canceled for ipfssha256=" + ipfssha256);
+            }
+          }).then(function(){
+            // Fetch pseudo random number open secret from block chain
+            lib_contract.methods.getLocalRand(key2ndIdx).call({
+              from: submit_acct
+            }).then(function(result){
+              console.log('contract returned random number=' + result);
+              c_rand = result;
+              realKey = potential_key + c_rand;
+              encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
+            });
+          }).then(function() {
+            lib_contract.methods.encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize).send({
+              from: submit_acct,
+              gasPrice: 60000000000,
+              gas: 800000
+            }, (error, transactionHash) => {
+              if(transactionHash) {
+                console.log("blockchain confirmed tx=" + transactionHash);
+                bc_queue[ipfssha256] = {
+                  "ipfsMetaData": ipfsmid,
+                  "encryptedIdx": ipfssha256
+                };
+                console.log("Registration completed for ipfsMetadata=" + bc_queue[ipfssha256].ipfsMetaData + ' encryptedIdx=' + bc_queue[ipfssha256].encryptedIdx);
+              } else {
+                console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + ipfssha256);
+              }
+            }); //submit to contract
+          });
+        }).catch((err) => {
+          console.error(err);
+        }); // end of current file submission and registration
+      } else {
+        console.log("Skipping file " + tmp_fqueue[i].name + " with same metadata info " + ipfsmid);
+      }
+    } // end of for loop
   } // end of registerToBC
   /* jshint ignore:end */
 
