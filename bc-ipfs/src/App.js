@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
-import { Button, Form, Grid } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
+import { Container, Row, Col } from 'reactstrap';
+
 
 import lib_ipfs from './lib_ipfs';
 import lib_web3 from './lib_web3';
@@ -14,7 +16,9 @@ class App extends Component {
     super();
     // define our states to keep track
     this.state = {
-      ipfs_metadata: ''
+      ipfs_metadata: '',
+      access_ipfs_metadata: '',
+      access_encrypted_idx: ''
     };
 
     // The order/index in these queue matters
@@ -26,8 +30,10 @@ class App extends Component {
     this.bc_register = []; // per entry is {"ipfsMetaData":"", "encryptedIdx":""}
 
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
+    this.captureAccessInfo = this.captureAccessInfo.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.registerToBC = this.registerToBC.bind(this);
+    this.accessBC = this.accessBC.bind(this);
   }
 
   saveToIpfs (reader, idx) {
@@ -175,6 +181,36 @@ class App extends Component {
   /* jshint ignore:end */
 
   /* jshint ignore:start */
+  captureAccessInfo (event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const target = event.target;
+    const type = target.type;
+    const name = target.name;
+
+    if(type === 'text') {
+      console.log('Capturing input from ' + name + ' with value = ' + target.value);
+      this.setState({
+        [name]: target.value
+      });
+      return;
+    } else {
+      console.log('Detect unknown type=' + type + ' with name=' + name);
+      return;
+    }
+  } // end of captureAccessInfo
+  /* jshint ignore:end */
+
+  /* jshint ignore:start */
+  accessBC (event) {
+    let a_ipfsmeta = this.state.access_ipfs_metadata;
+    let a_encrypidx = this.state.access_encrypted_idx;
+    console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedIdx = ' + a_encrypidx);
+    event.preventDefault();
+  }
+
+  /* jshint ignore:start */
   render() {
     return (
       <div className="App">
@@ -187,35 +223,67 @@ class App extends Component {
         <p>
           When you have completed uploading files and entering descriptions, click on <code>Register on BlockChain</code> to claim your reward.
         </p>
-        <Grid>
-          <Form onSubmit={this.registerToBC}>
-            <p>
-            The better you describe your files, the easier others can discover and find it.
-            </p>
-            <p>
-            This helps to increase the chances of rewards and incentives to use your files.
-            </p>
-            <label>
-            Enter file description:
-            <input type="text" name="ipfs_metadata" placeholder="Enter your description here!"
-              size="140"
-              value={this.state.ipfs_metadata}
-              onChange = {this.captureFileAndMetadata}
-            />
-            </label>
-            <p></p>
-            <input 
-              type = "file"
-              multiple
-              onChange = {this.captureFileAndMetadata}
-            />
-            <Button 
-                bsStyle="primary" 
-                type="submit"> 
-                Register on BlockChain 
-            </Button>
-          </Form>
-        </Grid>
+        <Container>
+          <Row><Col>
+            <Form onSubmit={this.registerToBC}>
+              <p>
+              The better you describe your files, the easier others can discover and find it.
+              </p>
+              <p>
+              This helps to increase the chances of rewards and incentives to use your files.
+              </p>
+              <label>
+              Enter file description:
+              <input type="text" name="ipfs_metadata" placeholder="Enter your description here!"
+                size="140"
+                value={this.state.ipfs_metadata}
+                onChange = {this.captureFileAndMetadata}
+              />
+              </label>
+              <p></p>
+              <input 
+                type = "file"
+                multiple
+                onChange = {this.captureFileAndMetadata}
+              />
+              <Button 
+                  bsStyle="primary" 
+                  type="submit"> 
+                  Register on BlockChain 
+              </Button>
+            </Form>
+          </Col></Row>
+          <Row><Col>
+            <hr></hr>
+            <Form onSubmit={this.accessBC}>
+              <p>
+              <b>Accessing Files</b>
+              </p>
+              <label>
+              Enter ipfs Metadata Hash:
+              <input type="text" name="access_ipfs_metadata" placeholder="Enter your IPFS Metadata Hash here!"
+                size="45"
+                value={this.state.access_ipfs_metadata}
+                onChange = {this.captureAccessInfo}
+              />
+              </label>
+              <label>
+              Enter encrypted Idx:
+              <input type="text" name="access_encrypted_idx" placeholder="Enter the encrypted Idx here!"
+                size="80"
+                value={this.state.access_encrypted_idx}
+                onChange = {this.captureAccessInfo}
+              />
+              </label>
+              <p></p>
+              <Button 
+                  bsStyle="primary" 
+                  type="submit"> 
+                  Access File on BlockChain 
+              </Button>
+            </Form>
+          </Col></Row>
+        </Container>
       </div>
     );
   };
