@@ -17,6 +17,9 @@ class App extends Component {
     // define our states to keep track
     this.state = {
       ipfs_metadata: '',
+      ipfs_metahash: '',
+      ipfs_realhash: '',
+      ipfs_filesize: '',
       access_ipfs_metadata: '',
       access_encrypted_idx: ''
     };
@@ -112,6 +115,9 @@ class App extends Component {
   /* jshint ignore:start */
   registerToBC (event) {
     let ipfsmeta = this.state.ipfs_metadata;
+    let ipfs_single_realhash = this.state.ipfs_realhash;
+    let ipfs_single_fsize = this.state.ipfs_filesize;
+    let ipfs_single_mhash = this.state.ipfs_metahash;
     console.log('Submitting with metadata = ' + ipfsmeta);
     event.preventDefault();
     const tmp_fqueue = this.file_queue;
@@ -133,50 +139,72 @@ class App extends Component {
       console.log(error);
     }
 
-    for(let i = 0; i < tmp_fqueue.length; i++) {
-      // The metadata file is generated on the fly on IPFS before it gets registered 
-      let real_fsize = tmp_iqueue[i].size;
-      let ipfs_realhash = '' + tmp_iqueue[i].hash;
-      let encrypted_idx = sha256coder(ipfs_realhash);
-      let ipfsmid = '';
-      let ipfsmeta_json = '{'
-      + '"description": ' + ipfsmeta
-      + '"filesize": ' + real_fsize
-      + '"encrypted": ' + encrypted_idx
-      + '}';
-      let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
-      console.log('File JSON metadata=' + ipfsmeta_norm);
-      if(typeof bc_queue[encrypted_idx] === 'undefined') {
-        lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
-        .then((resp) => {
-          console.log(resp);
-          ipfsmid = resp[0].hash;
-          console.log('ipfs metadata hash=' + ipfsmid);
-          console.log('Submitted file=' + tmp_fqueue[i].name);
-          console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
-          console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + encrypted_idx + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
-            console.log('Submitting from ' + submit_acct);
-            lib_contract.methods.encryptIPFS(ipfsmid, encrypted_idx, ipfs_realhash, real_fsize).send({
-              from: submit_acct
-            }, (error, transactionHash) => {
-              if(transactionHash) {
-                console.log("blockchain confirmed tx=" + transactionHash);
-                bc_queue[encrypted_idx] = {
-                  "ipfsMetaData": ipfsmid,
-                  "encryptedIdx": encrypted_idx
-                };
-                console.log("Registration completed for ipfsMetadata=" + bc_queue[encrypted_idx].ipfsMetaData + ' encryptedIdx=' + bc_queue[encrypted_idx].encryptedIdx);
-              } else {
-                console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + encrypted_idx);
-              }
-            }); //submit to contract
-        }).catch((err) => {
-          console.error(err);
-        }); // end of current file submission and registration
-      } else {
-        console.log("Skipping file " + tmp_fqueue[i].name + " with same metadata info " + ipfsmid);
-      }
-    } // end of for loop
+    if(tmp_fqueue.length <= 0) {
+      // single file upload and registration only
+      let encrypted_idx = sha256coder(ipfs_single_realhash);
+      lib_web3.eth.getAccounts( function(err, accounts) { 
+        console.log("All available accounts: " + accounts);
+        submit_acct = accounts[0];
+        console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
+        console.log('Submitting from ' + submit_acct);
+      }).then(() => {
+        lib_contract.methods.encryptIPFS(ipfs_single_mhash, encrypted_idx, ipfs_single_realhash, ipfs_single_fsize).send({
+          from: submit_acct
+        }, (error, transactionHash) => {
+          if(transactionHash) {
+            console.log("blockchain confirmed tx=" + transactionHash);
+            console.log("Registration completed for ipfsMetadata=" + ipfs_single_mhash + ' encryptedIdx=' + encrypted_idx);
+          } else {
+            console.log("Registration canceled for ipfsMetadata=" + ipfs_single_mhash + ' encryptedIdx=' + encrypted_idx);
+          }
+        }); //submit to contract
+      });
+    } else {
+      for(let i = 0; i < tmp_fqueue.length; i++) {
+        // The metadata file is generated on the fly on IPFS before it gets registered 
+        let real_fsize = tmp_iqueue[i].size;
+        let ipfs_realhash = '' + tmp_iqueue[i].hash;
+        let encrypted_idx = sha256coder(ipfs_realhash);
+        let ipfsmid = '';
+        let ipfsmeta_json = '{'
+        + '"description": ' + ipfsmeta
+        + '"filesize": ' + real_fsize
+        + '"encrypted": ' + encrypted_idx
+        + '}';
+        let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
+        console.log('File JSON metadata=' + ipfsmeta_norm);
+        if(typeof bc_queue[encrypted_idx] === 'undefined') {
+          lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
+          .then((resp) => {
+            console.log(resp);
+            ipfsmid = resp[0].hash;
+            console.log('ipfs metadata hash=' + ipfsmid);
+            console.log('Submitted file=' + tmp_fqueue[i].name);
+            console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+            console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + encrypted_idx + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
+              console.log('Submitting from ' + submit_acct);
+              lib_contract.methods.encryptIPFS(ipfsmid, encrypted_idx, ipfs_realhash, real_fsize).send({
+                from: submit_acct
+              }, (error, transactionHash) => {
+                if(transactionHash) {
+                  console.log("blockchain confirmed tx=" + transactionHash);
+                  bc_queue[encrypted_idx] = {
+                    "ipfsMetaData": ipfsmid,
+                    "encryptedIdx": encrypted_idx
+                  };
+                  console.log("Registration completed for ipfsMetadata=" + bc_queue[encrypted_idx].ipfsMetaData + ' encryptedIdx=' + bc_queue[encrypted_idx].encryptedIdx);
+                } else {
+                  console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + encrypted_idx);
+                }
+              }); //submit to contract
+          }).catch((err) => {
+            console.error(err);
+          }); // end of current file submission and registration
+        } else {
+          console.log("Skipping file " + tmp_fqueue[i].name + " with same metadata info " + ipfsmid);
+        }
+      } // end of for loop
+    } // end multiple file uploads
   } // end of registerToBC
   /* jshint ignore:end */
 
@@ -205,8 +233,8 @@ class App extends Component {
   /* jshint ignore:start */
   accessBC (event) {
     let a_ipfsmeta = this.state.access_ipfs_metadata;
-    let a_encrypidx = this.state.access_encrypted_idx;
-    console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedIdx = ' + a_encrypidx);
+    let a_encryptidx = this.state.access_encrypted_idx;
+    console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedIdx = ' + a_encryptidx);
     event.preventDefault();
     
     const contract_address= lib_contract.options.address;
@@ -218,6 +246,26 @@ class App extends Component {
         console.log("All available accounts: " + accounts);
         submit_acct = accounts[0];
         console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
+      }).then(() => {
+        lib_contract.methods.decryptIPFS(a_encryptidx, a_ipfsmeta).send({
+          from: submit_acct
+        }, (error, transactionHash) => {
+          if(transactionHash) {
+            console.log("decryptIPFS tx =" + transactionHash);
+            } else {
+            console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedIdx=' + a_encryptidx);
+          }
+        }).then(() => {
+          lib_contract.methods.fetchKeyForIPFS().call({
+            from: submit_acct
+          }, (error, result) => {
+            if(result) {
+              console.log("decryptIPFS result =" + JSON.stringify(result));
+              } else {
+              console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedIdx=' + a_encryptidx);
+            }
+          });
+        }); //submit to contract
       });
     }
     catch(error) {
@@ -250,17 +298,43 @@ class App extends Component {
               <label>
               Enter file description:
               <input type="text" name="ipfs_metadata" placeholder="Enter your description here!"
-                size="140"
+                size="80"
                 value={this.state.ipfs_metadata}
                 onChange = {this.captureFileAndMetadata}
               />
               </label>
-              <p></p>
               <input 
                 type = "file"
                 multiple
                 onChange = {this.captureFileAndMetadata}
               />
+              <p></p>
+              <label>
+              Already have an IPFS hash, enter it here:
+              <input type="text" name="ipfs_realhash" placeholder="Enter your IPFS Hash here!"
+                size="50"
+                value={this.state.ipfs_realhash}
+                onChange = {this.captureFileAndMetadata}
+              />
+              </label>
+              <p></p>
+              <label>
+              File Size:
+              <input type="text" name="ipfs_filesize" placeholder="File size?"
+                size="30"
+                value={this.state.ipfs_filesize}
+                onChange = {this.captureFileAndMetadata}
+              />
+              </label>
+              <p></p>
+              <label>
+              IPFS metadata Hash:
+              <input type="text" name="ipfs_metahash" placeholder="Enter IPFS metadata hash here"
+                size="30"
+                value={this.state.ipfs_metahash}
+                onChange = {this.captureFileAndMetadata}
+              />
+              </label>
               <Button 
                   bsStyle="primary" 
                   type="submit"> 
@@ -282,6 +356,7 @@ class App extends Component {
                 onChange = {this.captureAccessInfo}
               />
               </label>
+              <p></p>
               <label>
               Enter encrypted Idx:
               <input type="text" name="access_encrypted_idx" placeholder="Enter the encrypted Idx here!"
@@ -290,7 +365,6 @@ class App extends Component {
                 onChange = {this.captureAccessInfo}
               />
               </label>
-              <p></p>
               <Button 
                   bsStyle="primary" 
                   type="submit"> 
