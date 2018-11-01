@@ -208,6 +208,21 @@ class App extends Component {
     let a_encrypidx = this.state.access_encrypted_idx;
     console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedIdx = ' + a_encrypidx);
     event.preventDefault();
+    
+    const contract_address= lib_contract.options.address;
+    console.log('Identified contract address = ' + contract_address);
+    let submit_acct = '';
+
+    try {
+      lib_web3.eth.getAccounts( function(err, accounts) { 
+        console.log("All available accounts: " + accounts);
+        submit_acct = accounts[0];
+        console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
+      });
+    }
+    catch(error) {
+      console.log(error);
+    }
   }
 
   /* jshint ignore:start */
