@@ -2,9 +2,7 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
-import { Button, Form } from 'react-bootstrap';
-import { Container, Row, Col } from 'reactstrap';
-
+import { Button, Form, Grid, Row, Col } from 'react-bootstrap';
 
 import lib_ipfs from './lib_ipfs';
 import lib_web3 from './lib_web3';
@@ -21,7 +19,8 @@ class App extends Component {
       ipfs_realhash: '',
       ipfs_filesize: '',
       access_ipfs_metadata: '',
-      access_encrypted_idx: ''
+      access_encrypted_idx: '',
+      bc_resp_hash: '*******'
     };
 
     // The order/index in these queue matters
@@ -251,7 +250,7 @@ class App extends Component {
           from: submit_acct
         }, (error, transactionHash) => {
           if(transactionHash) {
-            console.log("decryptIPFS tx =" + transactionHash);
+            console.log("decryptIPFS tx=" + transactionHash);
             } else {
             console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedIdx=' + a_encryptidx);
           }
@@ -260,7 +259,8 @@ class App extends Component {
             from: submit_acct
           }, (error, result) => {
             if(result) {
-              console.log("decryptIPFS result =" + JSON.stringify(result));
+              console.log("decryptIPFS result ipfshash=" + result[0] + " token_cost=" + result[1]);
+              this.setState({['bc_resp_hash']: result[0]});
               } else {
               console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedIdx=' + a_encryptidx);
             }
@@ -286,93 +286,114 @@ class App extends Component {
         <p>
           When you have completed uploading files and entering descriptions, click on <code>Register on BlockChain</code> to claim your reward.
         </p>
-        <Container>
-          <Row><Col>
-            <Form onSubmit={this.registerToBC}>
-              <p>
-              The better you describe your files, the easier others can discover and find it.
+        <Grid fluid>
+          <Row className="show-grid">
+            <Col>
+              <p align="left">
+                <b>Registering Files</b>
               </p>
-              <p>
-              This helps to increase the chances of rewards and incentives to use your files.
+              <p align="left">
+                The better you describe your files, the easier others can discover and find it.
               </p>
-              <label>
-              Enter file description:
-              <input type="text" name="ipfs_metadata" placeholder="Enter your description here!"
-                size="80"
-                value={this.state.ipfs_metadata}
-                onChange = {this.captureFileAndMetadata}
-              />
-              </label>
-              <input 
-                type = "file"
-                multiple
-                onChange = {this.captureFileAndMetadata}
-              />
-              <p></p>
-              <label>
-              Already have an IPFS hash, enter it here:
-              <input type="text" name="ipfs_realhash" placeholder="Enter your IPFS Hash here!"
-                size="50"
-                value={this.state.ipfs_realhash}
-                onChange = {this.captureFileAndMetadata}
-              />
-              </label>
-              <p></p>
-              <label>
-              File Size:
-              <input type="text" name="ipfs_filesize" placeholder="File size?"
-                size="30"
-                value={this.state.ipfs_filesize}
-                onChange = {this.captureFileAndMetadata}
-              />
-              </label>
-              <p></p>
-              <label>
-              IPFS metadata Hash:
-              <input type="text" name="ipfs_metahash" placeholder="Enter IPFS metadata hash here"
-                size="30"
-                value={this.state.ipfs_metahash}
-                onChange = {this.captureFileAndMetadata}
-              />
-              </label>
-              <Button 
-                  bsStyle="primary" 
-                  type="submit"> 
-                  Register on BlockChain 
-              </Button>
-            </Form>
-          </Col></Row>
-          <Row><Col>
-            <hr></hr>
-            <Form onSubmit={this.accessBC}>
-              <p>
-              <b>Accessing Files</b>
+              <p align="left">
+                This helps to increase the chances of rewards and incentives to use your files.
               </p>
-              <label>
-              Enter ipfs Metadata Hash:
-              <input type="text" name="access_ipfs_metadata" placeholder="Enter your IPFS Metadata Hash here!"
-                size="45"
-                value={this.state.access_ipfs_metadata}
-                onChange = {this.captureAccessInfo}
-              />
-              </label>
-              <p></p>
-              <label>
-              Enter encrypted Idx:
-              <input type="text" name="access_encrypted_idx" placeholder="Enter the encrypted Idx here!"
-                size="80"
-                value={this.state.access_encrypted_idx}
-                onChange = {this.captureAccessInfo}
-              />
-              </label>
-              <Button 
-                  bsStyle="primary" 
-                  type="submit"> 
-                  Access File on BlockChain 
-              </Button>
-            </Form>
-          </Col></Row>
-        </Container>
+              <p align="left">
+                <label>
+                Enter file description:
+                <input type="text" name="ipfs_metadata" placeholder="Enter your description here!"
+                  size="20"
+                  value={this.state.ipfs_metadata}
+                  onChange = {this.captureFileAndMetadata}
+                />
+                </label>
+                <input 
+                  type = "file"
+                  multiple
+                  onChange = {this.captureFileAndMetadata}
+                />
+              </p>
+              <hr width="80%"></hr>
+              <p align="left">
+                <label>
+                Already have an IPFS hash, enter it here:
+                <input type="text" name="ipfs_realhash" placeholder="Enter your IPFS Hash here!"
+                  size="20"
+                  value={this.state.ipfs_realhash}
+                  onChange = {this.captureFileAndMetadata}
+                />
+                </label>
+              </p>
+              <p align="left">
+                <label>
+                File Size:
+                <input type="text" name="ipfs_filesize" placeholder="File size?"
+                  size="20"
+                  value={this.state.ipfs_filesize}
+                  onChange = {this.captureFileAndMetadata}
+                />
+                </label>
+              </p>
+              <p align="left">
+                <label>
+                IPFS metadata Hash:
+                <input type="text" name="ipfs_metahash" placeholder="Enter IPFS metadata hash here"
+                  size="20"
+                  value={this.state.ipfs_metahash}
+                  onChange = {this.captureFileAndMetadata}
+                />
+                </label>
+              </p>
+              <Form onSubmit={this.registerToBC}>
+                <p align="left">
+                  <Button 
+                      bsStyle="primary" 
+                      type="submit"> 
+                      Register on BlockChain 
+                  </Button>
+                </p>
+              </Form>
+            </Col>
+            <Col>
+              <p align="left">
+                <b>Accessing Files</b>
+              </p>
+              <p align="left">
+                <label>
+                Enter ipfs Metadata Hash:
+                <input type="text" name="access_ipfs_metadata" placeholder="Enter your IPFS Metadata Hash here!"
+                  size="40"
+                  value={this.state.access_ipfs_metadata}
+                  onChange = {this.captureAccessInfo}
+                />
+                </label>
+              </p>
+              <p align="left">
+                <label>
+                Enter encrypted Idx:
+                <input type="text" name="access_encrypted_idx" placeholder="Enter the encrypted Idx here!"
+                  size="40"
+                  value={this.state.access_encrypted_idx}
+                  onChange = {this.captureAccessInfo}
+                />
+                </label>
+              </p>
+              <Form onSubmit={this.accessBC}>
+                <p align="left">
+                <Button 
+                    bsStyle="primary" 
+                    type="submit"> 
+                    Access File on BlockChain 
+                </Button>
+                </p>
+              </Form>
+              <p align="left">
+              <label>IPFS hash: </label>
+              <a href={'https://ipfs.io/ipfs/' + this.state.bc_resp_hash} target="_blank">{'https://ipfs.io/ipfs/' + this.state.bc_resp_hash}</a>
+              </p>
+            </Col>
+          </Row>
+        </Grid>
       </div>
     );
   };
