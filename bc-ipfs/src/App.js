@@ -17,12 +17,15 @@ class App extends Component {
     // define our states to keep track
     this.state = {
       ipfs_metadata: '',
-      ipfs_metahash: '',
+      ipfs_metatext: '',
+      ipfs_gen_metatext: '',
       ipfs_realhash: '',
-      ipfs_filesize: '',
+      ipfs_filesize: '0',
       access_ipfs_metadata: '',
-      access_encrypted_idx: '',
-      bc_resp_hash: '*******'
+      access_encrypted_hash: '',
+      bc_resp_hash: '*******',
+      btn_register_disabled: false,
+      btn_access_disabled: false
     };
 
     // The order/index in these queue matters
@@ -37,6 +40,7 @@ class App extends Component {
     this.captureAccessInfo = this.captureAccessInfo.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.registerToBC = this.registerToBC.bind(this);
+    this.manualRegisterToBC = this.manualRegisterToBC.bind(this);
     this.accessBC = this.accessBC.bind(this);
   }
 
@@ -115,10 +119,8 @@ class App extends Component {
 
   /* jshint ignore:start */
   registerToBC (event) {
+    this.setState({['btn_register_disabled']: true});
     let ipfsmeta = this.state.ipfs_metadata;
-    let ipfs_single_realhash = this.state.ipfs_realhash;
-    let ipfs_single_fsize = this.state.ipfs_filesize;
-    let ipfs_single_mhash = this.state.ipfs_metahash;
     console.log('Submitting with metadata = ' + ipfsmeta);
     event.preventDefault();
     const tmp_fqueue = this.file_queue;
@@ -128,17 +130,6 @@ class App extends Component {
     const contract_address= lib_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
     let submit_acct = '';
-
-    try {
-      lib_web3.eth.getAccounts( function(err, accounts) { 
-        console.log("All available accounts: " + accounts);
-        submit_acct = accounts[0];
-        console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
-      });
-    }
-    catch(error) {
-      console.log(error);
-    }
 
     for(let i = 0; i < tmp_fqueue.length; i++) {
       // The metadata file is generated on the fly on IPFS before it gets registered 
@@ -154,72 +145,160 @@ class App extends Component {
       console.log('l_rand=' + l_rand + ' potential_key=' + potential_key + ' ipfssha256='+ipfssha256);
       console.log('key2ndIdx=' + key2ndIdx);
       let ipfsmid = '';
-      let ipfsmeta_json = '{'
-      + '"description": ' + ipfsmeta
-      + '"filesize": ' + real_fsize
-      + '"encrypted": ' + ipfssha256
-      + '}';
-      let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
       let c_rand = 0;
       let realKey = '';
       let encryptedIPFSHash = '';
-      console.log('File JSON metadata=' + ipfsmeta_norm);
       if(typeof bc_queue[ipfssha256] === 'undefined') {
-        lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog) })
-        .then((resp) => {
-          console.log(resp);
-          ipfsmid = resp[0].hash;
-          console.log('ipfs metadata hash=' + ipfsmid);
-          console.log('Submitted file=' + tmp_fqueue[i].name);
-          console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
-          console.log('Registering: ipfsMetadata=' + ipfsmid + ' ipfssha256=' + ipfssha256 + ' ipfsHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
+        lib_web3.eth.getAccounts( function(err, accounts) { 
+          console.log("All available accounts: " + accounts);
+          submit_acct = accounts[0];
+          console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
           console.log('Submitting from ' + submit_acct);
-          // Store seed to generate remote random number on block chain
+        }).then(() => {
           lib_contract.methods.generateLocalRand(key2ndIdx, l_rand).send({
             from: submit_acct
-          }, (error, transactionHash) => {
+            }, (error, transactionHash) => {
             if(transactionHash) {
               console.log("blockchain confirmed tx=" + transactionHash);
               console.log("generateLocalRand completed for ipfssha256=" + ipfssha256);
             } else {
               console.log("generateLocalRand canceled for ipfssha256=" + ipfssha256);
             }
-          }).then(function(){
-            // Fetch pseudo random number open secret from block chain
+          }).then(() => {
             lib_contract.methods.getLocalRand(key2ndIdx).call({
               from: submit_acct
-            }).then(function(result){
+            }).then((result) => {
               console.log('contract returned random number=' + result);
               c_rand = result;
               realKey = potential_key + c_rand;
               encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
-            });
-          }).then(function() {
-            lib_contract.methods.encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize).send({
-              from: submit_acct,
-              gasPrice: 60000000000,
-              gas: 800000
-            }, (error, transactionHash) => {
-              if(transactionHash) {
-                console.log("blockchain confirmed tx=" + transactionHash);
-                bc_queue[ipfssha256] = {
-                  "ipfsMetaData": ipfsmid,
-                  "encryptedIdx": ipfssha256
-                };
-                console.log("Registration completed for ipfsMetadata=" + bc_queue[ipfssha256].ipfsMetaData + ' encryptedIdx=' + bc_queue[ipfssha256].encryptedIdx);
-              } else {
-                console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + ipfssha256);
-              }
-            }); //submit to contract
-          });
-        }).catch((err) => {
-          console.error(err);
-        }); // end of current file submission and registration
+            }).then(() => {
+              let ipfsmeta_json = '{'
+                + '"description": ' + ipfsmeta
+                + '"filesize": ' + real_fsize
+                + '"encrypted": ' + encryptedIPFSHash
+                + '}';
+              let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
+              console.log('File JSON metadata=' + ipfsmeta_norm);
+              lib_ipfs.add(Buffer.from(ipfsmeta_norm), { progress: (prog) => console.log('IPFS Metadata uploaded bytes:' + prog)}).then((resp) => {
+                console.log(resp);
+                ipfsmid = resp[0].hash;
+                console.log('ipfs metadata hash=' + ipfsmid);
+                console.log('Submitted file=' + tmp_fqueue[i].name);
+                console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+                console.log('Registering: ipfsMetadata=' + ipfsmid + ' encryptedRealIPFS=' + encryptedIPFSHash + ' ipfsRealHash=' + ipfs_realhash + ' realFsize=' + real_fsize);
+                console.log('Submitting from ' + submit_acct);
+              }).then(() => {
+                lib_contract.methods.encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize).send({
+                  from: submit_acct,
+                  gasPrice: 2000000000,
+                  gas: 1500000
+                  }, (error, transactionHash) => {
+                  if(transactionHash) {
+                    console.log("blockchain confirmed tx=" + transactionHash);
+                    bc_queue[ipfssha256] = {
+                      "ipfsMetaData": ipfsmid,
+                      "encryptedIdx": ipfssha256
+                    };
+                    console.log("Registration completed for ipfsMetadata=" + bc_queue[ipfssha256].ipfsMetaData + ' encryptedIdx=' + bc_queue[ipfssha256].encryptedIdx);
+                  } else {
+                    console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedIdx=' + ipfssha256);
+                  }
+                }).catch((err) => {
+                  console.error(err);
+                }).then(() => {
+                  this.setState({['btn_register_disabled']: false});
+                }); // end of lib_contract.methods.encryptIPFS
+              }); // end of ipfs.add()
+            }); // end of getLocalRand
+          }); // end of generateLocalRand
+        }); // end of getAccounts and current file submission and registration
       } else {
         console.log("Skipping file " + tmp_fqueue[i].name + " with same metadata info " + ipfsmid);
+        this.setState({['btn_register_disabled']: false});
       }
     } // end of for loop
+    this.setState({['btn_register_disabled']: false});
   } // end of registerToBC
+  /* jshint ignore:end */
+
+  /* jshint ignore:start */
+  manualRegisterToBC (event) {
+    this.setState({['btn_register_disabled']: true});
+    event.preventDefault();
+    // single file upload and registration only
+    const contract_address= lib_contract.options.address;
+    console.log('Identified contract address = ' + contract_address);
+    let submit_acct = '';
+    let ipfs_realhash = this.state.ipfs_realhash;
+    let real_fsize = this.state.ipfs_filesize;
+    let ipfs_metatext = this.state.ipfs_metatext;
+    let bc_utilities = new bcutils();
+    let potential_key = bc_utilities.genRandomKey();
+    let min = 128; // you can redefine the range here
+    let max = 1024; // you can redefine the range here
+    let l_rand = Math.floor(Math.random() * (max - min + 1) + min);
+    let ipfssha256 = sha256coder(ipfs_realhash);
+    let key2ndIdx = bc_utilities.shuffleString(l_rand + ipfssha256 + sha256coder(potential_key));
+    console.log('l_rand=' + l_rand + ' potential_key=' + potential_key + ' ipfssha256='+ipfssha256);
+    console.log('key2ndIdx=' + key2ndIdx);
+    let ipfsmid = '';
+    let c_rand = 0;
+    let realKey = '';
+    let encryptedIPFSHash = '';
+    lib_web3.eth.getAccounts( function(err, accounts) { 
+      console.log("All available accounts: " + accounts);
+      submit_acct = accounts[0];
+      console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
+      console.log('Submitting from ' + submit_acct);
+    }).then(() => {
+      lib_contract.methods.generateLocalRand(key2ndIdx, l_rand).send({
+        from: submit_acct
+        }, (error, transactionHash) => {
+        if(transactionHash) {
+          console.log("blockchain confirmed tx=" + transactionHash);
+          console.log("generateLocalRand completed for ipfssha256=" + ipfssha256);
+        } else {
+          console.log("generateLocalRand canceled for ipfssha256=" + ipfssha256);
+        }
+      }).then(() => {
+        lib_contract.methods.getLocalRand(key2ndIdx).call({
+          from: submit_acct
+        }).then((result) => {
+          console.log('contract returned random number=' + result);
+          c_rand = result;
+          realKey = potential_key + c_rand;
+          encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
+          console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
+          let ipfsmeta_json = '{'
+                + '"description": ' + ipfs_metatext
+                + '"filesize": ' + real_fsize
+                + '"encrypted": ' + encryptedIPFSHash
+                + '}';
+          let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
+          console.log('generated JSON for manual registration ' + ipfsmeta_norm);
+          this.setState({['ipfs_gen_metatext']: ipfsmeta_norm});
+        }).then(() => {
+          lib_contract.methods.encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize).send({
+            from: submit_acct,
+            gasPrice: 2000000000,
+            gas: 1500000
+            }, (error, transactionHash) => {
+            if(transactionHash) {
+              console.log("blockchain confirmed tx=" + transactionHash);
+              console.log("Registration completed for ipfsMetadata=" + ipfsmid + ' encryptedText=' + encryptedIPFSHash);
+            } else {
+              console.log("Registration canceled for ipfsMetadata=" + ipfsmid + ' encryptedText=' + encryptedIPFSHash);
+            }
+          }).catch((err) => {
+            console.error(err);
+          }).then(() => {
+            this.setState({['btn_register_disabled']: false});
+          }); // end of lib_contract.methods.encryptIPFS
+        }); // end of getLocalRand
+      }); // end of generateLocalRand tx
+    });
+  }
   /* jshint ignore:end */
 
   /* jshint ignore:start */
@@ -246,9 +325,11 @@ class App extends Component {
 
   /* jshint ignore:start */
   accessBC (event) {
+    this.setState({['bc_resp_hash']: '*******'});
+    this.setState({['btn_access_disabled']: true});
     let a_ipfsmeta = this.state.access_ipfs_metadata;
-    let a_encryptidx = this.state.access_encrypted_idx;
-    console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedIdx = ' + a_encryptidx);
+    let a_encrypted_hash = this.state.access_encrypted_hash;
+    console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedTxt = ' + a_encrypted_hash);
     event.preventDefault();
     
     const contract_address= lib_contract.options.address;
@@ -261,30 +342,39 @@ class App extends Component {
         submit_acct = accounts[0];
         console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
       }).then(() => {
-        lib_contract.methods.decryptIPFS(a_encryptidx, a_ipfsmeta).send({
+        lib_contract.methods.decryptIPFS(a_ipfsmeta).send({
           from: submit_acct
         }, (error, transactionHash) => {
           if(transactionHash) {
             console.log("decryptIPFS tx=" + transactionHash);
             } else {
-            console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedIdx=' + a_encryptidx);
+            console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta);
+            this.setState({['btn_access_disabled']: false});
           }
         }).then(() => {
           lib_contract.methods.fetchKeyForIPFS().call({
             from: submit_acct
           }, (error, result) => {
             if(result) {
-              console.log("decryptIPFS result ipfshash=" + result[0] + " token_cost=" + result[1]);
-              this.setState({['bc_resp_hash']: result[0]});
+              console.log('fetching decrypted 1st_partial_key=' + result[0] + " 2nd_partial_key=" + result[1] + " encryptedHash=" + result[2] + " cost=" + result[3]);
+              let realKey = result[0] + '' + result[1];
+              let decryptIPFSHash = crypto_js.AES.decrypt(result[2], realKey).toString(crypto_js.enc.Utf8);
+              a_encrypted_hash = result[2];
+              console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
+              this.setState({['bc_resp_hash']: decryptIPFSHash});
+              this.setState({['access_encrypted_hash']: result[2]});
               } else {
-              console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedIdx=' + a_encryptidx);
+              console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash);
             }
+          }).then(() => {
+            this.setState({['btn_access_disabled']: false});
           });
         }); //submit to contract
       });
     }
     catch(error) {
       console.log(error);
+      this.setState({['btn_access_disabled']: false});
     }
   }
 
@@ -328,6 +418,17 @@ class App extends Component {
                   onChange = {this.captureFileAndMetadata}
                 />
               </p>
+              <Form onSubmit={this.registerToBC}>
+                <p align="left">
+                  <Button 
+                      bsSize="xsmall"
+                      disabled={this.state.btn_register_disabled}
+                      bsStyle="primary" 
+                      type="submit"> 
+                      Register on BlockChain 
+                  </Button>
+                </p>
+              </Form>
               <hr width="80%"></hr>
               <p align="left">
                 <label>
@@ -351,20 +452,26 @@ class App extends Component {
               </p>
               <p align="left">
                 <label>
-                IPFS metadata Hash:
-                <input type="text" name="ipfs_metahash" placeholder="Enter IPFS metadata hash here"
-                  size="20"
-                  value={this.state.ipfs_metahash}
+                IPFS Metadata Description:
+                <input type="text" name="ipfs_metatext" placeholder="Enter IPFS metadata description here"
+                  size="40"
+                  value={this.state.ipfs_metatext}
                   onChange = {this.captureFileAndMetadata}
                 />
                 </label>
               </p>
-              <Form onSubmit={this.registerToBC}>
+              <p align="left">
+                <label>IPFS Metadata JSON:</label>
+                {this.state.ipfs_gen_metatext}        
+              </p>
+              <Form onSubmit={this.manualRegisterToBC}>
                 <p align="left">
                   <Button 
+                      bsSize="xsmall"
+                      disabled={this.state.btn_register_disabled}
                       bsStyle="primary" 
                       type="submit"> 
-                      Register on BlockChain 
+                      Manual Register on BlockChain 
                   </Button>
                 </p>
               </Form>
@@ -385,10 +492,10 @@ class App extends Component {
               </p>
               <p align="left">
                 <label>
-                Enter encrypted Idx:
-                <input type="text" name="access_encrypted_idx" placeholder="Enter the encrypted Idx here!"
+                Enter encrypted IPFS Hash:
+                <input type="text" name="access_encrypted_hash" placeholder="Enter the encrypted text here!"
                   size="40"
-                  value={this.state.access_encrypted_idx}
+                  value={this.state.access_encrypted_hash}
                   onChange = {this.captureAccessInfo}
                 />
                 </label>
@@ -396,6 +503,8 @@ class App extends Component {
               <Form onSubmit={this.accessBC}>
                 <p align="left">
                 <Button 
+                    bsSize="xsmall"
+                    disabled={this.state.btn_access_disabled}
                     bsStyle="primary" 
                     type="submit"> 
                     Access File on BlockChain 
