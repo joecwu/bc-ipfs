@@ -163,6 +163,7 @@ class App extends Component {
               console.log("generateLocalRand completed for ipfssha256=" + ipfssha256);
             } else {
               console.log("generateLocalRand canceled for ipfssha256=" + ipfssha256);
+              this.setState({['btn_register_disabled']: false});
             }
           }).then(() => {
             lib_contract.methods.getLocalRand(key2ndIdx).call({
@@ -350,22 +351,24 @@ class App extends Component {
             this.setState({['btn_access_disabled']: false});
           }
         }).then(() => {
+          let realKey = '';
+          let decryptIPFSHash = '';
           lib_contract.methods.fetchKeyForIPFS().call({
             from: submit_acct
           }, (error, result) => {
             if(result) {
               console.log('fetching decrypted 1st_partial_key=' + result[0] + " 2nd_partial_key=" + result[1] + " encryptedHash=" + result[2] + " cost=" + result[3]);
-              let realKey = result[0] + '' + result[1];
-              let decryptIPFSHash = crypto_js.AES.decrypt(result[2], realKey).toString(crypto_js.enc.Utf8);
+              realKey = result[0] + '' + result[1];
+              decryptIPFSHash = crypto_js.AES.decrypt(result[2], realKey).toString(crypto_js.enc.Utf8);
               a_encrypted_hash = result[2];
-              console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
-              this.setState({['bc_resp_hash']: decryptIPFSHash});
-              this.setState({['access_encrypted_hash']: result[2]});
               } else {
               console.log("decryptIPFS failed for ipfsMetadata=" + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash);
             }
           }).then(() => {
             this.setState({['btn_access_disabled']: false});
+            console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
+            this.setState({['bc_resp_hash']: decryptIPFSHash});
+            this.setState({['access_encrypted_hash']: a_encrypted_hash});
           });
         }); //submit to contract
       });
