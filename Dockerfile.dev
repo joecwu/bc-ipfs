@@ -1,5 +1,5 @@
 # FROM go-node:latest as builder
-FROM go-node:latest
+FROM go11-node:latest
 
 WORKDIR /root
 

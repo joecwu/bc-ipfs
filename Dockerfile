@@ -1,4 +1,4 @@
-FROM go-node:latest as builder
+FROM go11-node:latest as builder
 
 ENV SHELL=/bin/bash \
     IPFS_USER=ipfsuser \
@@ -6,6 +6,7 @@ ENV SHELL=/bin/bash \
     IPFS_GID=4888 \
     GOPATH=/go
 ENV HOME=/home/$IPFS_USER
+ARG BUILD_BRANCH=$BUILD_BRANCH
 
 WORKDIR /root
 
@@ -50,8 +51,8 @@ RUN mkdir $HOME/bin && \
     ipfs-api@22.2.4 \
     dat@13.10.0 \
     && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ; \
-    cd $HOME; git clone --depth 1 -b master https://github.com/blcksync/bc-ipfs.git; \
-    cd bc-ipfs/bc-ipfs && npm install
+    cd $HOME; git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; \
+    cd bc-ipfs/bc-ipfs; npm install
 
 FROM alpine-node:latest
 
