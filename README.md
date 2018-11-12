@@ -125,3 +125,21 @@ docker run \
   -p 127.0.0.1:5001:5001 \
   go-ipfs-insecure
 ```
+
+# Setup development environment and standard
+**This is still work in progress, we are migrating to eslint**
+Please see branch: `eslint` for this work.
+The tools we use here is `babel-eslint`, `prettier-eslint`, `eslint-config-airbnb`,
+and plugins `react`, `jsx-a11y`, and `import` with VSCode.
+```
+npm install prettier-eslint --save-dev
+npm install babel-eslint --save-dev
+npm install eslint-plugin-babel --save-dev
+npm install eslint-plugin-prettier --save-dev
+npm install eslint-plugin-react  --save-dev
+npm install eslint-plugin-jsx-a11y --save-dev
+npm install eslint-plugin-import --save-dev
+npm install eslint-plugin-jest --save-dev
+npm install eslint-config-jest-enzyme --save-dev
+npm install eslint-config-airbnb --save-dev
+```

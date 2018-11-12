@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"prettier.eslintIntegration": true,
+		"prettier.singleQuote": true
+	}
+}
