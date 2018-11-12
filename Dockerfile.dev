@@ -25,7 +25,7 @@ RUN cd /root; \
     git clone -b release/1.8 --depth 1 https://github.com/matr1xc0in/go-ethereum.git && \
     cd /root/go-ethereum && make geth && cp /root/go-ethereum/build/bin/geth /usr/local/bin/geth
 
-# FROM alpine-node:latest
+# FROM blcksync/alpine-node:latest
 
 LABEL maintainer="matr1xc0in"
 

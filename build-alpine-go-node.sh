@@ -1,11 +1,14 @@
 #!/bin/bash
 
 GO_VER=${GO_VER:-"11"}
+IMG_LABEL_TAG="blcksync/alpine-node"
 
-# Build base alpine-node:latest image
+echo "ok - building our own customized image "
+# Build base blcksync/alpine-node:latest image
 docker build \
   --rm \
-  -t alpine-node \
+  -t $IMG_LABEL_TAG \
   --file Dockerfile.alpine-node \
   .
+
 GO_VER=$GO_VER ./build-go-node.sh

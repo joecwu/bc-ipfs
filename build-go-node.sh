@@ -2,6 +2,7 @@
 
 # Default we use latest go-lang version
 GO_VER=${GO_VER:-"11"}
+ALPINE_IMAGE=${ALPINE_IMAGE:-"blcksync/alpine-node:latest"}
 
 # alpine-node is shared which includes npm. It should be agnostic
 # to go-lang version.
@@ -11,7 +12,7 @@ if [ "$GO_VER" = "10" ] ; then
   docker build \
     --rm \
     -t go${GO_VER}-node \
-    --build-arg ALPINE_IMAGE="alpine-node:latest" \
+    --build-arg ALPINE_IMAGE="$ALPINE_IMAGE" \
     --file Dockerfile.go${GO_VER}-node \
     .
 elif [ "$GO_VER" = "11" ] ; then
@@ -19,7 +20,7 @@ elif [ "$GO_VER" = "11" ] ; then
   docker build \
     --rm \
     -t go${GO_VER}-node \
-    --build-arg ALPINE_IMAGE="alpine-node:latest" \
+    --build-arg ALPINE_IMAGE="$ALPINE_IMAGE" \
     --file Dockerfile.go${GO_VER}-node \
     .
 

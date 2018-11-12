@@ -7,9 +7,9 @@ if [ "$DEBUG" != "true" ] ; then
   build_cmd="docker build --no-cache"
 fi
 
-BUILD_BRANCH=${BUILD_BRANCH:-"encryption-v0.1"}
+BUILD_BRANCH=${BUILD_BRANCH:-"encryption-v0.2"}
 
-# Build base alpine-node:latest image
+# Build base blcksync/alpine-node:latest image
 $build_cmd \
   --rm \
   --build-arg BUILD_BRANCH=$BUILD_BRANCH \

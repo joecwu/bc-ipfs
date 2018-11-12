@@ -10,15 +10,22 @@ in the sense to integrate with IPFS.
 To build the docker images locally, run the following 2 in sequence.
 ```
 # Build alpine+nodejs and golang runtime based on alpine+nodejs image
-./build-alpine-go-node.sh
+# To build go-lang 1.11.x (default we try to use the latest) with npm and nodejs
+# This produce an image with tag 'blcksync/alpine-node:latest' along with a
+# go-lang 1.11.x image including npm
+GO_VER=11 ./build-alpine-go-node.sh
 # Build dev env with npm packages, ipfs, etc.
+./build-dev.sh
+# Build a ready to run image without development libs and tools
 ./build.sh
 ```
 
 or if you want to use an existing alpine image e.g. `mhart/alpine-node:base-10.8`
 ```
 # Only build the golang runtime
-./build-go-node.sh
+# To build go-lang 1.11.x (default we try to use the latest)
+GO_VER=11 ALPINE_IMAGE="mhart/alpine-node:base-10.8" ./build-go-node.sh
+# GO_VER=10 if you need go-lang 1.10.x
 # Build dev env with npm packages, ipfs, etc.
 ./build.sh
 ```

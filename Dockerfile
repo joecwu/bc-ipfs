@@ -54,7 +54,7 @@ RUN mkdir $HOME/bin && \
     cd $HOME; git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; \
     cd bc-ipfs/bc-ipfs; npm install
 
-FROM alpine-node:latest
+FROM blcksync/alpine-node:latest
 
 LABEL maintainer="matr1xc0in"
 
