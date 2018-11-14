@@ -143,3 +143,39 @@ npm install eslint-plugin-jest --save-dev
 npm install eslint-config-jest-enzyme --save-dev
 npm install eslint-config-airbnb --save-dev
 ```
+
+**Known Issues on npm install**
+If you are still missing some dependencies from `npm install`, the following is an exhausted list
+to capture all required npm modules. Please report any other missing ones if you notice them.
+
+**Required**
+```
+npm install -S react@16.6.1 \
+  @types/react@16.7.3 \
+  crypto-js@3.1.9-1 \
+  ethereumjs-tx@1.3.7 \
+  ipfs-api@26.1.2 \
+  jquery@3.3.1 \
+  js-sha256@0.9.0 \
+  react-bootstrap@0.32.4 \
+  react-dom@16.6.1 \
+  url-parse@1.4.4 \
+  web3@1.0.0-beta.36
+```
+
+**Development Only**
+```
+npm install -S @types/react-dom@16.0.9 \
+    babel-core@6.26.3 \
+    babel-loader@7.1.5 \
+    babel-preset-env@1.7.0 \
+    babel-preset-react@6.24.1 \
+    css-loader@1.0.1 \
+    file-loader@1.1.11 \
+    html-loader@0.5.5 \
+    html-webpack-plugin@3.2.0 \
+    style-loader@0.21.0 \
+    webpack@4.25.1 \
+    webpack-cli@3.1.2 \
+    webpack-dev-server@3.1.10
+```

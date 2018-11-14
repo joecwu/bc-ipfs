@@ -24,7 +24,7 @@ class App extends Component {
       access_encrypted_hash: '',
       bc_resp_hash: '*******',
       btn_register_disabled: false,
-      btn_access_disabled: false
+      btn_access_disabled: false,
     };
 
     // The order/index in these queue matters
@@ -52,7 +52,7 @@ class App extends Component {
 
     lib_ipfs
       .add(buffer, {
-        progress: prog => console.log('IPFS uploaded bytes:' + prog)
+        progress: prog => console.log('IPFS uploaded bytes:' + prog),
       })
       .then(response => {
         console.log(response);
@@ -82,11 +82,9 @@ class App extends Component {
     const name = target.name;
 
     if (type === 'text') {
-      console.log(
-        'Capturing input from ' + name + ' with value = ' + target.value
-      );
+      console.log('Capturing input from ' + name + ' with value = ' + target.value);
       this.setState({
-        [name]: target.value
+        [name]: target.value,
       });
       return;
     } else if (type === 'file') {
@@ -100,11 +98,7 @@ class App extends Component {
       for (let i = 0; i < event.target.files.length; i++) {
         // TODO: track abs-path instaed of fname, duplicate can happen under diff dir
         if (dqueue.includes(event.target.files[i].name, 0)) {
-          console.log(
-            'Skipping file ' +
-              event.target.files[i].name +
-              ' since it has been uploaded already'
-          );
+          console.log('Skipping file ' + event.target.files[i].name + ' since it has been uploaded already');
         } else {
           let f = event.target.files[i];
           tmp_fqueue.push(f);
@@ -151,17 +145,8 @@ class App extends Component {
       let max = 1024; // you can redefine the range here
       let l_rand = Math.floor(Math.random() * (max - min + 1) + min);
       let ipfssha256 = sha256coder(ipfs_realhash);
-      let key2ndIdx = bc_utilities.shuffleString(
-        l_rand + ipfssha256 + sha256coder(potential_key)
-      );
-      console.log(
-        'l_rand=' +
-          l_rand +
-          ' potential_key=' +
-          potential_key +
-          ' ipfssha256=' +
-          ipfssha256
-      );
+      let key2ndIdx = bc_utilities.shuffleString(l_rand + ipfssha256 + sha256coder(potential_key));
+      console.log('l_rand=' + l_rand + ' potential_key=' + potential_key + ' ipfssha256=' + ipfssha256);
       console.log('key2ndIdx=' + key2ndIdx);
       let ipfsmid = '';
       let c_rand = 0;
@@ -172,12 +157,7 @@ class App extends Component {
           .getAccounts(function(err, accounts) {
             console.log('All available accounts: ' + accounts);
             submit_acct = accounts[0];
-            console.log(
-              'Applying the first eth account[0]: ' +
-                submit_acct +
-                ' for contract ' +
-                contract_address
-            );
+            console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
             console.log('Submitting from ' + submit_acct);
           })
           .then(() => {
@@ -185,36 +165,29 @@ class App extends Component {
               .generateLocalRand(key2ndIdx, l_rand)
               .send(
                 {
-                  from: submit_acct
+                  from: submit_acct,
                 },
                 (error, transactionHash) => {
                   if (transactionHash) {
                     console.log('blockchain confirmed tx=' + transactionHash);
-                    console.log(
-                      'generateLocalRand completed for ipfssha256=' + ipfssha256
-                    );
+                    console.log('generateLocalRand completed for ipfssha256=' + ipfssha256);
                   } else {
-                    console.log(
-                      'generateLocalRand canceled for ipfssha256=' + ipfssha256
-                    );
+                    console.log('generateLocalRand canceled for ipfssha256=' + ipfssha256);
                     this.setState({ ['btn_register_disabled']: false });
                   }
-                }
+                },
               )
               .then(() => {
                 lib_contract.methods
                   .getLocalRand(key2ndIdx)
                   .call({
-                    from: submit_acct
+                    from: submit_acct,
                   })
                   .then(result => {
                     console.log('contract returned random number=' + result);
                     c_rand = result;
                     realKey = potential_key + c_rand;
-                    encryptedIPFSHash = crypto_js.AES.encrypt(
-                      ipfs_realhash,
-                      realKey
-                    ).toString();
+                    encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
                     let ipfsmeta_json =
                       '{' +
                       '"description": ' +
@@ -228,17 +201,14 @@ class App extends Component {
                     console.log('File JSON metadata=' + ipfsmeta_norm);
                     lib_ipfs
                       .add(Buffer.from(ipfsmeta_norm), {
-                        progress: prog =>
-                          console.log('IPFS Metadata uploaded bytes:' + prog)
+                        progress: prog => console.log('IPFS Metadata uploaded bytes:' + prog),
                       })
                       .then(resp => {
                         console.log(resp);
                         ipfsmid = resp[0].hash;
                         console.log('ipfs metadata hash=' + ipfsmid);
                         console.log('Submitted file=' + tmp_fqueue[i].name);
-                        console.log(
-                          'IPFS record=https://ipfs.io/ipfs/' + ipfsmid
-                        );
+                        console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
                         console.log(
                           'Registering: ipfsMetadata=' +
                             ipfsmid +
@@ -247,47 +217,36 @@ class App extends Component {
                             ' ipfsRealHash=' +
                             ipfs_realhash +
                             ' realFsize=' +
-                            real_fsize
+                            real_fsize,
                         );
                         console.log('Submitting from ' + submit_acct);
                         lib_contract.methods
-                          .encryptIPFS(
-                            ipfsmid,
-                            potential_key,
-                            key2ndIdx,
-                            encryptedIPFSHash,
-                            real_fsize
-                          )
+                          .encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize)
                           .send(
                             {
                               from: submit_acct,
                               gasPrice: 2000000000,
-                              gas: 1500000
+                              gas: 1500000,
                             },
                             (error, transactionHash) => {
                               if (transactionHash) {
-                                console.log(
-                                  'blockchain confirmed tx=' + transactionHash
-                                );
+                                console.log('blockchain confirmed tx=' + transactionHash);
                                 bc_queue[ipfssha256] = {
                                   ipfsMetaData: ipfsmid,
-                                  encryptedIdx: ipfssha256
+                                  encryptedIdx: ipfssha256,
                                 };
                                 console.log(
                                   'Registration completed for ipfsMetadata=' +
                                     bc_queue[ipfssha256].ipfsMetaData +
                                     ' encryptedIdx=' +
-                                    bc_queue[ipfssha256].encryptedIdx
+                                    bc_queue[ipfssha256].encryptedIdx,
                                 );
                               } else {
                                 console.log(
-                                  'Registration canceled for ipfsMetadata=' +
-                                    ipfsmid +
-                                    ' encryptedIdx=' +
-                                    ipfssha256
+                                  'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                                 );
                               }
-                            }
+                            },
                           )
                           .catch(err => {
                             console.error(err);
@@ -300,12 +259,7 @@ class App extends Component {
               }); // end of generateLocalRand
           }); // end of getAccounts and current file submission and registration
       } else {
-        console.log(
-          'Skipping file ' +
-            tmp_fqueue[i].name +
-            ' with same metadata info ' +
-            ipfsmid
-        );
+        console.log('Skipping file ' + tmp_fqueue[i].name + ' with same metadata info ' + ipfsmid);
         this.setState({ ['btn_register_disabled']: false });
       }
     } // end of for loop
@@ -329,17 +283,8 @@ class App extends Component {
     let max = 1024; // you can redefine the range here
     let l_rand = Math.floor(Math.random() * (max - min + 1) + min);
     let ipfssha256 = sha256coder(ipfs_realhash);
-    let key2ndIdx = bc_utilities.shuffleString(
-      l_rand + ipfssha256 + sha256coder(potential_key)
-    );
-    console.log(
-      'l_rand=' +
-        l_rand +
-        ' potential_key=' +
-        potential_key +
-        ' ipfssha256=' +
-        ipfssha256
-    );
+    let key2ndIdx = bc_utilities.shuffleString(l_rand + ipfssha256 + sha256coder(potential_key));
+    console.log('l_rand=' + l_rand + ' potential_key=' + potential_key + ' ipfssha256=' + ipfssha256);
     console.log('key2ndIdx=' + key2ndIdx);
     let ipfsmid = '';
     let c_rand = 0;
@@ -349,12 +294,7 @@ class App extends Component {
       .getAccounts(function(err, accounts) {
         console.log('All available accounts: ' + accounts);
         submit_acct = accounts[0];
-        console.log(
-          'Applying the first eth account[0]: ' +
-            submit_acct +
-            ' for contract ' +
-            contract_address
-        );
+        console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
         console.log('Submitting from ' + submit_acct);
       })
       .then(() => {
@@ -362,41 +302,29 @@ class App extends Component {
           .generateLocalRand(key2ndIdx, l_rand)
           .send(
             {
-              from: submit_acct
+              from: submit_acct,
             },
             (error, transactionHash) => {
               if (transactionHash) {
                 console.log('blockchain confirmed tx=' + transactionHash);
-                console.log(
-                  'generateLocalRand completed for ipfssha256=' + ipfssha256
-                );
+                console.log('generateLocalRand completed for ipfssha256=' + ipfssha256);
               } else {
-                console.log(
-                  'generateLocalRand canceled for ipfssha256=' + ipfssha256
-                );
+                console.log('generateLocalRand canceled for ipfssha256=' + ipfssha256);
               }
-            }
+            },
           )
           .then(() => {
             lib_contract.methods
               .getLocalRand(key2ndIdx)
               .call({
-                from: submit_acct
+                from: submit_acct,
               })
               .then(result => {
                 console.log('contract returned random number=' + result);
                 c_rand = result;
                 realKey = potential_key + c_rand;
-                encryptedIPFSHash = crypto_js.AES.encrypt(
-                  ipfs_realhash,
-                  realKey
-                ).toString();
-                console.log(
-                  'Real ipfs ' +
-                    ipfs_realhash +
-                    ' encrypted to =' +
-                    encryptedIPFSHash
-                );
+                encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
+                console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
                 let ipfsmeta_json =
                   '{' +
                   '"description": ' +
@@ -407,46 +335,30 @@ class App extends Component {
                   encryptedIPFSHash +
                   '}';
                 let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
-                console.log(
-                  'generated JSON for manual registration ' + ipfsmeta_norm
-                );
+                console.log('generated JSON for manual registration ' + ipfsmeta_norm);
                 this.setState({ ['ipfs_gen_metatext']: ipfsmeta_norm });
               })
               .then(() => {
                 lib_contract.methods
-                  .encryptIPFS(
-                    ipfsmid,
-                    potential_key,
-                    key2ndIdx,
-                    encryptedIPFSHash,
-                    real_fsize
-                  )
+                  .encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize)
                   .send(
                     {
                       from: submit_acct,
                       gasPrice: 2000000000,
-                      gas: 1500000
+                      gas: 1500000,
                     },
                     (error, transactionHash) => {
                       if (transactionHash) {
+                        console.log('blockchain confirmed tx=' + transactionHash);
                         console.log(
-                          'blockchain confirmed tx=' + transactionHash
-                        );
-                        console.log(
-                          'Registration completed for ipfsMetadata=' +
-                            ipfsmid +
-                            ' encryptedText=' +
-                            encryptedIPFSHash
+                          'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
                         );
                       } else {
                         console.log(
-                          'Registration canceled for ipfsMetadata=' +
-                            ipfsmid +
-                            ' encryptedText=' +
-                            encryptedIPFSHash
+                          'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
                         );
                       }
-                    }
+                    },
                   )
                   .catch(err => {
                     console.error(err);
@@ -470,11 +382,9 @@ class App extends Component {
     const name = target.name;
 
     if (type === 'text') {
-      console.log(
-        'Capturing input from ' + name + ' with value = ' + target.value
-      );
+      console.log('Capturing input from ' + name + ' with value = ' + target.value);
       this.setState({
-        [name]: target.value
+        [name]: target.value,
       });
       return;
     } else {
@@ -490,12 +400,7 @@ class App extends Component {
     this.setState({ ['btn_access_disabled']: true });
     let a_ipfsmeta = this.state.access_ipfs_metadata;
     let a_encrypted_hash = this.state.access_encrypted_hash;
-    console.log(
-      'Accessing with metadata = ' +
-        a_ipfsmeta +
-        ' and encryptedTxt = ' +
-        a_encrypted_hash
-    );
+    console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedTxt = ' + a_encrypted_hash);
     event.preventDefault();
 
     const contract_address = lib_contract.options.address;
@@ -507,30 +412,23 @@ class App extends Component {
         .getAccounts(function(err, accounts) {
           console.log('All available accounts: ' + accounts);
           submit_acct = accounts[0];
-          console.log(
-            'Applying the first eth account[0]: ' +
-              submit_acct +
-              ' for contract ' +
-              contract_address
-          );
+          console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
         })
         .then(() => {
           lib_contract.methods
             .decryptIPFS(a_ipfsmeta)
             .send(
               {
-                from: submit_acct
+                from: submit_acct,
               },
               (error, transactionHash) => {
                 if (transactionHash) {
                   console.log('decryptIPFS tx=' + transactionHash);
                 } else {
-                  console.log(
-                    'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta
-                  );
+                  console.log('decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta);
                   this.setState({ ['btn_access_disabled']: false });
                 }
-              }
+              },
             )
             .then(() => {
               let realKey = '';
@@ -539,7 +437,7 @@ class App extends Component {
                 .fetchKeyForIPFS()
                 .call(
                   {
-                    from: submit_acct
+                    from: submit_acct,
                   },
                   (error, result) => {
                     if (result) {
@@ -551,32 +449,24 @@ class App extends Component {
                           ' encryptedHash=' +
                           result[2] +
                           ' cost=' +
-                          result[3]
+                          result[3],
                       );
                       realKey = result[0] + '' + result[1];
-                      decryptIPFSHash = crypto_js.AES.decrypt(
-                        result[2],
-                        realKey
-                      ).toString(crypto_js.enc.Utf8);
+                      decryptIPFSHash = crypto_js.AES.decrypt(result[2], realKey).toString(crypto_js.enc.Utf8);
                       a_encrypted_hash = result[2];
                     } else {
                       console.log(
-                        'decryptIPFS failed for ipfsMetadata=' +
-                          a_ipfsmeta +
-                          ' encryptedHash=' +
-                          a_encrypted_hash
+                        'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash,
                       );
                     }
-                  }
+                  },
                 )
                 .then(() => {
                   this.setState({ ['btn_access_disabled']: false });
-                  console.log(
-                    'decrypted text shows real IPFS hash: ' + decryptIPFSHash
-                  );
+                  console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
                   this.setState({ ['bc_resp_hash']: decryptIPFSHash });
                   this.setState({
-                    ['access_encrypted_hash']: a_encrypted_hash
+                    ['access_encrypted_hash']: a_encrypted_hash,
                   });
                 });
             }); //submit to contract
@@ -598,8 +488,8 @@ class App extends Component {
           To get started, click on button <code>Browse</code> to upload files.
         </p>
         <p>
-          When you have completed uploading files and entering descriptions,
-          click on <code>Register on BlockChain</code> to claim your reward.
+          When you have completed uploading files and entering descriptions, click on{' '}
+          <code>Register on BlockChain</code> to claim your reward.
         </p>
         <Grid fluid>
           <Row className="show-grid">
@@ -607,14 +497,8 @@ class App extends Component {
               <p align="left">
                 <b>Registering Files</b>
               </p>
-              <p align="left">
-                The better you describe your files, the easier others can
-                discover and find it.
-              </p>
-              <p align="left">
-                This helps to increase the chances of rewards and incentives to
-                use your files.
-              </p>
+              <p align="left">The better you describe your files, the easier others can discover and find it.</p>
+              <p align="left">This helps to increase the chances of rewards and incentives to use your files.</p>
               <p align="left">
                 <label>
                   Enter file description:
@@ -627,20 +511,11 @@ class App extends Component {
                     onChange={this.captureFileAndMetadata}
                   />
                 </label>
-                <input
-                  type="file"
-                  multiple
-                  onChange={this.captureFileAndMetadata}
-                />
+                <input type="file" multiple onChange={this.captureFileAndMetadata} />
               </p>
               <Form onSubmit={this.registerToBC}>
                 <p align="left">
-                  <Button
-                    bsSize="xsmall"
-                    disabled={this.state.btn_register_disabled}
-                    bsStyle="primary"
-                    type="submit"
-                  >
+                  <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
                     Register on BlockChain
                   </Button>
                 </p>
@@ -691,12 +566,7 @@ class App extends Component {
               </p>
               <Form onSubmit={this.manualRegisterToBC}>
                 <p align="left">
-                  <Button
-                    bsSize="xsmall"
-                    disabled={this.state.btn_register_disabled}
-                    bsStyle="primary"
-                    type="submit"
-                  >
+                  <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
                     Manual Register on BlockChain
                   </Button>
                 </p>
@@ -734,22 +604,14 @@ class App extends Component {
               </p>
               <Form onSubmit={this.accessBC}>
                 <p align="left">
-                  <Button
-                    bsSize="xsmall"
-                    disabled={this.state.btn_access_disabled}
-                    bsStyle="primary"
-                    type="submit"
-                  >
+                  <Button bsSize="xsmall" disabled={this.state.btn_access_disabled} bsStyle="primary" type="submit">
                     Access File on BlockChain
                   </Button>
                 </p>
               </Form>
               <p align="left">
                 <label>IPFS hash: </label>
-                <a
-                  href={'https://ipfs.io/ipfs/' + this.state.bc_resp_hash}
-                  target="_blank"
-                >
+                <a href={'https://ipfs.io/ipfs/' + this.state.bc_resp_hash} target="_blank">
                   {'https://ipfs.io/ipfs/' + this.state.bc_resp_hash}
                 </a>
               </p>
