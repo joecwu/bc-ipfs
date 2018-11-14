@@ -1,5 +1,5 @@
-/*jshint esversion: 6*/
+/* jshint esversion: 6 */
 
-const crypto_js = require("crypto-js");
+const crypto_js = require('crypto-js');
 
 export default crypto_js;
