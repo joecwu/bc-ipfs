@@ -57,8 +57,8 @@ RUN addgroup -g $IPFS_GID $IPFS_USER && \
     chown -R $IPFS_UID:$IPFS_GID /usr/local/bin/geth && \
     chown -R $IPFS_UID:$IPFS_GID /usr/local/go/bin/* && \
     chown -R $IPFS_UID:$IPFS_GID /go/bin/* && \
-    mkdir -p /data/ipfs && chown -R $IPFS_UID:$IPFS_GID /data ; \
-    echo "export IPFS_PATH=/data/ipfs" > /etc/profile.d/ipfs_path.sh
+    mkdir -p $HOME/ipfs && chown -R $IPFS_UID:$IPFS_GID $HOME/ipfs ; \
+    echo "export IPFS_PATH=$HOME/ipfs" > /etc/profile.d/ipfs_path.sh
 
 ENV IPFS_VERSION=0.4.15 \
     IPFS_SHA256=48a81cfc34d3a12c8563dbdfae8681be6e4d23c0664d6a192bc2758c4e4ef377
