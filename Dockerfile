@@ -86,7 +86,7 @@ RUN addgroup -g $IPFS_GID $IPFS_USER && \
     chown -R $IPFS_UID:$IPFS_GID $HOME && \
     chown -R $IPFS_UID:$IPFS_GID /usr/local/bin/geth && \
     chown -R $IPFS_UID:$IPFS_GID /usr/local/go/bin/* && \
-    chown -R $IPFS_UID:$IPFS_GID /go/bin/* &&
+    chown -R $IPFS_UID:$IPFS_GID /go/bin/* && \
     mkdir -p /data/ipfs && chown -R $IPFS_UID:$IPFS_GID /data ; \
     echo "export IPFS_PATH=/data/ipfs" > /etc/profile.d/ipfs_path.sh
 
