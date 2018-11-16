@@ -13,6 +13,6 @@ docker run --rm -it \
   --publish 5001:5001 \
   --publish 8888:8080 \
   --env IPFS_PATH=/data/ipfs \
-  --mount type=bind,source=$IPFS_DIR,target=/data/bc-ipfs \
+  --mount type=bind,source=$IPFS_DIR,target=/home/ipfsuser/ipfs \
   bc-ipfs-${BUILD_BRANCH} \
   bash -l
