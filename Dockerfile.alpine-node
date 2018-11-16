@@ -42,6 +42,7 @@ RUN info(){ printf '\n--\n%s\n--\n\n' "$*"; } \
     openssl libgcc libstdc++ \
  && rm -rf /var/cache/apk/* \
  && info "==> Updating NPM..." \
+ && npm config set unsafe-perm true \
  && npm i -g npm@$NPM_VERSION \
  && info "==> Cleaning up..." \
  && npm cache clean --force \

@@ -10,15 +10,22 @@ in the sense to integrate with IPFS.
 To build the docker images locally, run the following 2 in sequence.
 ```
 # Build alpine+nodejs and golang runtime based on alpine+nodejs image
-./build-alpine-go-node.sh
+# To build go-lang 1.11.x (default we try to use the latest) with npm and nodejs
+# This produce an image with tag 'blcksync/alpine-node:latest' along with a
+# go-lang 1.11.x image including npm
+GO_VER=11 ./build-alpine-go-node.sh
 # Build dev env with npm packages, ipfs, etc.
+./build-dev.sh
+# Build a ready to run image without development libs and tools
 ./build.sh
 ```
 
 or if you want to use an existing alpine image e.g. `mhart/alpine-node:base-10.8`
 ```
 # Only build the golang runtime
-./build-go-node.sh
+# To build go-lang 1.11.x (default we try to use the latest)
+GO_VER=11 ALPINE_IMAGE="mhart/alpine-node:base-10.8" ./build-go-node.sh
+# GO_VER=10 if you need go-lang 1.10.x
 # Build dev env with npm packages, ipfs, etc.
 ./build.sh
 ```
@@ -117,4 +124,58 @@ docker run \
   -p 127.0.0.1:8080:8080 \
   -p 127.0.0.1:5001:5001 \
   go-ipfs-insecure
+```
+
+# Setup development environment and standard
+**This is still work in progress, we are migrating to eslint**
+Please see branch: `eslint` for this work.
+The tools we use here is `babel-eslint`, `prettier-eslint`, `eslint-config-airbnb`,
+and plugins `react`, `jsx-a11y`, and `import` with VSCode.
+```
+npm install prettier-eslint --save-dev
+npm install babel-eslint --save-dev
+npm install eslint-plugin-babel --save-dev
+npm install eslint-plugin-prettier --save-dev
+npm install eslint-plugin-react  --save-dev
+npm install eslint-plugin-jsx-a11y --save-dev
+npm install eslint-plugin-import --save-dev
+npm install eslint-plugin-jest --save-dev
+npm install eslint-config-jest-enzyme --save-dev
+npm install eslint-config-airbnb --save-dev
+```
+
+**Known Issues on npm install**
+If you are still missing some dependencies from `npm install`, the following is an exhausted list
+to capture all required npm modules. Please report any other missing ones if you notice them.
+
+**Required**
+```
+npm install -S react@16.6.1 \
+  @types/react@16.7.3 \
+  crypto-js@3.1.9-1 \
+  ethereumjs-tx@1.3.7 \
+  ipfs-api@26.1.2 \
+  jquery@3.3.1 \
+  js-sha256@0.9.0 \
+  react-bootstrap@0.32.4 \
+  react-dom@16.6.1 \
+  url-parse@1.4.4 \
+  web3@1.0.0-beta.36
+```
+
+**Development Only**
+```
+npm install -S @types/react-dom@16.0.9 \
+    babel-core@6.26.3 \
+    babel-loader@7.1.5 \
+    babel-preset-env@1.7.0 \
+    babel-preset-react@6.24.1 \
+    css-loader@1.0.1 \
+    file-loader@1.1.11 \
+    html-loader@0.5.5 \
+    html-webpack-plugin@3.2.0 \
+    style-loader@0.21.0 \
+    webpack@4.25.1 \
+    webpack-cli@3.1.2 \
+    webpack-dev-server@3.1.10
 ```
