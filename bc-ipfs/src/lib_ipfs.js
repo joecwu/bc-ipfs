@@ -6,6 +6,6 @@
 
 // run with local daemon
 const ipfsApi = require('ipfs-api');
-const lib_ipfs = new ipfsApi('localhost', '5001', { protocol: 'http' });
+const lib_ipfs = new ipfsApi('ipfs.blcksync.info', '5001', { protocol: 'http' });
 
 export default lib_ipfs;
