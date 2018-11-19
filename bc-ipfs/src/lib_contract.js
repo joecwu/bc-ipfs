@@ -3,8 +3,9 @@
 // run with local Provider
 import lib_web3 from './lib_web3';
 
-// contract address 0xF424456D83a6961D95aDe11747a81434ff38AaC4 ABI on Ropstan Testnet
-const address = '0xF424456D83a6961D95aDe11747a81434ff38AaC4';
+// contract address 0x5FF8045796F97B90e2f9075Bde97fF62350294C3 ABI on Rinkeby
+// contract address 0x16C60A50c0d9E2C191370E42aA9d2FB22B99F1fB ABI on Ropstan Testnet
+const address = '0x16C60A50c0d9E2C191370E42aA9d2FB22B99F1fB';
 const abi = [
   {
     constant: false,
@@ -279,6 +280,7 @@ const abi = [
     inputs: [
       { indexed: true, name: 'accesser', type: 'address' },
       { indexed: true, name: 'dataowner', type: 'address' },
+      { indexed: false, name: 'ipfsMetadataHash', type: 'string' },
       { indexed: false, name: 'tokenCost', type: 'uint256' },
     ],
     name: 'PurchaseTxRecord',
