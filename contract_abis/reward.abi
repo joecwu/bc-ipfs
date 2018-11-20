@@ -47,41 +47,6 @@
 			{
 				"name": "ipfsMetadataHash",
 				"type": "string"
-			},
-			{
-				"name": "encryptedIndex",
-				"type": "string"
-			},
-			{
-				"name": "ipfsHash",
-				"type": "string"
-			},
-			{
-				"name": "realFilesize",
-				"type": "uint256"
-			}
-		],
-		"name": "encryptIPFS",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "encryptedIndex",
-				"type": "string"
-			},
-			{
-				"name": "ipfsMetadataHash",
-				"type": "string"
 			}
 		],
 		"name": "decryptIPFS",
@@ -107,6 +72,29 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "keyLookupIdx",
+				"type": "string"
+			},
+			{
+				"name": "seed",
+				"type": "uint256"
+			}
+		],
+		"name": "generateLocalRand",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -187,6 +175,25 @@
 		"constant": true,
 		"inputs": [
 			{
+				"name": "keyLookupIdx",
+				"type": "string"
+			}
+		],
+		"name": "getLocalRand",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
 				"name": "a",
 				"type": "uint256"
 			},
@@ -232,6 +239,41 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "ipfsMetadataHash",
+				"type": "string"
+			},
+			{
+				"name": "partialKey",
+				"type": "string"
+			},
+			{
+				"name": "indirectKeyIdx",
+				"type": "string"
+			},
+			{
+				"name": "ipfsEncryptedHash",
+				"type": "string"
+			},
+			{
+				"name": "realFilesize",
+				"type": "uint256"
+			}
+		],
+		"name": "encryptIPFS",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -350,6 +392,14 @@
 		"inputs": [],
 		"name": "fetchKeyForIPFS",
 		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
 			{
 				"name": "",
 				"type": "string"
@@ -484,6 +534,11 @@
 				"indexed": true,
 				"name": "dataowner",
 				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "ipfsMetadataHash",
+				"type": "string"
 			},
 			{
 				"indexed": false,
