@@ -188,15 +188,11 @@ class App extends Component {
                     c_rand = result;
                     realKey = potential_key + c_rand;
                     encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
-                    let ipfsmeta_json =
-                      '{' +
-                      '"description": ' +
-                      ipfsmeta +
-                      '"filesize": ' +
-                      real_fsize +
-                      '"encrypted": ' +
-                      encryptedIPFSHash +
-                      '}';
+                    let ipfsmeta_json = {
+                      description: ipfsmeta,
+                      filesize: real_fsize,
+                      encrypted: encryptedIPFSHash,
+                    };
                     let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
                     console.log('File JSON metadata=' + ipfsmeta_norm);
                     lib_ipfs
