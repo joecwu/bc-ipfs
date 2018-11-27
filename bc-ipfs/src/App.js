@@ -216,6 +216,14 @@ class App extends Component {
                             real_fsize,
                         );
                         console.log('Submitting from ' + submit_acct);
+                        console.log('Pinning to IPFS ' + ipfsmid);
+                        lib_ipfs
+                          .pin
+                          .add(ipfsmid)
+                          .then(resp => {
+                            console.log('ipfs metadata has been pinned ' + ipfsmid);
+                            console.log(resp);
+                          }); //End of lib_ipfs.pin.add
                         lib_contract.methods
                           .encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize)
                           .send(
