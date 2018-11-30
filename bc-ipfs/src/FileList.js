@@ -36,8 +36,7 @@ class FileList extends Component {
       method: 'POST',
       headers: {
         'Authorization': 'Basic YWRtaW46YWRtaW4=',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Content-Type': 'application/json'
       },
       mode: 'no-cors',
       redirect: 'follow',
