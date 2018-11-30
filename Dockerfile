@@ -120,6 +120,7 @@ RUN cd $HOME; \
     react-dom@16.6.1 \
     url-parse@1.4.4 \
     web3@1.0.0-beta.36 \
+    whatwg-fetch@3.0.0 \
     && npm install -S @types/react-dom@16.0.9 \
     babel-core@6.26.3 \
     babel-loader@7.1.5 \
