@@ -32,12 +32,15 @@ class FileList extends Component {
       targetSearchTemplate = 'blockmed-trans-aggs';
     }
 
-    window.fetch('http://es.comehere.app/blockmed-trans-*/_search/template', {
+    window.fetch('http://es.blcksync.info/blockmed-trans-*/_search/template', {
       method: 'POST',
       headers: {
         'Authorization': 'Basic YWRtaW46YWRtaW4=',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
+      mode: 'no-cors',
+      redirect: 'follow',
       body: JSON.stringify({
         id: targetSearchTemplate,
         params: {
