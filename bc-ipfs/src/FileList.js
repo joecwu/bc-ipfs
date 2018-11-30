@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import 'whatwg-fetch'
+import 'whatwg-fetch';
 import { Button, Form, FormGroup, ControlLabel, FormControl, Table } from 'react-bootstrap';
 import FileListItem from './FileListItem';
 
@@ -52,18 +52,18 @@ class FileList extends Component {
   componentDidMount() {
     console.log('componentDidMount');
     this.fetchItemsFromServer();
-  };
+  }
 
   search(event) {
     console.log('search for keyword:' + this.state.keyword );
     event.preventDefault();
     this.fetchItemsFromServer();
-  };
+  }
 
   keywordChange(event) {
     event.preventDefault();
     this.setState({keyword: event.target.value});
-  };
+  }
 
   convertToItems(esResponse) {
     const { pageIndex, pageSize, sortedBy, keyword } = this.props;
@@ -71,7 +71,7 @@ class FileList extends Component {
     esResponse.aggregations.ipfsMetadataHash.buckets
       .slice(pageIndex, pageSize)
       .map((hashBucket) => {
-        var hitItem = hashBucket.top_hits.hits.hits[0]
+        var hitItem = hashBucket.top_hits.hits.hits[0];
         items.push(
           {
             "_id": hitItem._id,
@@ -81,16 +81,17 @@ class FileList extends Component {
             "tokenCost": hitItem._source.returnValues.tokenCost,
             "purchaseCount": hashBucket.PurchaseTxRecordCount.doc_count
           }
-        )
+        );
       });
     this.setState({ items });
-  };
+  }
 
   render() {
 
     const { pageIndex, pageSize, sortedBy, keyword } = this.props;
     const { items } = this.state;
     const rows = items.map((item) => (
+      /*jshint ignore:start*/
       <FileListItem 
         key={item._id}
         hashId={item.hashId}
@@ -99,7 +100,9 @@ class FileList extends Component {
         tokenCost={item.tokenCost}
         purchaseCount={item.purchaseCount}
       />
+      /*jshint ignore:end*/
     ));
+    /*jshint ignore:start*/
     return (
       <div>
         <Form inline>
@@ -124,6 +127,7 @@ class FileList extends Component {
         </Table>
       </div>
     );
+    /*jshint ignore:end*/
   }
 }
 

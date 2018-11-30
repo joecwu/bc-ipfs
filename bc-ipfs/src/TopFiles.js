@@ -7,11 +7,13 @@ class TopFiles extends Component {
     super();
   }
   render() {
+    /*jshint ignore:start*/
     return (
       <div>
         <FileList pageSize={5} />
       </div>
     );
+    /*jshint ignore:end*/
   }
 }
 

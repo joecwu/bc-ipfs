@@ -59,7 +59,7 @@ class FileListItem extends Component {
                   console.log('decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta);
                   this.setState({ ['btn_access_state']: 'normal' });
                 }
-              },
+              }
             )
             .then(() => {
               let realKey = '';
@@ -80,7 +80,7 @@ class FileListItem extends Component {
                           ' encryptedHash=' +
                           result[2] +
                           ' cost=' +
-                          result[3],
+                          result[3]
                       );
                       try {
                         realKey = result[0] + '' + result[1];
@@ -91,10 +91,10 @@ class FileListItem extends Component {
                       }
                     } else {
                       console.log(
-                        'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash,
+                        'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash
                       );
                     }
-                  },
+                  }
                 )
                 .then(() => {
                   if( decryptIPFSHash != "" ) {
@@ -124,11 +124,16 @@ class FileListItem extends Component {
     } else if(this.state.btn_access_state == 'accessing') {
       btn_access_text = 'Accessing';
     }
-
+    /*jshint ignore:start*/
     return (
         <tr>
             <td>
-                <Button bsStyle="primary" bsSize="xs" disabled={this.state.btn_access_state == 'accessing'} onClick={this.handleAccessFile}>{btn_access_text}</Button>
+                <Button 
+                  bsStyle="primary"
+                  bsSize="xs" 
+                  disabled={this.state.btn_access_state == 'accessing'} 
+                  onClick={this.handleAccessFile}
+                >{btn_access_text}</Button>
             </td>
             <td>{description}</td>
             <td>{fileSize}</td>
@@ -136,6 +141,7 @@ class FileListItem extends Component {
             <td>{purchaseCount}</td>
         </tr>
     );
+    /*jshint ignore:end*/
   }
 }
 
