@@ -16,7 +16,8 @@ module.exports = {
     contentBase: './public',
     port: 3000,
     host: '0.0.0.0',
-    disableHostCheck: true
+    disableHostCheck: true,
+    headers: { "Access-Control-Allow-Origin": "*" }
   },
   module: {
     rules: [

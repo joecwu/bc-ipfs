@@ -9,6 +9,7 @@ import lib_contract from './lib_contract';
 import bcutils from './lib_bcutils';
 import sha256coder from './lib_hash';
 import crypto_js from './lib_crypto';
+import TopFiles from './TopFiles';
 
 class App extends Component {
   constructor() {
@@ -577,6 +578,10 @@ class App extends Component {
               </Form>
             </Col>
             <Col>
+              <p align="left">
+                <b>Top Files</b>
+              </p>
+              <TopFiles />
               <p align="left">
                 <b>Accessing Files</b>
               </p>
