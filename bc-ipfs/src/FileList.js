@@ -111,7 +111,7 @@ class FileList extends Component {
         <Table responsive striped bordered condensed hover>
           <thead>
             <tr>
-              <th>HashId</th>
+              <th></th>
               <th>Description</th>
               <th>File Size</th>
               <th>Token Cost</th>
