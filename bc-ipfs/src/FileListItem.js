@@ -12,21 +12,21 @@ class FileListItem extends Component {
     super(props);
     this.state = {
       bc_resp_hash: bc_resp_hash_default,
-      btn_access_state: 'normal' //normal, accessing ,accessed
+      btn_access_state: 'normal', //normal, accessing ,accessed
     };
     this.handleAccessFile = this.handleAccessFile.bind(this);
     this.bcAccessFile = this.bcAccessFile.bind(this);
   }
 
   handleAccessFile(event) {
-    if(this.state.btn_access_state == 'accessed') {
+    if (this.state.btn_access_state == 'accessed') {
       // open file directly
-      window.open('http://ipfs.io/ipfs/' + this.state.bc_resp_hash, "_blank");
+      window.open('http://ipfs.io/ipfs/' + this.state.bc_resp_hash, '_blank');
     } else {
       this.bcAccessFile(event);
     }
   }
-  
+
   bcAccessFile(event) {
     this.setState({ ['bc_resp_hash']: '*******' });
     this.setState({ ['btn_access_state']: 'accessing' });
@@ -86,7 +86,7 @@ class FileListItem extends Component {
                         realKey = result[0] + '' + result[1];
                         decryptIPFSHash = crypto_js.AES.decrypt(result[2], realKey).toString(crypto_js.enc.Utf8);
                         a_encrypted_hash = result[2];
-                      } catch(err) {
+                      } catch (err) {
                         console.error(err);
                       }
                     } else {
@@ -97,7 +97,7 @@ class FileListItem extends Component {
                   }
                 )
                 .then(() => {
-                  if( decryptIPFSHash != "" ) {
+                  if (decryptIPFSHash != '') {
                     this.setState({ ['btn_access_state']: 'accessed' });
                     console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
                     this.setState({ ['bc_resp_hash']: decryptIPFSHash });
@@ -121,25 +121,27 @@ class FileListItem extends Component {
     let btn_access_text = 'Access File';
     if (this.state.btn_access_state == 'accessed') {
       btn_access_text = 'Open File';
-    } else if(this.state.btn_access_state == 'accessing') {
+    } else if (this.state.btn_access_state == 'accessing') {
       btn_access_text = 'Accessing';
     }
     /*jshint ignore:start*/
     return (
-        <tr>
-            <td>
-                <Button 
-                  bsStyle="primary"
-                  bsSize="xs" 
-                  disabled={this.state.btn_access_state == 'accessing'} 
-                  onClick={this.handleAccessFile}
-                >{btn_access_text}</Button>
-            </td>
-            <td>{description}</td>
-            <td>{fileSize}</td>
-            <td>{tokenCost}</td>
-            <td>{purchaseCount}</td>
-        </tr>
+      <tr>
+        <td>
+          <Button
+            bsStyle="primary"
+            bsSize="xs"
+            disabled={this.state.btn_access_state == 'accessing'}
+            onClick={this.handleAccessFile}
+          >
+            {btn_access_text}
+          </Button>
+        </td>
+        <td>{description}</td>
+        <td>{fileSize}</td>
+        <td>{tokenCost}</td>
+        <td>{purchaseCount}</td>
+      </tr>
     );
     /*jshint ignore:end*/
   }
@@ -150,11 +152,11 @@ FileListItem.propTypes = {
   description: PropTypes.string.isRequired,
   fileSize: PropTypes.number.isRequired,
   tokenCost: PropTypes.string.isRequired,
-  purchaseCount: PropTypes.number
+  purchaseCount: PropTypes.number,
 };
 
 FileListItem.defaultProps = {
-  purchaseCount: 0
+  purchaseCount: 0,
 };
 
 export default FileListItem;
