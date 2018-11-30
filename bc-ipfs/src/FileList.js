@@ -32,7 +32,7 @@ class FileList extends Component {
       targetSearchTemplate = 'blockmed-trans-aggs';
     }
 
-    window.fetch('http://es.comehere.app/blockmed-trans-*/_search/template', {
+    window.fetch('http://es.blcksync.info/blockmed-trans-*/_search/template', {
       method: 'POST',
       headers: {
         'Authorization': 'Basic YWRtaW46YWRtaW4=',
