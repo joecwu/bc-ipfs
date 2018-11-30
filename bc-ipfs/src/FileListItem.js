@@ -21,7 +21,7 @@ class FileListItem extends Component {
   handleAccessFile(event) {
     if(this.state.btn_access_state == 'accessed') {
       // open file directly
-      window.open('http://ipfs.io/ipfs/' + this.state.bc_resp_hash, target="_blank");
+      window.open('http://ipfs.io/ipfs/' + this.state.bc_resp_hash, "_blank");
     } else {
       this.bcAccessFile(event);
     }
