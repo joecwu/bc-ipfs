@@ -162,106 +162,77 @@ class App extends Component {
             console.log('Submitting from ' + submit_acct);
           })
           .then(() => {
-            lib_contract.methods
-              .generateLocalRand(key2ndIdx, l_rand)
-              .send(
-                {
-                  from: submit_acct,
-                },
-                (error, transactionHash) => {
-                  if (transactionHash) {
-                    console.log('blockchain confirmed tx=' + transactionHash);
-                    console.log('generateLocalRand completed for ipfssha256=' + ipfssha256);
-                  } else {
-                    console.log('generateLocalRand canceled for ipfssha256=' + ipfssha256);
-                    this.setState({ ['btn_register_disabled']: false });
-                  }
-                },
-              )
-              .then(() => {
+            c_rand = Math.floor(l_rand / 13);
+            realKey = potential_key + c_rand;
+            encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
+            let ipfsmeta_json = {
+              description: ipfsmeta,
+              filesize: real_fsize,
+              encrypted: encryptedIPFSHash,
+            };
+            let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
+            console.log('File JSON metadata=' + ipfsmeta_norm);
+            lib_ipfs
+              .add(Buffer.from(ipfsmeta_norm), {
+                progress: prog => console.log('IPFS Metadata uploaded bytes:' + prog),
+              })
+              .then(resp => {
+                console.log(resp);
+                ipfsmid = resp[0].hash;
+                console.log('ipfs metadata hash=' + ipfsmid);
+                console.log('Submitted file=' + tmp_fqueue[i].name);
+                console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+                console.log(
+                  'Registering: ipfsMetadata=' +
+                    ipfsmid +
+                    ' encryptedRealIPFS=' +
+                    encryptedIPFSHash +
+                    ' ipfsRealHash=' +
+                    ipfs_realhash +
+                    ' realFsize=' +
+                    real_fsize,
+                );
+                console.log('Submitting from ' + submit_acct);
+                console.log('Pinning to IPFS ' + ipfsmid);
+                lib_ipfs.pin.add(ipfsmid).then(resp => {
+                  console.log('ipfs metadata has been pinned ' + ipfsmid);
+                  console.log(resp);
+                }); //End of lib_ipfs.pin.add
                 lib_contract.methods
-                  .getLocalRand(key2ndIdx)
-                  .call({
-                    from: submit_acct,
-                  })
-                  .then(result => {
-                    console.log('contract returned random number=' + result);
-                    c_rand = result;
-                    realKey = potential_key + c_rand;
-                    encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
-                    let ipfsmeta_json = {
-                      description: ipfsmeta,
-                      filesize: real_fsize,
-                      encrypted: encryptedIPFSHash,
-                    };
-                    let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
-                    console.log('File JSON metadata=' + ipfsmeta_norm);
-                    lib_ipfs
-                      .add(Buffer.from(ipfsmeta_norm), {
-                        progress: prog => console.log('IPFS Metadata uploaded bytes:' + prog),
-                      })
-                      .then(resp => {
-                        console.log(resp);
-                        ipfsmid = resp[0].hash;
-                        console.log('ipfs metadata hash=' + ipfsmid);
-                        console.log('Submitted file=' + tmp_fqueue[i].name);
-                        console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+                  .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
+                  .send(
+                    {
+                      from: submit_acct,
+                      gasPrice: 2000000000,
+                      gas: 1500000,
+                    },
+                    (error, transactionHash) => {
+                      if (transactionHash) {
+                        console.log('blockchain confirmed tx=' + transactionHash);
+                        bc_queue[ipfssha256] = {
+                          ipfsMetaData: ipfsmid,
+                          encryptedIdx: ipfssha256,
+                        };
                         console.log(
-                          'Registering: ipfsMetadata=' +
-                            ipfsmid +
-                            ' encryptedRealIPFS=' +
-                            encryptedIPFSHash +
-                            ' ipfsRealHash=' +
-                            ipfs_realhash +
-                            ' realFsize=' +
-                            real_fsize,
+                          'Registration completed for ipfsMetadata=' +
+                            bc_queue[ipfssha256].ipfsMetaData +
+                            ' encryptedIdx=' +
+                            bc_queue[ipfssha256].encryptedIdx,
                         );
-                        console.log('Submitting from ' + submit_acct);
-                        console.log('Pinning to IPFS ' + ipfsmid);
-                        lib_ipfs
-                          .pin
-                          .add(ipfsmid)
-                          .then(resp => {
-                            console.log('ipfs metadata has been pinned ' + ipfsmid);
-                            console.log(resp);
-                          }); //End of lib_ipfs.pin.add
-                        lib_contract.methods
-                          .encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize)
-                          .send(
-                            {
-                              from: submit_acct,
-                              gasPrice: 2000000000,
-                              gas: 1500000,
-                            },
-                            (error, transactionHash) => {
-                              if (transactionHash) {
-                                console.log('blockchain confirmed tx=' + transactionHash);
-                                bc_queue[ipfssha256] = {
-                                  ipfsMetaData: ipfsmid,
-                                  encryptedIdx: ipfssha256,
-                                };
-                                console.log(
-                                  'Registration completed for ipfsMetadata=' +
-                                    bc_queue[ipfssha256].ipfsMetaData +
-                                    ' encryptedIdx=' +
-                                    bc_queue[ipfssha256].encryptedIdx,
-                                );
-                              } else {
-                                console.log(
-                                  'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
-                                );
-                              }
-                            },
-                          )
-                          .catch(err => {
-                            console.error(err);
-                          })
-                          .then(() => {
-                            this.setState({ ['btn_register_disabled']: false });
-                          }); // end of lib_contract.methods.encryptIPFS
-                      }); // end of ipfs.add()
-                  }); // end of getLocalRand
-              }); // end of generateLocalRand
+                      } else {
+                        console.log(
+                          'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
+                        );
+                      }
+                    },
+                  )
+                  .catch(err => {
+                    console.error(err);
+                  })
+                  .then(() => {
+                    this.setState({ ['btn_register_disabled']: false });
+                  }); // end of lib_contract.methods.encryptIPFS
+              }); // end of ipfs.add()
           }); // end of getAccounts and current file submission and registration
       } else {
         console.log('Skipping file ' + tmp_fqueue[i].name + ' with same metadata info ' + ipfsmid);
@@ -303,76 +274,51 @@ class App extends Component {
         console.log('Submitting from ' + submit_acct);
       })
       .then(() => {
+        c_rand = MAth.floor(l_rand / 13);
+        realKey = potential_key + c_rand;
+        encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
+        console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
+        let ipfsmeta_json =
+          '{' +
+          '"description": ' +
+          ipfs_metatext +
+          '"filesize": ' +
+          real_fsize +
+          '"encrypted": ' +
+          encryptedIPFSHash +
+          '}';
+        let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
+        console.log('generated JSON for manual registration ' + ipfsmeta_norm);
+        this.setState({ ['ipfs_gen_metatext']: ipfsmeta_norm });
+      })
+      .then(() => {
         lib_contract.methods
-          .generateLocalRand(key2ndIdx, l_rand)
+          .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
           .send(
             {
               from: submit_acct,
+              gasPrice: 2000000000,
+              gas: 1500000,
             },
             (error, transactionHash) => {
               if (transactionHash) {
                 console.log('blockchain confirmed tx=' + transactionHash);
-                console.log('generateLocalRand completed for ipfssha256=' + ipfssha256);
+                console.log(
+                  'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
+                );
               } else {
-                console.log('generateLocalRand canceled for ipfssha256=' + ipfssha256);
+                console.log(
+                  'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
+                );
               }
             },
           )
+          .catch(err => {
+            console.error(err);
+          })
           .then(() => {
-            lib_contract.methods
-              .getLocalRand(key2ndIdx)
-              .call({
-                from: submit_acct,
-              })
-              .then(result => {
-                console.log('contract returned random number=' + result);
-                c_rand = result;
-                realKey = potential_key + c_rand;
-                encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
-                console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
-                let ipfsmeta_json =
-                  '{' +
-                  '"description": ' +
-                  ipfs_metatext +
-                  '"filesize": ' +
-                  real_fsize +
-                  '"encrypted": ' +
-                  encryptedIPFSHash +
-                  '}';
-                let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
-                console.log('generated JSON for manual registration ' + ipfsmeta_norm);
-                this.setState({ ['ipfs_gen_metatext']: ipfsmeta_norm });
-              })
-              .then(() => {
-                lib_contract.methods
-                  .encryptIPFS(ipfsmid, potential_key, key2ndIdx, encryptedIPFSHash, real_fsize)
-                  .send(
-                    {
-                      from: submit_acct,
-                      gasPrice: 2000000000,
-                      gas: 1500000,
-                    },
-                    (error, transactionHash) => {
-                      if (transactionHash) {
-                        console.log('blockchain confirmed tx=' + transactionHash);
-                        console.log(
-                          'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
-                        );
-                      } else {
-                        console.log(
-                          'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
-                        );
-                      }
-                    },
-                  )
-                  .catch(err => {
-                    console.error(err);
-                  })
-                  .then(() => {
-                    this.setState({ ['btn_register_disabled']: false });
-                  }); // end of lib_contract.methods.encryptIPFS
-              }); // end of getLocalRand
-          }); // end of generateLocalRand tx
+            this.setState({ ['btn_register_disabled']: false });
+          }); // end of lib_contract.methods.encryptIPFS
       });
   }
   /* jshint ignore:end */
