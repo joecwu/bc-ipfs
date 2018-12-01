@@ -7,7 +7,7 @@ in the sense to integrate with IPFS.
 *Require docker engine 1.13+ or docker-ce 17.0+*
 
 The following branches are locked for several purposes. This current `master` branch is the development branch
-and the current stable one is `encryption-v0.2`. All development should be based on `encryption-v0.2` for now.
+and the current stable one is `encryption-v0.3`. All development should be based on `encryption-v0.3` for now.
 * encryption-v0.1
 * encryption-v0.2
 * encryption-v0.3
