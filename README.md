@@ -6,6 +6,12 @@ in the sense to integrate with IPFS.
 
 *Require docker engine 1.13+ or docker-ce 17.0+*
 
+The following branches are locked for several purposes. This current `master` branch is the development branch
+and the current stable one is `encryption-v0.2`. All development should be based on `encryption-v0.2` for now.
+* encryption-v0.1
+* encryption-v0.2
+* encryption-v0.3
+
 # How to Build and Run
 To build the docker images locally, run the following 2 in sequence.
 ```
