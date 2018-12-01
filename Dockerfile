@@ -22,6 +22,8 @@ RUN addgroup -g $IPFS_GID $IPFS_USER && \
     python-dev \
     py-pip \
     libtool \
+    autoconf \
+    automake \
     build-base \
     make gcc musl-dev linux-headers \
     && rm -rf /var/cache/apk/* && \
@@ -52,7 +54,32 @@ RUN mkdir $HOME/bin && \
     dat@13.10.0 \
     && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ; \
     cd $HOME; git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; \
-    cd bc-ipfs/bc-ipfs; npm install
+    cd bc-ipfs/bc-ipfs; npm install; \
+    npm install -S react@16.6.1 \
+    @types/react@16.7.3 \
+    crypto-js@3.1.9-1 \
+    ethereumjs-tx@1.3.7 \
+    ipfs-api@26.1.2 \
+    jquery@3.3.1 \
+    js-sha256@0.9.0 \
+    react-bootstrap@0.32.4 \
+    react-dom@16.6.1 \
+    url-parse@1.4.4 \
+    web3@1.0.0-beta.36 \
+    whatwg-fetch@3.0.0 \
+    && npm install -S @types/react-dom@16.0.9 \
+    babel-core@6.26.3 \
+    babel-loader@7.1.5 \
+    babel-preset-env@1.7.0 \
+    babel-preset-react@6.24.1 \
+    css-loader@1.0.1 \
+    file-loader@1.1.11 \
+    html-loader@0.5.5 \
+    html-webpack-plugin@3.2.0 \
+    style-loader@0.21.0 \
+    webpack@4.25.1 \
+    webpack-cli@3.1.2 \
+    webpack-dev-server@3.1.10
 
 FROM blcksync/alpine-node:latest
 
@@ -96,44 +123,6 @@ ENV IPFS_VERSION=0.4.15 \
 USER $IPFS_UID
 
 WORKDIR $HOME
-
-# Install ipfs JS API
-RUN mkdir $HOME/bin && \
-    npm install --save \
-    bignumber.js@7.2.1 \
-    bn.js@4.11.8 \
-    secp256k1@3.4.0 \
-    debug@3.1.0 \
-    ipfs-api@26.1.2 \
-    dat@13.10.0 \
-    && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ;
-
-RUN cd $HOME; \
-    npm install -S react@16.6.1 \
-    @types/react@16.7.3 \
-    crypto-js@3.1.9-1 \
-    ethereumjs-tx@1.3.7 \
-    ipfs-api@26.1.2 \
-    jquery@3.3.1 \
-    js-sha256@0.9.0 \
-    react-bootstrap@0.32.4 \
-    react-dom@16.6.1 \
-    url-parse@1.4.4 \
-    web3@1.0.0-beta.36 \
-    whatwg-fetch@3.0.0 \
-    && npm install -S @types/react-dom@16.0.9 \
-    babel-core@6.26.3 \
-    babel-loader@7.1.5 \
-    babel-preset-env@1.7.0 \
-    babel-preset-react@6.24.1 \
-    css-loader@1.0.1 \
-    file-loader@1.1.11 \
-    html-loader@0.5.5 \
-    html-webpack-plugin@3.2.0 \
-    style-loader@0.21.0 \
-    webpack@4.25.1 \
-    webpack-cli@3.1.2 \
-    webpack-dev-server@3.1.10 
 
 COPY ./bin/*.sh $HOME/bin/
 
