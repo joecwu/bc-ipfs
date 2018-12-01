@@ -3,6 +3,45 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "ipfsMetadataHash",
+				"type": "string"
+			},
+			{
+				"name": "partialKey",
+				"type": "string"
+			},
+			{
+				"name": "indirectKeyIdx",
+				"type": "string"
+			},
+			{
+				"name": "seed",
+				"type": "uint256"
+			},
+			{
+				"name": "ipfsEncryptedHash",
+				"type": "string"
+			},
+			{
+				"name": "realFilesize",
+				"type": "uint256"
+			}
+		],
+		"name": "encryptIPFS",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "allowIpfsRegister",
 				"type": "bool"
 			}
@@ -72,29 +111,6 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "keyLookupIdx",
-				"type": "string"
-			},
-			{
-				"name": "seed",
-				"type": "uint256"
-			}
-		],
-		"name": "generateLocalRand",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -175,25 +191,6 @@
 		"constant": true,
 		"inputs": [
 			{
-				"name": "keyLookupIdx",
-				"type": "string"
-			}
-		],
-		"name": "getLocalRand",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
 				"name": "a",
 				"type": "uint256"
 			},
@@ -239,64 +236,6 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "ipfsMetadataHash",
-				"type": "string"
-			},
-			{
-				"name": "partialKey",
-				"type": "string"
-			},
-			{
-				"name": "indirectKeyIdx",
-				"type": "string"
-			},
-			{
-				"name": "ipfsEncryptedHash",
-				"type": "string"
-			},
-			{
-				"name": "realFilesize",
-				"type": "uint256"
-			}
-		],
-		"name": "encryptIPFS",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "ipfsHash",
-				"type": "string"
-			},
-			{
-				"name": "filesize",
-				"type": "uint256"
-			}
-		],
-		"name": "registerIPFS",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -407,25 +346,6 @@
 			{
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "wallet",
-				"type": "address"
-			}
-		],
-		"name": "queryIPFSList",
-		"outputs": [
-			{
-				"name": "",
-				"type": "string"
 			}
 		],
 		"payable": false,
