@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
 import crypto_js from '../utils/lib_crypto';
+import Bytes from './Bytes';
 
 var PropTypes = require('prop-types');
 const bc_resp_hash_default = '*******';
@@ -138,7 +139,7 @@ class FileListItem extends Component {
           </Button>
         </td>
         <td>{description}</td>
-        <td>{fileSize}</td>
+        <td><Bytes bytes={fileSize} /></td>
         <td>{tokenCost}</td>
         <td>{purchaseCount}</td>
       </tr>
