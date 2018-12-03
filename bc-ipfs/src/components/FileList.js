@@ -121,8 +121,8 @@ class FileList extends Component {
               <th />
               <th>Description</th>
               <th>File Size</th>
-              <th>Token Cost</th>
-              <th>Purchase Count</th>
+              <th>BMD Token Cost</th>
+              <th>No. of Accessed</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
