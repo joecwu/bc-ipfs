@@ -4,7 +4,14 @@ The purpose for this started to simply provide a module to integrate with blockc
 related applications. Block chain is not limited to Ethereum, but also refer to others if applicable
 in the sense to integrate with IPFS.
 
-*Require docker engine 1.13+ or docker-ce 17.0+*
+If you are using Docker: *Require docker engine 1.13+ or docker-ce 17.0+*
+If you are running locally on your laptop: Require *nodejs 8.14.0+* and *npm 6.4.0+*
+```
+# npm -v
+6.4.1
+# node -v
+v8.14.0
+```
 
 The following branches are locked for several purposes. This current `master` branch is the development branch
 and the current stable one is `encryption-v0.3`. All development should be based on `encryption-v0.3` for now.
@@ -13,6 +20,33 @@ and the current stable one is `encryption-v0.3`. All development should be based
 * encryption-v0.3
 
 # How to Build and Run
+
+## Local Unix/Laptop
+
+* Mac
+
+```
+git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
+cd bc-ipfs
+cd bc-ipfs
+npm install
+npm start
+```
+
+* Ubuntu 16.04+
+
+```
+sudo su - curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo su - apt-get install -y nodejs
+git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
+cd bc-ipfs
+cd bc-ipfs
+npm install
+npm start
+```
+
+## Docker
+
 To build the docker images locally, run the following 2 in sequence.
 ```
 # Build alpine+nodejs and golang runtime based on alpine+nodejs image
