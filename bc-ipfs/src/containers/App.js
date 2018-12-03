@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import './App.css';
 import { Button, Form, Grid, Row, Col } from 'react-bootstrap';
 
-import lib_ipfs from './lib_ipfs';
-import lib_web3 from './lib_web3';
-import lib_contract from './lib_contract';
-import bcutils from './lib_bcutils';
-import sha256coder from './lib_hash';
-import crypto_js from './lib_crypto';
-import TopFiles from './TopFiles';
+import lib_ipfs from '../utils/lib_ipfs';
+import lib_web3 from '../utils/lib_web3';
+import lib_contract from '../utils/lib_contract';
+import bcutils from '../utils/lib_bcutils';
+import sha256coder from '../utils/lib_hash';
+import crypto_js from '../utils/lib_crypto';
+import TopFiles from '../components/TopFiles';
 
 class App extends Component {
   constructor() {

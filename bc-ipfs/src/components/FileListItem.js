@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import lib_web3 from './lib_web3';
-import lib_contract from './lib_contract';
-import crypto_js from './lib_crypto';
+import lib_web3 from '../utils/lib_web3';
+import lib_contract from '../utils/lib_contract';
+import crypto_js from '../utils/lib_crypto';
 
 var PropTypes = require('prop-types');
 const bc_resp_hash_default = '*******';
