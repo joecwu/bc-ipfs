@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, Grid, Row, Col, Table } from 'react-bootstrap';
-import TopFiles from '../components/TopFiles';
+import FileList from '../components/FileList';
+import './App.css'; //TODO: defien FileListView own CSS
 
 class FileListView extends Component {
   constructor() {
@@ -9,9 +10,11 @@ class FileListView extends Component {
   render() {
     /*jshint ignore:start*/
     return (
-      <div>
-        <h2>Top Files</h2>
-        <TopFiles />
+      <div className="App">
+        <header className="App-header">
+          <h1>Top Files</h1>
+        </header>
+        <FileList pageSize={5} />
       </div>
     );
     /*jshint ignore:end*/

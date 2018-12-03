@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-import TopFiles from '../components/TopFiles';
+import FileList from '../components/FileList';
 import FileRegister from '../components/FileRegister';
 import FileRegisterManually from '../components/FileRegisterManually';
 import FileAccessManually from '../components/FileAccessManually';
@@ -38,7 +38,7 @@ class App extends Component {
               <p align="left">
                 <b>Top Files</b>
               </p>
-              <TopFiles />
+              <FileList pageSize={5} />
               <FileAccessManually />
             </Col>
           </Row>
