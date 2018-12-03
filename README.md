@@ -26,6 +26,10 @@ and the current stable one is `encryption-v0.3`. All development should be based
 * Mac
 
 ```
+# Install nodejs and npm
+brew install node
+# You can also download it from https://nodejs.org/en/
+# Run this project
 git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
@@ -36,8 +40,10 @@ npm start
 * Ubuntu 16.04+
 
 ```
+# Install nodejs and npm
 sudo su - curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo su - apt-get install -y nodejs
+# Run this project
 git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
