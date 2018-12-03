@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './containers/App';
 import FileListView from './containers/FileListView';
-import FileRegister from './components/FileRegister';
-import FileRegisterManually from './components/FileRegisterManually';
+import FileRegisterView from './containers/FileRegisterView';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -14,8 +13,7 @@ ReactDOM.render(
     <Switch>
         <Route exact path="/" component={App} />
         <Route path="/file-list" component={FileListView} />
-        <Route path="/file-register" component={FileRegister} />
-        <Route path="/file-register-manually" component={FileRegisterManually} />
+        <Route path="/file-register" component={FileRegisterView} />
     </Switch>
   </BrowserRouter>,
   document.getElementById('root')
