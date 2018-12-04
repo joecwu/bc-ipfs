@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Row, Col, Table } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 import FileList from '../components/FileList';
 import './App.css'; //TODO: defien FileListView own CSS
 
@@ -10,12 +10,14 @@ class FileListView extends Component {
   render() {
     /*jshint ignore:start*/
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1>Top Files</h1>
-        </header>
-        <FileList pageSize={5} />
-      </div>
+        <Tabs defaultActiveKey="data" bsStyle="tabs" animation={false} id="filelist-tab" mountOnEnter={true} unmountOnExit={true}>
+            <Tab eventKey="data" title="Data">
+                <FileList pageSize={5} hideFields={['category']} category="data" />
+            </Tab>
+            <Tab eventKey="code" title="Code">
+                <FileList pageSize={5} hideFields={['category']} category="code" />
+            </Tab>
+        </Tabs>
     );
     /*jshint ignore:end*/
   }
