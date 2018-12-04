@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILD_BRANCH=${BUILD_BRANCH:-"encryption-v0.2"}
+BUILD_BRANCH=${BUILD_BRANCH:-"master"}
 
 docker run --rm -it \
   --publish 127.0.0.1:3000:3000 \

@@ -2,7 +2,7 @@
 
 CURR_DIR=$(cd $(dirname $0); pwd)
 
-BUILD_BRANCH=${BUILD_BRANCH:-"encryption-v0.2"}
+BUILD_BRANCH=${BUILD_BRANCH:-"master"}
 
 IPFS_DIR="$CURR_DIR/data"
 mkdir -p $IPFS_DIR
