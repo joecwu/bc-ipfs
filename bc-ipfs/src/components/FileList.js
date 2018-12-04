@@ -28,6 +28,7 @@ class FileList extends Component {
   }
 
   fetchItemsFromServer() {
+    console.log('fetchItemsFromServer');
     var targetSearchTemplate = 'blockmed-trans-aggs-all';
     if (this.state.keyword != '') {
       targetSearchTemplate = 'blockmed-trans-aggs';
@@ -54,7 +55,6 @@ class FileList extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
     this.fetchItemsFromServer();
   }
 
@@ -123,12 +123,12 @@ class FileList extends Component {
         <Table responsive striped bordered condensed hover>
           <thead>
             <tr>
-              { this.props.hideFields.includes('accessFile') ? null : <th />}
-              { this.props.hideFields.includes('description') ? null : <th>Description</th>}
-              { this.props.hideFields.includes('category') ? null : <th>Category</th> }
-              { this.props.hideFields.includes('fileSize') ? null : <th>File Size</th>}
-              { this.props.hideFields.includes('tokenCost') ? null : <th>BMD Token Cost</th> }
-              { this.props.hideFields.includes('noOfAccessed') ? null : <th>No. of Accessed</th>}
+              {this.props.hideFields.includes('accessFile') ? null : <th />}
+              {this.props.hideFields.includes('description') ? null : <th>Description</th>}
+              {this.props.hideFields.includes('category') ? null : <th>Category</th>}
+              {this.props.hideFields.includes('fileSize') ? null : <th>File Size</th>}
+              {this.props.hideFields.includes('tokenCost') ? null : <th>BMD Token Cost</th>}
+              {this.props.hideFields.includes('noOfAccessed') ? null : <th>No. of Accessed</th>}
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -154,6 +154,6 @@ FileList.defaultProps = {
   pageSize: 5,
   sortedBy: 'filesize',
   keyword: '',
-  category: ''
+  category: '',
 };
 export default FileList;
