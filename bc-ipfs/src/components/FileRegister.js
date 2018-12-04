@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Row, Col } from 'react-bootstrap';
+import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
 
 import lib_ipfs from '../utils/lib_ipfs';
 import lib_web3 from '../utils/lib_web3';
@@ -13,7 +13,8 @@ class FileRegister extends Component {
     super();
     // define our states to keep track
     this.state = {
-      ipfs_metadata: '',
+      file_description: '',
+      file_category: 'data',
       ipfs_realhash: '',
       btn_register_disabled: false,
     };
@@ -69,7 +70,7 @@ class FileRegister extends Component {
     const type = target.type;
     const name = target.name;
 
-    if (type === 'text') {
+    if (type === 'text' || type === 'textarea' || type === 'select-one') {
       console.log('Capturing input from ' + name + ' with value = ' + target.value);
       this.setState({
         [name]: target.value,
@@ -113,8 +114,9 @@ class FileRegister extends Component {
   registerToBC(event) {
     this.setState({ ['btn_register_disabled']: true });
     event.preventDefault();
-    let ipfsmeta = this.state.ipfs_metadata;
-    console.log('Submitting with metadata = ' + ipfsmeta);
+    let fileDescription = this.state.file_description;
+    let fileCategory = this.state.file_category;
+    console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription );
     const tmp_fqueue = this.file_queue;
     const tmp_iqueue = this.ipfshash_queue;
     const bc_queue = this.bc_register;
@@ -153,7 +155,8 @@ class FileRegister extends Component {
             realKey = potential_key + c_rand;
             encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
             let ipfsmeta_json = {
-              description: ipfsmeta,
+              description: fileDescription,
+              category: fileCategory,
               filesize: real_fsize,
               encrypted: encryptedIPFSHash,
             };
@@ -238,27 +241,38 @@ class FileRegister extends Component {
         </p>
         <p align="left">The better you describe your files, the easier others can discover and find it.</p>
         <p align="left">This helps to increase the chances of rewards and incentives to use your files.</p>
-        <p align="left">
-          <label>
-            Enter file description:
-            <input
+        <Form onSubmit={this.registerToBC} align="left">
+          <FormGroup controlId="formFileCategory">
+            <ControlLabel>Select file category:</ControlLabel>
+            <FormControl 
+              componentClass="select" 
+              placeholder="file category"
+              name="file_category"
+              onChange={this.captureFileAndMetadata} >
+              <option value="data">Data</option>
+              <option value="code">Code</option>
+            </FormControl>
+          </FormGroup>
+          <FormGroup controlId="formFileDescription">
+            <ControlLabel>Enter file description:</ControlLabel>
+            <FormControl
+              componentClass="textarea"
               type="text"
-              name="ipfs_metadata"
+              name="file_description"
+              value={this.state.file_description}
               placeholder="Enter your description here!"
-              size="20"
-              value={this.state.ipfs_metadata}
               onChange={this.captureFileAndMetadata}
             />
-          </label>
-          <br />
-          <input type="file" multiple onChange={this.captureFileAndMetadata} />
-        </p>
-        <Form onSubmit={this.registerToBC}>
-          <p align="left">
-            <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
-              Register on BlockChain
-            </Button>
-          </p>
+            <FormControl.Feedback />
+          </FormGroup>
+
+          <FormGroup controlId="formFile">
+            <FormControl type="file" onChange={this.captureFileAndMetadata} />
+          </FormGroup>
+
+          <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
+            Register on BlockChain
+          </Button>
         </Form>
       </div>
     );
