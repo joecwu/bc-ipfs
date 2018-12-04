@@ -122,7 +122,7 @@ class FileListItem extends Component {
 
     let btn_access_text = 'Access File';
     if (this.state.btn_access_state == 'accessed') {
-      btn_access_text = 'Open File';
+      btn_access_text = 'Download File';
     } else if (this.state.btn_access_state == 'accessing') {
       btn_access_text = 'Accessing';
     }
