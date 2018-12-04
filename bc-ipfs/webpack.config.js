@@ -9,7 +9,8 @@ module.exports = {
   ],
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'public'),
+    publicPath: '/'
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -17,7 +18,8 @@ module.exports = {
     port: 3000,
     host: '0.0.0.0',
     disableHostCheck: true,
-    headers: { "Access-Control-Allow-Origin": "*" }
+    headers: { "Access-Control-Allow-Origin": "*" },
+    historyApiFallback: true,
   },
   module: {
     rules: [

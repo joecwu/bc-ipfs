@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import lib_web3 from './lib_web3';
-import lib_contract from './lib_contract';
-import crypto_js from './lib_crypto';
+import lib_web3 from '../utils/lib_web3';
+import lib_contract from '../utils/lib_contract';
+import crypto_js from '../utils/lib_crypto';
+import Bytes from './Bytes';
+import BMDTokens from './BMDTokens';
 
 var PropTypes = require('prop-types');
 const bc_resp_hash_default = '*******';
@@ -116,31 +118,35 @@ class FileListItem extends Component {
   }
 
   render() {
-    const { hashId, description, fileSize, tokenCost, purchaseCount } = this.props;
+    const { hashId, description, category, fileSize, tokenCost, noOfAccessed } = this.props;
 
     let btn_access_text = 'Access File';
     if (this.state.btn_access_state == 'accessed') {
-      btn_access_text = 'Open File';
+      btn_access_text = 'Download File';
     } else if (this.state.btn_access_state == 'accessing') {
       btn_access_text = 'Accessing';
     }
     /*jshint ignore:start*/
     return (
       <tr>
-        <td>
-          <Button
-            bsStyle="primary"
-            bsSize="xs"
-            disabled={this.state.btn_access_state == 'accessing'}
-            onClick={this.handleAccessFile}
-          >
-            {btn_access_text}
-          </Button>
-        </td>
-        <td>{description}</td>
-        <td>{fileSize}</td>
-        <td>{tokenCost}</td>
-        <td>{purchaseCount}</td>
+
+        { this.props.hideFields.includes('accessFile') ? null : 
+          <td>
+            <Button
+              bsStyle="primary"
+              bsSize="xs"
+              disabled={this.state.btn_access_state == 'accessing'}
+              onClick={this.handleAccessFile}
+            >
+              {btn_access_text}
+            </Button>
+          </td>
+        }
+        { this.props.hideFields.includes('description') ? null : <td>{description}</td>}
+        { this.props.hideFields.includes('category') ? null : <td>{category}</td> }
+        { this.props.hideFields.includes('fileSize') ? null : <td><Bytes bytes={fileSize} /></td> }
+        { this.props.hideFields.includes('tokenCost') ? null : <td><BMDTokens value={tokenCost} /></td> }
+        { this.props.hideFields.includes('noOfAccessed') ? null : <td>{noOfAccessed}</td>}
       </tr>
     );
     /*jshint ignore:end*/
@@ -148,15 +154,18 @@ class FileListItem extends Component {
 }
 
 FileListItem.propTypes = {
+  hideFields: PropTypes.arrayOf(PropTypes.string),
   hashId: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
+  category: PropTypes.string,
   fileSize: PropTypes.number.isRequired,
   tokenCost: PropTypes.string.isRequired,
-  purchaseCount: PropTypes.number,
+  noOfAccessed: PropTypes.number,
 };
 
 FileListItem.defaultProps = {
-  purchaseCount: 0,
+  hideFields: [],
+  noOfAccessed: 0,
 };
 
 export default FileListItem;
