@@ -236,9 +236,6 @@ class FileRegister extends Component {
   render() {
     return (
       <div>
-        <p align="left">
-          <b>Registering Files</b>
-        </p>
         <p align="left">The better you describe your files, the easier others can discover and find it.</p>
         <p align="left">This helps to increase the chances of rewards and incentives to use your files.</p>
         <Form onSubmit={this.registerToBC} align="left">
@@ -248,7 +245,8 @@ class FileRegister extends Component {
               componentClass="select" 
               placeholder="file category"
               name="file_category"
-              onChange={this.captureFileAndMetadata} >
+              onChange={this.captureFileAndMetadata}
+              style={{ width: "200px"}} >
               <option value="data">Data</option>
               <option value="code">Code</option>
             </FormControl>

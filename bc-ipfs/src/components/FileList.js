@@ -115,20 +115,20 @@ class FileList extends Component {
               value={this.state.keyword}
               onChange={this.keywordChange}
             />
-          </FormGroup>{' '}
-          <Button type="submit" onClick={this.search}>
-            Search
-          </Button>
+            <Button type="submit" onClick={this.search}>
+              Search
+            </Button>
+          </FormGroup>
         </Form>
         <Table responsive striped bordered condensed hover>
           <thead>
             <tr>
-              {this.props.hideFields.includes('accessFile') ? null : <th />}
+              {this.props.hideFields.includes('accessFile') ? null : <th style={{width: "90px"}} />}
               {this.props.hideFields.includes('description') ? null : <th>Description</th>}
-              {this.props.hideFields.includes('category') ? null : <th>Category</th>}
-              {this.props.hideFields.includes('fileSize') ? null : <th>File Size</th>}
-              {this.props.hideFields.includes('tokenCost') ? null : <th>BMD Token Cost</th>}
-              {this.props.hideFields.includes('noOfAccessed') ? null : <th>No. of Accessed</th>}
+              {this.props.hideFields.includes('category') ? null : <th style={{width: "100px"}}>Category</th>}
+              {this.props.hideFields.includes('fileSize') ? null : <th style={{width: "150px"}}>File Size</th>}
+              {this.props.hideFields.includes('tokenCost') ? null : <th style={{width: "150px"}}>BMD Token Cost</th>}
+              {this.props.hideFields.includes('noOfAccessed') ? null : <th style={{width: "120px"}}>No. of Accessed</th>}
             </tr>
           </thead>
           <tbody>{rows}</tbody>

@@ -1,5 +1,4 @@
 .App {
-  text-align: center;
 }
 
 .App-logo {
@@ -7,19 +6,36 @@
   height: 80px;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+@media screen and (max-width: 600px) {
+  .App-header {
+    visibility: hidden;
+    display: none;
+  }
+}
+
+@media screen and (min-width: 599px) {
+  .App-header {
+    text-align: center;
+    background-color: #222;
+    height: 150px;
+    padding: 20px;
+    margin-bottom: 10px;
+    color: white;
+  }
 }
 
 .App-title {
+  text-align: center;
   font-size: 1.5em;
 }
 
 .App-intro {
+  text-align: center;
   font-size: large;
+}
+
+.App-context {
+  text-align: center;
 }
 
 @keyframes App-logo-spin {

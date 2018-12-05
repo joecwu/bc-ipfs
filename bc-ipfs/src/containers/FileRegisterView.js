@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Row, Col, Table } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 import FileRegister from '../components/FileRegister';
 import FileRegisterManually from '../components/FileRegisterManually';
 import './App.css'; //TODO: defien FileRegisterView own CSS
@@ -15,16 +15,18 @@ class FileRegisterView extends Component {
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
-        <p className="App-intro">
-          To get started, click on button <code>Browse</code> to upload files.
-        </p>
-        <p>
-          When you have completed uploading files and entering descriptions, click on{' '}
-          <code>Register on BlockChain</code> to claim your reward.
-        </p>
-        <FileRegister />
-        <hr width="80%" />
-        <FileRegisterManually />
+        <Panel bsStyle="primary">
+          <Panel.Heading>
+            <Panel.Title componentClass="h3">Registering Files</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body><FileRegister /></Panel.Body>
+        </Panel>
+        <Panel bsStyle="primary">
+          <Panel.Heading>
+            <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body><FileRegisterManually /></Panel.Body>
+        </Panel>
       </div>
     );
     /*jshint ignore:end*/

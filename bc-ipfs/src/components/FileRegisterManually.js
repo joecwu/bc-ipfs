@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Row, Col } from 'react-bootstrap';
+import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
 
 import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
@@ -12,7 +12,8 @@ class FileRegisterManually extends Component {
     super();
     // define our states to keep track
     this.state = {
-      ipfs_metatext: '',
+      file_description: '',
+      file_category: '',
       ipfs_gen_metatext: '',
       ipfs_realhash: '',
       ipfs_filesize: '0',
@@ -84,13 +85,14 @@ class FileRegisterManually extends Component {
   manualRegisterToBC(event) {
     this.setState({ ['btn_register_disabled']: true });
     event.preventDefault();
+    let fileDescription = this.state.file_description;
+    let fileCategory = this.state.file_category;
     // single file upload and registration only
     const contract_address = lib_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
     let submit_acct = '';
     let ipfs_realhash = this.state.ipfs_realhash;
     let real_fsize = this.state.ipfs_filesize;
-    let ipfs_metatext = this.state.ipfs_metatext;
     let bc_utilities = new bcutils();
     let potential_key = bc_utilities.genRandomKey();
     let min = 128; // you can redefine the range here
@@ -116,15 +118,12 @@ class FileRegisterManually extends Component {
         realKey = potential_key + c_rand;
         encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
         console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
-        let ipfsmeta_json =
-          '{' +
-          '"description": ' +
-          ipfs_metatext +
-          '"filesize": ' +
-          real_fsize +
-          '"encrypted": ' +
-          encryptedIPFSHash +
-          '}';
+        let ipfsmeta_json = {
+          description: fileDescription,
+          category: fileCategory,
+          filesize: real_fsize,
+          encrypted: encryptedIPFSHash,
+        };
         let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
         console.log('generated JSON for manual registration ' + ipfsmeta_norm);
         this.setState({ ['ipfs_gen_metatext']: ipfsmeta_norm });
@@ -172,7 +171,7 @@ class FileRegisterManually extends Component {
             type="text"
             name="ipfs_realhash"
             placeholder="Enter your IPFS Hash here!"
-            size="20"
+            size="40"
             value={this.state.ipfs_realhash}
             onChange={this.captureFileAndMetadata}
             />
@@ -191,19 +190,30 @@ class FileRegisterManually extends Component {
             />
         </label>
         </p>
-        <p align="left">
-        <label>
-            IPFS Metadata Description:
-            <input
-            type="text"
-            name="ipfs_metatext"
-            placeholder="Enter IPFS metadata description here"
-            size="40"
-            value={this.state.ipfs_metatext}
+        <FormGroup controlId="formFileCategory">
+          <ControlLabel>Select file category:</ControlLabel>
+          <FormControl 
+            componentClass="select" 
+            placeholder="file category"
+            name="file_category"
             onChange={this.captureFileAndMetadata}
-            />
-        </label>
-        </p>
+            style={{ width: "200px"}} >
+            <option value="data">Data</option>
+            <option value="code">Code</option>
+          </FormControl>
+        </FormGroup>
+        <FormGroup controlId="formFileDescription">
+          <ControlLabel>Enter file description:</ControlLabel>
+          <FormControl
+            componentClass="textarea"
+            type="text"
+            name="file_description"
+            value={this.state.file_description}
+            placeholder="Enter your description here!"
+            onChange={this.captureFileAndMetadata}
+          />
+          <FormControl.Feedback />
+        </FormGroup>
         <p align="left">
         <label>IPFS Metadata JSON:</label>
         {this.state.ipfs_gen_metatext}
