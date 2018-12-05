@@ -248,7 +248,8 @@ class FileRegister extends Component {
               componentClass="select" 
               placeholder="file category"
               name="file_category"
-              onChange={this.captureFileAndMetadata} >
+              onChange={this.captureFileAndMetadata}
+              style={{ width: "200px"}} >
               <option value="data">Data</option>
               <option value="code">Code</option>
             </FormControl>
