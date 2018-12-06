@@ -32,13 +32,16 @@ class FileRegister extends Component {
     this.registerToBC = this.registerToBC.bind(this);
   }
 
-  saveToIpfs(reader, idx) {
+  saveToIpfs(reader, idx) {    
     let ipfsId;
     let fsize;
     const tmp_iqueue = this.ipfshash_queue;
     const dqueue = this.idx_queue;
     const buffer = Buffer.from(reader.result);
 
+    // disable register button until real file uploaded.
+    this.setState({ ['btn_register_disabled']: true });
+    
     lib_ipfs
       .add(buffer, {
         progress: prog => console.log('IPFS uploaded bytes:' + prog),
@@ -51,10 +54,12 @@ class FileRegister extends Component {
         console.log('ipfs fsize=' + fsize);
         tmp_iqueue[idx] = response[0];
         dqueue.push(reader.name);
+        this.setState({ ['btn_register_disabled']: false });
       })
       .catch(err => {
         console.error(err);
         dqueue[idx] = nil;
+        this.setState({ ['btn_register_disabled']: false });
       });
   }
 
