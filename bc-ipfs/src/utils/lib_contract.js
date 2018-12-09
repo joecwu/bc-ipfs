@@ -3,9 +3,9 @@
 // run with local Provider
 import lib_web3 from './lib_web3';
 
-// contract address 0xFDfc371c17192C4363d5e69Ff9FE3F06c84046dA ABI on Rinkeby
-// contract address 0x731834811e738Ea41338b00F8A1801a9958cB4b5 ABI on Ropstan Testnet
-const address = '0x731834811e738Ea41338b00F8A1801a9958cB4b5';
+// contract address 0x2098f0E37E74377380aAbD0B46b1Be7693B847D3 ABI on Rinkeby
+// contract address 0x4C97efc3604FCaEE022E1Ef8FD567531F364E1aa ABI on Ropstan Testnet
+const address = '0x4C97efc3604FCaEE022E1Ef8FD567531F364E1aa';
 const abi = [
   {
     constant: false,
@@ -102,6 +102,20 @@ const abi = [
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [{ name: 'ipfsMetadataHash', type: 'string' }],
+    name: 'fetchParallelKeyForIPFS',
+    outputs: [
+      { name: '', type: 'string' },
+      { name: '', type: 'uint256' },
+      { name: '', type: 'string' },
+      { name: '', type: 'uint256' },
+    ],
+    payable: false,
+    stateMutability: 'view',
     type: 'function',
   },
   {
