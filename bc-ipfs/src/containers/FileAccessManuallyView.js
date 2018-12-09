@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import FileAccessManually from '../components/FileAccessManually';
-import qs from 'query-string';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
 class FileAccessManuallyView extends Component {
   constructor() {
     super();
-
-    let hashId = qs.parse(this.props.location.search).hashId;
-    console.log(hashId);
   }
   render() {
     /*jshint ignore:start*/
