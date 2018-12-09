@@ -4,6 +4,8 @@ import './index.css';
 import App from './containers/App';
 import FileListView from './containers/FileListView';
 import FileRegisterView from './containers/FileRegisterView';
+import FileRegisterManuallyView from './containers/FileRegisterManuallyView';
+import FileAccessManuallyView from './containers/FileAccessManuallyView';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -13,7 +15,9 @@ ReactDOM.render(
     <Switch>
         <Route exact path="/" component={App} />
         <Route path="/file-list" component={FileListView} />
+        <Route path="/file-access-manually" component={FileAccessManuallyView} />
         <Route path="/file-register" component={FileRegisterView} />
+        <Route path="/file-register-manually" component={FileRegisterManuallyView} />
     </Switch>
   </BrowserRouter>,
   document.getElementById('root')

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
-import FileRegister from '../components/FileRegister';
-import FileRegisterManually from '../components/FileRegisterManually';
+import { withRouter } from 'react-router-dom';
+import FileAccessManually from '../components/FileAccessManually';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
-class FileRegisterView extends Component {
+class FileAccessManuallyView extends Component {
   constructor() {
     super();
   }
@@ -13,13 +13,13 @@ class FileRegisterView extends Component {
     return (
     <div className="App">
         <header className="App-header">
-          <h1>IPFS Register</h1>
+          <h1>IPFS Access</h1>
         </header>
         <Panel bsStyle="primary">
           <Panel.Heading>
-            <Panel.Title componentClass="h3">Registering Files</Panel.Title>
+            <Panel.Title componentClass="h3">Access File Manually</Panel.Title>
           </Panel.Heading>
-          <Panel.Body><FileRegister /></Panel.Body>
+          <Panel.Body><FileAccessManually /></Panel.Body>
         </Panel>
       </div>
     );
@@ -27,4 +27,4 @@ class FileRegisterView extends Component {
   }
 }
 
-export default FileRegisterView;
+export default FileAccessManuallyView;
