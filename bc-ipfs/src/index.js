@@ -15,7 +15,9 @@ ReactDOM.render(
     <Switch>
         <Route exact path="/" component={App} />
         <Route path="/file-list" component={FileListView} />
+        <Route path="/file-access-manually" component={FileAccessManuallyView} />
         <Route path="/file-register" component={FileRegisterView} />
+        <Route path="/file-register-manually" component={FileRegisterManuallyView} />
     </Switch>
   </BrowserRouter>,
   document.getElementById('root')
