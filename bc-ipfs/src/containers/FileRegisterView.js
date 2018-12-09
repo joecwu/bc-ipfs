@@ -21,12 +21,6 @@ class FileRegisterView extends Component {
           </Panel.Heading>
           <Panel.Body><FileRegister /></Panel.Body>
         </Panel>
-        <Panel bsStyle="primary">
-          <Panel.Heading>
-            <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
-          </Panel.Heading>
-          <Panel.Body><FileRegisterManually /></Panel.Body>
-        </Panel>
       </div>
     );
     /*jshint ignore:end*/
