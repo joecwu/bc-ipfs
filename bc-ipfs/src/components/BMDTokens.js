@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {BigNumber} from 'bignumber.js';
 var PropTypes = require('prop-types');
 
-const getTokens = value => {
+export const getTokens = value => {
   var decimals = 18;
   /* jshint ignore:start */
   var eth_to_wei = new BigNumber(10 ** decimals);
@@ -19,4 +19,7 @@ BMDTokens.propTypes = {
   value: PropTypes.string.isRequired,
 };
 
-export default BMDTokens;
+module.exports = {
+  BMDTokens: BMDTokens,
+  getTokens: getTokens
+};
