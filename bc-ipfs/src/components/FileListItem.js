@@ -4,7 +4,9 @@ import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
 import crypto_js from '../utils/lib_crypto';
 import Bytes from './Bytes';
-import BMDTokens from './BMDTokens';
+import { BMDTokens, getTokens } from './BMDTokens';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 var PropTypes = require('prop-types');
 const bc_resp_hash_default = '*******';
@@ -25,7 +27,20 @@ class FileListItem extends Component {
       // open file directly
       window.open('https://ipfs.io/ipfs/' + this.state.bc_resp_hash, '_blank');
     } else {
-      this.bcAccessFile(event);
+      confirmAlert({
+        title: 'Confirm to access',
+        message: `Access this file will cost ${getTokens(this.props.tokenCost)} BMD tokens, click 'Yes' to access or 'No' to cancel.`,
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => this.bcAccessFile(event)
+          },
+          {
+            label: 'No',
+            onClick: () => {}
+          }
+        ]
+      });
     }
   }
 
