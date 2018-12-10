@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Image } from 'react-bootstrap';
 import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
 import crypto_js from '../utils/lib_crypto';
@@ -131,7 +131,7 @@ class FileListItem extends Component {
       <tr>
 
         { this.props.hideFields.includes('accessFile') ? null : 
-          <td>
+          <td style={{whiteSpace: "nowrap"}}>
             <Button
               bsStyle="primary"
               bsSize="xs"
@@ -140,13 +140,14 @@ class FileListItem extends Component {
             >
               {btn_access_text}
             </Button>
+            <Image src='loading.gif' height="30px" width="30px" style={{display: this.state.btn_access_state != 'accessing' ? "none" : "inline"}} />
           </td>
         }
         { this.props.hideFields.includes('description') ? null : <td>{description}</td>}
-        { this.props.hideFields.includes('category') ? null : <td>{category}</td> }
-        { this.props.hideFields.includes('fileSize') ? null : <td><Bytes bytes={fileSize} /></td> }
-        { this.props.hideFields.includes('tokenCost') ? null : <td><BMDTokens value={tokenCost} /></td> }
-        { this.props.hideFields.includes('noOfAccessed') ? null : <td>{noOfAccessed}</td>}
+        { this.props.hideFields.includes('category') ? null : <td style={{whiteSpace: "nowrap"}}>{category}</td> }
+        { this.props.hideFields.includes('fileSize') ? null : <td style={{whiteSpace: "nowrap"}}><Bytes bytes={fileSize} /></td> }
+        { this.props.hideFields.includes('tokenCost') ? null : <td style={{whiteSpace: "nowrap"}}><BMDTokens value={tokenCost} /></td> }
+        { this.props.hideFields.includes('noOfAccessed') ? null : <td style={{whiteSpace: "nowrap"}}>{noOfAccessed}</td>}
       </tr>
     );
     /*jshint ignore:end*/

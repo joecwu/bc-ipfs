@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock, Image } from 'react-bootstrap';
 
 import lib_ipfs from '../utils/lib_ipfs';
 import lib_web3 from '../utils/lib_web3';
@@ -276,6 +276,7 @@ class FileRegister extends Component {
           <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
             Register on BlockChain
           </Button>
+          <Image src='loading.gif' height="50px" width="50px" style={{display: !this.state.btn_register_disabled ? "none" : "inline"}} />
         </Form>
       </div>
     );

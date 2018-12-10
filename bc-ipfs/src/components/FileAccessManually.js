@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Row, Col } from 'react-bootstrap';
+import { Button, Form, Grid, Row, Col, Image } from 'react-bootstrap';
 
 import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
@@ -163,6 +163,7 @@ class FileAccessManually extends Component {
             <Button bsSize="xsmall" disabled={this.state.btn_access_disabled} bsStyle="primary" type="submit">
             Access File on BlockChain
             </Button>
+            <Image src='loading.gif' height="50px" width="50px" style={{display: !this.state.btn_access_disabled ? "none" : "inline"}} />
         </p>
         </Form>
         <p align="left">

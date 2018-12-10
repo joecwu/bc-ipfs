@@ -123,7 +123,7 @@ class FileList extends Component {
         <Table responsive striped bordered condensed hover>
           <thead>
             <tr>
-              {this.props.hideFields.includes('accessFile') ? null : <th style={{width: "90px"}} />}
+              {this.props.hideFields.includes('accessFile') ? null : <th style={{width: "85px"}} />}
               {this.props.hideFields.includes('description') ? null : <th>Description</th>}
               {this.props.hideFields.includes('category') ? null : <th style={{width: "100px"}}>Category</th>}
               {this.props.hideFields.includes('fileSize') ? null : <th style={{width: "150px"}}>File Size</th>}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock, Image } from 'react-bootstrap';
 
 import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
@@ -223,6 +223,7 @@ class FileRegisterManually extends Component {
             <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
             Manual Register on BlockChain
             </Button>
+            <Image src='loading.gif' height="50px" width="50px" style={{display: !this.state.btn_register_disabled ? "none" : "inline"}} />
         </p>
         </Form>
       </div>
