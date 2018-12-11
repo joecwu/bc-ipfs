@@ -4,7 +4,8 @@ import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
 import crypto_js from '../utils/lib_crypto';
 import Bytes from './Bytes';
-import { BMDTokens, getTokens } from './BMDTokens';
+import BMDTokens from './BMDTokens';
+import { getBMDTokensByTokenCost } from '../utils/lib_BMDtoken';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -22,6 +23,7 @@ class FileListItem extends Component {
     this.bcAccessFile = this.bcAccessFile.bind(this);
   }
 
+  /*jshint ignore:start*/
   handleAccessFile(event) {
     if (this.state.btn_access_state == 'accessed') {
       // open file directly
@@ -29,21 +31,25 @@ class FileListItem extends Component {
     } else {
       confirmAlert({
         title: 'Confirm to access',
-        message: `Access this file will cost ${getTokens(this.props.tokenCost)} BMD tokens, click 'Yes' to access or 'No' to cancel.`,
+        message: `Access this file will cost ${getBMDTokensByTokenCost(
+          this.props.tokenCost,
+        )} BMD tokens, click 'Yes' to access or 'No' to cancel.`,
         buttons: [
           {
             label: 'Yes',
-            onClick: () => this.bcAccessFile(event)
+            onClick: () => this.bcAccessFile(event),
           },
           {
             label: 'No',
-            onClick: () => {}
-          }
-        ]
+            onClick: () => {},
+          },
+        ],
       });
     }
   }
+  /*jshint ignore:end*/
 
+  /*jshint ignore:start*/
   bcAccessFile(event) {
     this.setState({ ['bc_resp_hash']: '*******' });
     this.setState({ ['btn_access_state']: 'accessing' });
@@ -76,7 +82,7 @@ class FileListItem extends Component {
                   console.log('decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta);
                   this.setState({ ['btn_access_state']: 'normal' });
                 }
-              }
+              },
             )
             .then(() => {
               let realKey = '';
@@ -97,7 +103,7 @@ class FileListItem extends Component {
                           ' encryptedHash=' +
                           result[2] +
                           ' cost=' +
-                          result[3]
+                          result[3],
                       );
                       try {
                         realKey = result[0] + '' + result[1];
@@ -108,10 +114,10 @@ class FileListItem extends Component {
                       }
                     } else {
                       console.log(
-                        'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash
+                        'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash,
                       );
                     }
-                  }
+                  },
                 )
                 .then(() => {
                   if (decryptIPFSHash != '') {
@@ -131,6 +137,7 @@ class FileListItem extends Component {
       this.setState({ ['btn_access_state']: 'normal' });
     }
   }
+  /*jshint ignore:end*/
 
   render() {
     const { hashId, description, category, fileSize, tokenCost, noOfAccessed } = this.props;
@@ -144,9 +151,8 @@ class FileListItem extends Component {
     /*jshint ignore:start*/
     return (
       <tr>
-
-        { this.props.hideFields.includes('accessFile') ? null : 
-          <td style={{whiteSpace: "nowrap"}}>
+        {this.props.hideFields.includes('accessFile') ? null : (
+          <td style={{ whiteSpace: 'nowrap' }}>
             <Button
               bsStyle="primary"
               bsSize="xs"
@@ -155,14 +161,29 @@ class FileListItem extends Component {
             >
               {btn_access_text}
             </Button>
-            <Image src='loading.gif' height="30px" width="30px" style={{display: this.state.btn_access_state != 'accessing' ? "none" : "inline"}} />
+            <Image
+              src="loading.gif"
+              height="30px"
+              width="30px"
+              style={{ display: this.state.btn_access_state != 'accessing' ? 'none' : 'inline' }}
+            />
           </td>
-        }
-        { this.props.hideFields.includes('description') ? null : <td>{description}</td>}
-        { this.props.hideFields.includes('category') ? null : <td style={{whiteSpace: "nowrap"}}>{category}</td> }
-        { this.props.hideFields.includes('fileSize') ? null : <td style={{whiteSpace: "nowrap"}}><Bytes bytes={fileSize} /></td> }
-        { this.props.hideFields.includes('tokenCost') ? null : <td style={{whiteSpace: "nowrap"}}><BMDTokens value={tokenCost} /></td> }
-        { this.props.hideFields.includes('noOfAccessed') ? null : <td style={{whiteSpace: "nowrap"}}>{noOfAccessed}</td>}
+        )}
+        {this.props.hideFields.includes('description') ? null : <td>{description}</td>}
+        {this.props.hideFields.includes('category') ? null : <td style={{ whiteSpace: 'nowrap' }}>{category}</td>}
+        {this.props.hideFields.includes('fileSize') ? null : (
+          <td style={{ whiteSpace: 'nowrap' }}>
+            <Bytes bytes={fileSize} />
+          </td>
+        )}
+        {this.props.hideFields.includes('tokenCost') ? null : (
+          <td style={{ whiteSpace: 'nowrap' }}>
+            <BMDTokens value={tokenCost} />
+          </td>
+        )}
+        {this.props.hideFields.includes('noOfAccessed') ? null : (
+          <td style={{ whiteSpace: 'nowrap' }}>{noOfAccessed}</td>
+        )}
       </tr>
     );
     /*jshint ignore:end*/
