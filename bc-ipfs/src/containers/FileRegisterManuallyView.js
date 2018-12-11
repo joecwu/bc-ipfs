@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
+import qs from 'query-string';
 import FileRegisterManually from '../components/FileRegisterManually';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
@@ -8,7 +9,13 @@ class FileRegisterManuallyView extends Component {
   constructor() {
     super();
   }
+  componentDidMount() {
+    // How do we get the values for filter and origin?
+
+    console.log(this.props);
+  }
   render() {
+    const params = qs.parse(this.props.location.search);
     /*jshint ignore:start*/
     return (
       <div className="App">
@@ -20,7 +27,7 @@ class FileRegisterManuallyView extends Component {
             <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
           </Panel.Heading>
           <Panel.Body>
-            <FileRegisterManually />
+            <FileRegisterManually fileSize={params.fileSize} hashId={params.hashId} category={params.category} description={params.description} />
           </Panel.Body>
         </Panel>
       </div>
@@ -29,4 +36,4 @@ class FileRegisterManuallyView extends Component {
   }
 }
 
-export default FileRegisterManuallyView;
+export default withRouter(FileRegisterManuallyView);

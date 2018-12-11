@@ -6,6 +6,7 @@ import lib_contract from '../utils/lib_contract';
 import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
+var PropTypes = require('prop-types');
 
 class FileRegisterManually extends Component {
   constructor() {
@@ -13,10 +14,10 @@ class FileRegisterManually extends Component {
     // define our states to keep track
     this.state = {
       file_description: '',
-      file_category: '',
+      file_category: 'data',
       ipfs_gen_metatext: '',
       ipfs_realhash: '',
-      ipfs_filesize: '0',
+      ipfs_filesize: '',
       btn_register_disabled: false,
     };
 
@@ -27,6 +28,21 @@ class FileRegisterManually extends Component {
 
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
     this.manualRegisterToBC = this.manualRegisterToBC.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.hashId) {
+      this.setState({ ['ipfs_realhash']: this.props.hashId });
+    }
+    if(this.props.fileSize) {
+      this.setState({ ['ipfs_filesize']: this.props.fileSize });
+    }
+    if(this.props.category) {
+      this.setState({ ['file_category']: this.props.category });
+    }
+    if(this.props.description) {
+      this.setState({ ['file_description']: this.props.description });
+    }
   }
 
   captureFileAndMetadata(event) {
@@ -41,7 +57,7 @@ class FileRegisterManually extends Component {
     const type = target.type;
     const name = target.name;
 
-    if (type === 'text') {
+    if (type === 'text' || type === 'textarea' || type === 'select-one') {
       console.log('Capturing input from ' + name + ' with value = ' + target.value);
       this.setState({
         [name]: target.value,
@@ -165,39 +181,40 @@ class FileRegisterManually extends Component {
     return (
       <div>
         <p align="left">
-        <label>
-            Already have an IPFS hash, enter it here:
+          <label>
+            IPFS hash:
             <input
-            type="text"
-            name="ipfs_realhash"
-            placeholder="Enter your IPFS Hash here!"
-            size="40"
-            value={this.state.ipfs_realhash}
-            onChange={this.captureFileAndMetadata}
+              type="text"
+              name="ipfs_realhash"
+              placeholder="Enter your IPFS Hash here!"
+              size="50"
+              value={this.state.ipfs_realhash}
+              onChange={this.captureFileAndMetadata}
             />
-        </label>
+          </label>
         </p>
         <p align="left">
-        <label>
+          <label>
             File Size:
             <input
-            type="text"
-            name="ipfs_filesize"
-            placeholder="File size?"
-            size="20"
-            value={this.state.ipfs_filesize}
-            onChange={this.captureFileAndMetadata}
+              type="text"
+              name="ipfs_filesize"
+              placeholder="File size?"
+              size="20"
+              value={this.state.ipfs_filesize}
+              onChange={this.captureFileAndMetadata}
             />
-        </label>
+          </label>
         </p>
         <FormGroup controlId="formFileCategory">
           <ControlLabel>Select file category:</ControlLabel>
-          <FormControl 
-            componentClass="select" 
+          <FormControl
+            componentClass="select"
             placeholder="file category"
             name="file_category"
             onChange={this.captureFileAndMetadata}
-            style={{ width: "200px"}} >
+            style={{ width: '200px' }}
+          >
             <option value="data">Data</option>
             <option value="code">Code</option>
           </FormControl>
@@ -215,21 +232,33 @@ class FileRegisterManually extends Component {
           <FormControl.Feedback />
         </FormGroup>
         <p align="left">
-        <label>IPFS Metadata JSON:</label>
-        {this.state.ipfs_gen_metatext}
+          <label>IPFS Metadata JSON:</label>
+          {this.state.ipfs_gen_metatext}
         </p>
         <Form onSubmit={this.manualRegisterToBC}>
-        <p align="left">
+          <p align="left">
             <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
-            Manual Register on BlockChain
+              Manual Register on BlockChain
             </Button>
-            <Image src='loading.gif' height="50px" width="50px" style={{display: !this.state.btn_register_disabled ? "none" : "inline"}} />
-        </p>
+            <Image
+              src="loading.gif"
+              height="50px"
+              width="50px"
+              style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+            />
+          </p>
         </Form>
       </div>
     );
   }
   /* jshint ignore:end */
 }
+
+FileRegisterManually.propTypes = {
+  hashId: PropTypes.string,
+  description: PropTypes.string,
+  category: PropTypes.string,
+  fileSize: PropTypes.number,
+};
 
 export default FileRegisterManually;
