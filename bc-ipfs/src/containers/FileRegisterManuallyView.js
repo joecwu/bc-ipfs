@@ -14,6 +14,7 @@ class FileRegisterManuallyView extends Component {
 
     console.log(this.props);
   }
+
   render() {
     const params = qs.parse(this.props.location.search);
     /*jshint ignore:start*/

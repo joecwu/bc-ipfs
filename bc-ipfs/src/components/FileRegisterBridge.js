@@ -22,6 +22,9 @@ class FileRegisterBridge extends Component {
       file_size: 0,
       register_result_show: false,
       btn_register_disabled: false,
+      ipfs_realhash_disabled: false,
+      ipfs_filesize_disabled: false,
+      file_category_disabled: false,
     };
 
     // The order/index in these queue matters
@@ -34,16 +37,18 @@ class FileRegisterBridge extends Component {
   }
 
   componentDidMount() {
-    if(this.props.hashId) {
-      this.setState({ ['ipfs_realhash']: this.props.hashId });
+    if (this.props.hashId) {
+      this.setState({ ['ipfs_realhash']: this.props.hashId, ['ipfs_realhash_disabled']: true });
     }
-    if(this.props.fileSize) {
-      this.setState({ ['ipfs_filesize']: this.props.fileSize });
+    if (this.props.fileSize) {
+      this.setState({ ['ipfs_filesize']: this.props.fileSize, ['ipfs_filesize_disabled']: true });
+      // show file reward in the begining
+      // this.setState({ ['file_size']: this.props.fileSize, ['register_result_show']: true });
     }
-    if(this.props.category) {
-      this.setState({ ['file_category']: this.props.category });
+    if (this.props.category) {
+      this.setState({ ['file_category']: this.props.category, ['file_category_disabled']: true });
     }
-    if(this.props.description) {
+    if (this.props.description) {
       this.setState({ ['file_description']: this.props.description });
     }
   }
@@ -185,39 +190,34 @@ class FileRegisterBridge extends Component {
   /* jshint ignore:start */
   render() {
     return (
-      <div>
-        <p align="left">
-          <label>
-            IPFS hash:
-            <input
-              type="text"
-              disabled={this.state.ipfs_realhash!=''}
-              name="ipfs_realhash"
-              placeholder="Enter your IPFS Hash here!"
-              size="50"
-              value={this.state.ipfs_realhash}
-              onChange={this.captureFileAndMetadata}
-            />
-          </label>
-        </p>
-        <p align="left">
-          <label>
-            File Size:
-            <input
-              type="text"
-              disabled={this.state.ipfs_filesize!=''}
-              name="ipfs_filesize"
-              placeholder="File size?"
-              size="20"
-              value={this.state.ipfs_filesize}
-              onChange={this.captureFileAndMetadata}
-            />
-          </label>
-        </p>
+      <Form onSubmit={this.manualRegisterToBC}>
+        <FormGroup controlId="formIPFSHash" validationState={null}>
+          <ControlLabel>IPFS hash</ControlLabel>
+          <FormControl
+            type="text"
+            disabled={this.state.ipfs_realhash_disabled}
+            name="ipfs_realhash"
+            placeholder="Enter your IPFS Hash here!"
+            value={this.state.ipfs_realhash}
+            onChange={this.captureFileAndMetadata}
+          />
+        </FormGroup>
+        <FormGroup controlId="formFileSize" validationState={null}>
+          <ControlLabel>File Size</ControlLabel>
+          <FormControl
+            type="text"
+            disabled={this.state.ipfs_filesize_disabled}
+            name="ipfs_filesize"
+            placeholder="Enter your file size here!"
+            value={this.state.ipfs_filesize}
+            onChange={this.captureFileAndMetadata}
+          />
+        </FormGroup>
         <FormGroup controlId="formFileCategory">
-          <ControlLabel>Select file category:</ControlLabel>
+          <ControlLabel>Select file category: </ControlLabel>
           <FormControl
             componentClass="select"
+            disabled={this.state.file_category_disabled}
             placeholder="file category"
             name="file_category"
             onChange={this.captureFileAndMetadata}
@@ -229,7 +229,7 @@ class FileRegisterBridge extends Component {
           </FormControl>
         </FormGroup>
         <FormGroup controlId="formFileDescription">
-          <ControlLabel>Enter file description:</ControlLabel>
+          <ControlLabel>Enter file description: </ControlLabel>
           <FormControl
             componentClass="textarea"
             type="text"
@@ -240,24 +240,20 @@ class FileRegisterBridge extends Component {
           />
           <FormControl.Feedback />
         </FormGroup>
-        <Form onSubmit={this.manualRegisterToBC}>
-          <p align="left">
-            <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
-              Continued to register to BlockChain
-            </Button>
-            <Image
-              src="loading.gif"
-              height="50px"
-              width="50px"
-              style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
-            />
-          </p>
-        </Form>
-        <p />
-        <Alert bsStyle='success' style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
-          Thanks for your participation. You will get <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
+        <Button bsSize="medium" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
+          Continued to register to BlockChain
+        </Button>
+        <Image
+          src="loading.gif"
+          height="50px"
+          width="50px"
+          style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+        />
+        <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
+          Thanks for your participation. You will get{' '}
+          <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
         </Alert>
-      </div>
+      </Form>
     );
   }
   /* jshint ignore:end */
