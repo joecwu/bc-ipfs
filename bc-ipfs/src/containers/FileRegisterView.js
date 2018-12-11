@@ -19,8 +19,8 @@ class FileRegisterView extends Component {
           <h2>Have large files to upload?</h2>
           <p>Download our desktop tool to help you upload large files.</p>
           <p>
-            <Button bsStyle="primary">MacOS</Button> <Button bsStyle="primary">Window</Button>{' '}
-            <Button bsStyle="primary">Linux</Button>
+            <Button bsStyle="primary" disabled={true}>MacOS</Button> <Button bsStyle="primary" disabled={true}>Window</Button>{' '}
+            <Button bsStyle="primary" disabled={true}>Linux</Button>
           </p>
         </Jumbotron>
         <Panel bsStyle="primary">
