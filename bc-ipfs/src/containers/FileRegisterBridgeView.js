@@ -24,7 +24,7 @@ class FileRegisterBridgeView extends Component {
         </header>
         <Panel bsStyle="primary">
           <Panel.Heading>
-            <Panel.Title componentClass="h3">Continued Registering File</Panel.Title>
+            <Panel.Title componentClass="h3">Registering File</Panel.Title>
           </Panel.Heading>
           <Panel.Body>
             <FileRegisterBridge fileSize={params.fileSize} hashId={params.hashId} category={params.category} description={params.description} />
