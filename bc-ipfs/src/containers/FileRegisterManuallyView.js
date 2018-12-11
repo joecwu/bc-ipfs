@@ -11,7 +11,7 @@ class FileRegisterManuallyView extends Component {
   render() {
     /*jshint ignore:start*/
     return (
-    <div className="App">
+      <div className="App">
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
@@ -19,7 +19,9 @@ class FileRegisterManuallyView extends Component {
           <Panel.Heading>
             <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
           </Panel.Heading>
-          <Panel.Body><FileRegisterManually /></Panel.Body>
+          <Panel.Body>
+            <FileRegisterManually />
+          </Panel.Body>
         </Panel>
       </div>
     );

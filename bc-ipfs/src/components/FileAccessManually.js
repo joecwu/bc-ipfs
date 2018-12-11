@@ -130,47 +130,52 @@ class FileAccessManually extends Component {
     return (
       <div className="App">
         <p align="left">
-        <b>Accessing Files</b>
+          <b>Accessing Files</b>
         </p>
         <p align="left">
-        <label>
+          <label>
             Enter ipfs Metadata Hash:
             <input
-            type="text"
-            name="access_ipfs_metadata"
-            placeholder="Enter your IPFS Metadata Hash here!"
-            size="40"
-            value={this.state.access_ipfs_metadata}
-            onChange={this.captureAccessInfo}
+              type="text"
+              name="access_ipfs_metadata"
+              placeholder="Enter your IPFS Metadata Hash here!"
+              size="40"
+              value={this.state.access_ipfs_metadata}
+              onChange={this.captureAccessInfo}
             />
-        </label>
+          </label>
         </p>
         <p align="left">
-        <label>
+          <label>
             Enter encrypted IPFS Hash:
             <input
-            type="text"
-            name="access_encrypted_hash"
-            placeholder="Enter the encrypted text here!"
-            size="40"
-            value={this.state.access_encrypted_hash}
-            onChange={this.captureAccessInfo}
+              type="text"
+              name="access_encrypted_hash"
+              placeholder="Enter the encrypted text here!"
+              size="40"
+              value={this.state.access_encrypted_hash}
+              onChange={this.captureAccessInfo}
             />
-        </label>
+          </label>
         </p>
         <Form onSubmit={this.accessBC}>
-        <p align="left">
+          <p align="left">
             <Button bsSize="xsmall" disabled={this.state.btn_access_disabled} bsStyle="primary" type="submit">
-            Access File on BlockChain
+              Access File on BlockChain
             </Button>
-            <Image src='loading.gif' height="50px" width="50px" style={{display: !this.state.btn_access_disabled ? "none" : "inline"}} />
-        </p>
+            <Image
+              src="loading.gif"
+              height="50px"
+              width="50px"
+              style={{ display: !this.state.btn_access_disabled ? 'none' : 'inline' }}
+            />
+          </p>
         </Form>
         <p align="left">
-        <label>IPFS hash: </label>
-        <a href={'https://ipfs.io/ipfs/' + this.state.bc_resp_hash} target="_blank">
+          <label>IPFS hash: </label>
+          <a href={'https://ipfs.io/ipfs/' + this.state.bc_resp_hash} target="_blank">
             {'https://ipfs.io/ipfs/' + this.state.bc_resp_hash}
-        </a>
+          </a>
         </p>
       </div>
     );

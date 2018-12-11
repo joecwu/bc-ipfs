@@ -11,7 +11,7 @@ class FileAccessManuallyView extends Component {
   render() {
     /*jshint ignore:start*/
     return (
-    <div className="App">
+      <div className="App">
         <header className="App-header">
           <h1>IPFS Access</h1>
         </header>
@@ -19,7 +19,9 @@ class FileAccessManuallyView extends Component {
           <Panel.Heading>
             <Panel.Title componentClass="h3">Access File Manually</Panel.Title>
           </Panel.Heading>
-          <Panel.Body><FileAccessManually /></Panel.Body>
+          <Panel.Body>
+            <FileAccessManually />
+          </Panel.Body>
         </Panel>
       </div>
     );

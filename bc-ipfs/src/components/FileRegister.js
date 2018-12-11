@@ -32,7 +32,7 @@ class FileRegister extends Component {
     this.registerToBC = this.registerToBC.bind(this);
   }
 
-  saveToIpfs(reader, idx) {    
+  saveToIpfs(reader, idx) {
     let ipfsId;
     let fsize;
     const tmp_iqueue = this.ipfshash_queue;
@@ -41,7 +41,7 @@ class FileRegister extends Component {
 
     // disable register button until real file uploaded.
     this.setState({ ['btn_register_disabled']: true });
-    
+
     lib_ipfs
       .add(buffer, {
         progress: prog => console.log('IPFS uploaded bytes:' + prog),
@@ -121,7 +121,7 @@ class FileRegister extends Component {
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
-    console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription );
+    console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription);
     const tmp_fqueue = this.file_queue;
     const tmp_iqueue = this.ipfshash_queue;
     const bc_queue = this.bc_register;
@@ -246,12 +246,13 @@ class FileRegister extends Component {
         <Form onSubmit={this.registerToBC} align="left">
           <FormGroup controlId="formFileCategory">
             <ControlLabel>Select file category:</ControlLabel>
-            <FormControl 
-              componentClass="select" 
+            <FormControl
+              componentClass="select"
               placeholder="file category"
               name="file_category"
               onChange={this.captureFileAndMetadata}
-              style={{ width: "200px"}} >
+              style={{ width: '200px' }}
+            >
               <option value="data">Data</option>
               <option value="code">Code</option>
             </FormControl>
@@ -276,7 +277,12 @@ class FileRegister extends Component {
           <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
             Register on BlockChain
           </Button>
-          <Image src='loading.gif' height="50px" width="50px" style={{display: !this.state.btn_register_disabled ? "none" : "inline"}} />
+          <Image
+            src="loading.gif"
+            height="50px"
+            width="50px"
+            style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+          />
         </Form>
       </div>
     );
