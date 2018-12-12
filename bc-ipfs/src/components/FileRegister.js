@@ -33,6 +33,30 @@ class FileRegister extends Component {
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.registerToBC = this.registerToBC.bind(this);
+
+    this.setupWebViewJavascriptBridge = this.setupWebViewJavascriptBridge.bind(this);
+
+    this.setupWebViewJavascriptBridge( (bridge) => {
+      // Register
+      bridge.registerHandler('FileRegisterCompleted', (data, responseCallback) => {
+        console.log('FileRegisterCompleted ipfsMetadataHash from iOS ' + data['ipfsMetadataHash'])
+        this.fileRegisterCompleted();
+        let responseData = { 'callback from JS' : 'FileRegisterCompleted'};
+        responseCallback(responseData);
+      });
+    });
+  }
+
+  setupWebViewJavascriptBridge(callback) {
+    if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+    if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+    window.WVJBCallbacks = [callback];
+    let WVJBIframe = document.createElement('iframe');
+    WVJBIframe.style.display = 'none';
+    WVJBIframe.src = 'https://__bridge_loaded__';
+    // WVJBIframe.src = ‘wvjbscheme://__BRIDGE_LOADED__’;
+    document.documentElement.appendChild(WVJBIframe);
+    setTimeout(() => { document.documentElement.removeChild(WVJBIframe);}, 0);
   }
 
   saveToIpfs(reader, idx) {
@@ -218,6 +242,14 @@ class FileRegister extends Component {
                             ' encryptedIdx=' +
                             bc_queue[ipfssha256].encryptedIdx,
                         );
+
+                        this.setupWebViewJavascriptBridge( (bridge) => {
+                          // Call
+                          bridge.callHandler('FileRegisterButtonDidTap', {[transactionHash]: 'registerFile'}, (response) => {
+                            console.log('callback from iOS ' + response);
+                          });
+                        });
+
                         this.setState({ ['register_result_show']: true });
                         this.setState({ ['file_size']: real_fsize });
                       } else {
@@ -241,6 +273,12 @@ class FileRegister extends Component {
       }
     } // end of for loop
   } // end of registerToBC
+  /* jshint ignore:end */
+
+  /* jshint ignore:start */
+  fileRegisterCompleted() {
+    this.setState({ ['btn_register_disabled']: false });
+  }
   /* jshint ignore:end */
 
   /* jshint ignore:start */

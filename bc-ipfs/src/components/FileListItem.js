@@ -26,7 +26,7 @@ class FileListItem extends Component {
     this.setupWebViewJavascriptBridge( (bridge) => {
       // Register
       bridge.registerHandler('FileListItemFetchKeyForIPFS', (data, responseCallback) => {
-        console.log('ipfsMetadataHash from iOS ' + data['ipfsMetadataHash'])
+        console.log('FileListItemFetchKeyForIPFS ipfsMetadataHash from iOS ' + data['ipfsMetadataHash'])
         this.fileListItemFetchKeyForIPFS();
         let responseData = { 'callback from JS' : 'FileListItemFetchKeyForIPFS'};
         responseCallback(responseData);
