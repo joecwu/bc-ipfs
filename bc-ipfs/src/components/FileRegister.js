@@ -26,6 +26,7 @@ class FileRegister extends Component {
       info_msg_show: false,
       file_obj: {},
       file_ipfs_hash: '',
+      is_loading: false,
       bc_register_resp: undefined, // per entry is {"ipfsMetaData":"", "encryptedIdx":""}
     };
 
@@ -59,7 +60,7 @@ class FileRegister extends Component {
     const buffer = Buffer.from(reader.result);
 
     // disable register button until real file uploaded.
-    this.setState({ ['btn_register_disabled']: true });
+    this.setState({ ['btn_register_disabled']: true, ['is_loading']: true });
     this.displayInfoMsg('adding file to IPFS...');
 
     lib_ipfs
@@ -72,12 +73,12 @@ class FileRegister extends Component {
         fsize = response[0].size;
         console.log('ipfs hash=' + ipfsId);
         console.log('ipfs fsize=' + fsize);
-        this.setState({ ['btn_register_disabled']: false, ['file_ipfs_hash']: response[0] });
+        this.setState({ ['btn_register_disabled']: false, ['is_loading']: false, ['file_ipfs_hash']: response[0] });
         this.hideInfoMsg();
       })
       .catch(err => {
         console.error(err);
-        this.setState({ ['btn_register_disabled']: false });
+        this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
         this.hideInfoMsg();
       });
   }
@@ -129,7 +130,7 @@ class FileRegister extends Component {
 
   /* jshint ignore:start */
   registerToBC(event) {
-    this.setState({ ['btn_register_disabled']: true });
+    this.setState({ ['btn_register_disabled']: true , ['is_loading']: true});
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
@@ -142,7 +143,7 @@ class FileRegister extends Component {
 
     if (typeof file_obj.name === undefined) {
       // no file selected
-      this.setState({ ['btn_register_disabled']: false });
+      this.setState({ ['btn_register_disabled']: true, ['is_loading']: false });
       // display error msg
       this.displayErrorMsg('No file selected');
     } else {
@@ -242,9 +243,11 @@ class FileRegister extends Component {
                         );
                         this.setState({ ['register_result_show']: true });
                         this.setState({ ['file_size']: real_fsize });
+                        this.setState({ ['btn_register_disabled']: true, ['is_loading']: false });
                         this.hideInfoMsg();
                       } else {
                         this.displayErrorMsg('Registration canceled.');
+                        this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
                         this.hideInfoMsg();
                         console.log(
                           'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
@@ -254,6 +257,7 @@ class FileRegister extends Component {
                   )
                   .catch(err => {
                     this.displayErrorMsg(err.message);
+                    this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
                     console.error(err);
                   }); // end of lib_contract.methods.encryptIPFS
               }); // end of ipfs.add()
@@ -261,14 +265,15 @@ class FileRegister extends Component {
           .catch(err => {
             // getAccounts error
             this.displayErrorMsg(err.message);
+            this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
             console.error(err);
           })
           .then(() => {
-            this.setState({ ['btn_register_disabled']: false });
+            
           }); // end of getAccounts and current file submission and registration
       } else {
         console.log('Skipping file ' + file_obj.name + ' with same metadata info ' + ipfsmid);
-        this.setState({ ['btn_register_disabled']: false });
+        this.setState({ ['btn_register_disabled']: true, ['is_loading']: false });
       }
     } // end of for loop
   } // end of registerToBC
@@ -327,7 +332,7 @@ class FileRegister extends Component {
             src="loading.gif"
             height="50px"
             width="50px"
-            style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+            style={{ display: !this.state.is_loading ? 'none' : 'inline' }}
           />
           <p />
           <Alert bsStyle="info" style={{ display: this.state.info_msg_show ? 'block' : 'none' }}>
