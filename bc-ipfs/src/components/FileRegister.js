@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormControl, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Button, Form, FormControl, FormGroup, ControlLabel, Alert, Image } from 'react-bootstrap';
 
 import lib_ipfs from '../utils/lib_ipfs';
 import lib_web3 from '../utils/lib_web3';
@@ -7,6 +7,7 @@ import lib_contract from '../utils/lib_contract';
 import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
+import { getBMDTokensByFilesize } from '../utils/lib_BMDtoken';
 
 class FileRegister extends Component {
   constructor() {
@@ -16,6 +17,8 @@ class FileRegister extends Component {
       file_description: '',
       file_category: 'data',
       ipfs_realhash: '',
+      file_size: 0,
+      register_result_show: false,
       btn_register_disabled: false,
     };
 
@@ -32,7 +35,7 @@ class FileRegister extends Component {
     this.registerToBC = this.registerToBC.bind(this);
   }
 
-  saveToIpfs(reader, idx) {    
+  saveToIpfs(reader, idx) {
     let ipfsId;
     let fsize;
     const tmp_iqueue = this.ipfshash_queue;
@@ -41,7 +44,7 @@ class FileRegister extends Component {
 
     // disable register button until real file uploaded.
     this.setState({ ['btn_register_disabled']: true });
-    
+
     lib_ipfs
       .add(buffer, {
         progress: prog => console.log('IPFS uploaded bytes:' + prog),
@@ -83,6 +86,7 @@ class FileRegister extends Component {
       return;
     } else if (type === 'file') {
       console.log('Detectuser is trying to select files to upload!');
+      this.setState({ ['register_result_show']: false });
     } else {
       console.log('Detect unknown type=' + type + ' with name=' + name);
       return;
@@ -121,7 +125,7 @@ class FileRegister extends Component {
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
-    console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription );
+    console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription);
     const tmp_fqueue = this.file_queue;
     const tmp_iqueue = this.ipfshash_queue;
     const bc_queue = this.bc_register;
@@ -214,6 +218,8 @@ class FileRegister extends Component {
                             ' encryptedIdx=' +
                             bc_queue[ipfssha256].encryptedIdx,
                         );
+                        this.setState({ ['register_result_show']: true });
+                        this.setState({ ['file_size']: real_fsize });
                       } else {
                         console.log(
                           'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
@@ -246,12 +252,13 @@ class FileRegister extends Component {
         <Form onSubmit={this.registerToBC} align="left">
           <FormGroup controlId="formFileCategory">
             <ControlLabel>Select file category:</ControlLabel>
-            <FormControl 
-              componentClass="select" 
+            <FormControl
+              componentClass="select"
               placeholder="file category"
               name="file_category"
               onChange={this.captureFileAndMetadata}
-              style={{ width: "200px"}} >
+              style={{ width: '200px' }}
+            >
               <option value="data">Data</option>
               <option value="code">Code</option>
             </FormControl>
@@ -276,6 +283,16 @@ class FileRegister extends Component {
           <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
             Register on BlockChain
           </Button>
+          <Image
+            src="loading.gif"
+            height="50px"
+            width="50px"
+            style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+          />
+          <p />
+          <Alert bsStyle='success' style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
+            Thanks for your participation. You will get <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
+          </Alert>
         </Form>
       </div>
     );

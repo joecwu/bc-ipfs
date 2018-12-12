@@ -9,7 +9,7 @@ import crypto_js from '../utils/lib_crypto';
 var PropTypes = require('prop-types');
 import { getBMDTokensByFilesize } from '../utils/lib_BMDtoken';
 
-class FileRegisterManually extends Component {
+class FileRegisterBridge extends Component {
   constructor() {
     super();
     // define our states to keep track
@@ -42,6 +42,8 @@ class FileRegisterManually extends Component {
     }
     if (this.props.fileSize) {
       this.setState({ ['ipfs_filesize']: this.props.fileSize, ['ipfs_filesize_disabled']: true });
+      // show file reward in the begining
+      // this.setState({ ['file_size']: this.props.fileSize, ['register_result_show']: true });
     }
     if (this.props.category) {
       this.setState({ ['file_category']: this.props.category, ['file_category_disabled']: true });
@@ -71,6 +73,7 @@ class FileRegisterManually extends Component {
       return;
     } else if (type === 'file') {
       console.log('Detectuser is trying to select files to upload!');
+      this.setState({ ['register_result_show']: false });
     } else {
       console.log('Detect unknown type=' + type + ' with name=' + name);
       return;
@@ -187,85 +190,80 @@ class FileRegisterManually extends Component {
   /* jshint ignore:start */
   render() {
     return (
-      <div>
-        <Form onSubmit={this.manualRegisterToBC}>
-          <FormGroup controlId="formIPFSHash" validationState={null}>
-            <ControlLabel>IPFS hash</ControlLabel>
-            <FormControl
-              type="text"
-              disabled={this.state.ipfs_realhash_disabled}
-              name="ipfs_realhash"
-              placeholder="Enter your IPFS Hash here!"
-              value={this.state.ipfs_realhash}
-              onChange={this.captureFileAndMetadata}
-            />
-          </FormGroup>
-          <FormGroup controlId="formFileSize" validationState={null}>
-            <ControlLabel>File Size</ControlLabel>
-            <FormControl
-              type="text"
-              disabled={this.state.ipfs_filesize_disabled}
-              name="ipfs_filesize"
-              placeholder="Enter your file size here!"
-              value={this.state.ipfs_filesize}
-              onChange={this.captureFileAndMetadata}
-            />
-          </FormGroup>
-          <FormGroup controlId="formFileCategory">
-            <ControlLabel>Select file category:</ControlLabel>
-            <FormControl
-              componentClass="select"
-              disabled={this.state.file_category_disabled}
-              placeholder="file category"
-              name="file_category"
-              onChange={this.captureFileAndMetadata}
-              style={{ width: '200px' }}
-            >
-              <option value="data">Data</option>
-              <option value="code">Code</option>
-            </FormControl>
-          </FormGroup>
-          <FormGroup controlId="formFileDescription">
-            <ControlLabel>Enter file description:</ControlLabel>
-            <FormControl
-              componentClass="textarea"
-              type="text"
-              name="file_description"
-              value={this.state.file_description}
-              placeholder="Enter your description here!"
-              onChange={this.captureFileAndMetadata}
-            />
-            <FormControl.Feedback />
-          </FormGroup>
-          <p align="left">
-            <label>IPFS Metadata JSON:</label>
-            {this.state.ipfs_gen_metatext}
-          </p>
-          <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
-            Manual Register on BlockChain
-          </Button>
-          <Image
-            src="loading.gif"
-            height="50px"
-            width="50px"
-            style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+      <Form onSubmit={this.manualRegisterToBC}>
+        <FormGroup controlId="formIPFSHash" validationState={null}>
+          <ControlLabel>IPFS hash</ControlLabel>
+          <FormControl
+            type="text"
+            disabled={this.state.ipfs_realhash_disabled}
+            name="ipfs_realhash"
+            placeholder="Enter your IPFS Hash here!"
+            value={this.state.ipfs_realhash}
+            onChange={this.captureFileAndMetadata}
           />
-          <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
-            Thanks for your participation. You will get{' '}
-            <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
-          </Alert>
-        </Form>
-      </div>
+        </FormGroup>
+        <FormGroup controlId="formFileSize" validationState={null}>
+          <ControlLabel>File Size</ControlLabel>
+          <FormControl
+            type="text"
+            disabled={this.state.ipfs_filesize_disabled}
+            name="ipfs_filesize"
+            placeholder="Enter your file size here!"
+            value={this.state.ipfs_filesize}
+            onChange={this.captureFileAndMetadata}
+          />
+        </FormGroup>
+        <FormGroup controlId="formFileCategory">
+          <ControlLabel>Select file category: </ControlLabel>
+          <FormControl
+            componentClass="select"
+            disabled={this.state.file_category_disabled}
+            placeholder="file category"
+            name="file_category"
+            onChange={this.captureFileAndMetadata}
+            style={{ width: '200px' }}
+            value={this.state.file_category}
+          >
+            <option value="data">Data</option>
+            <option value="code">Code</option>
+          </FormControl>
+        </FormGroup>
+        <FormGroup controlId="formFileDescription">
+          <ControlLabel>Enter file description: </ControlLabel>
+          <FormControl
+            componentClass="textarea"
+            type="text"
+            name="file_description"
+            value={this.state.file_description}
+            placeholder="Enter your description here!"
+            onChange={this.captureFileAndMetadata}
+          />
+          <FormControl.Feedback />
+        </FormGroup>
+        <Button bsSize="medium" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
+          Continued to register to BlockChain
+        </Button>
+        <Image
+          src="loading.gif"
+          height="50px"
+          width="50px"
+          style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+        />
+        <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
+          Thanks for your participation. You will get{' '}
+          <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
+        </Alert>
+      </Form>
     );
   }
   /* jshint ignore:end */
 }
 
-FileRegisterManually.propTypes = {
+FileRegisterBridge.propTypes = {
   hashId: PropTypes.string,
   description: PropTypes.string,
   category: PropTypes.string,
   fileSize: PropTypes.number,
 };
 
-export default FileRegisterManually;
+export default FileRegisterBridge;

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import qs from 'query-string';
-import FileRegisterManually from '../components/FileRegisterManually';
+import FileRegisterBridge from '../components/FileRegisterBridge';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
-class FileRegisterManuallyView extends Component {
+class FileRegisterBridgeView extends Component {
   constructor() {
     super();
   }
@@ -14,7 +14,6 @@ class FileRegisterManuallyView extends Component {
 
     console.log(this.props);
   }
-
   render() {
     const params = qs.parse(this.props.location.search);
     /*jshint ignore:start*/
@@ -25,10 +24,10 @@ class FileRegisterManuallyView extends Component {
         </header>
         <Panel bsStyle="primary">
           <Panel.Heading>
-            <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
+            <Panel.Title componentClass="h3">Registering File</Panel.Title>
           </Panel.Heading>
           <Panel.Body>
-            <FileRegisterManually fileSize={params.fileSize} hashId={params.hashId} category={params.category} description={params.description} />
+            <FileRegisterBridge fileSize={params.fileSize} hashId={params.hashId} category={params.category} description={params.description} />
           </Panel.Body>
         </Panel>
       </div>
@@ -37,4 +36,4 @@ class FileRegisterManuallyView extends Component {
   }
 }
 
-export default withRouter(FileRegisterManuallyView);
+export default withRouter(FileRegisterBridgeView);
