@@ -18,6 +18,7 @@ and the current stable one is `encryption-v0.3`. All development should be based
 `encryption-v0.3` for now.
 
 * `master` - new for development including new features, etc.
+* `encryption-v0.4` - stable, tracks all history
 * `encryption-v0.3` - stable, and backport features and PR from master if necessary
 * `encryption-v0.2` - old, stable, only for old version and compatibility test.
 * `encryption-v0.1` - old, don't use, just for reference.
