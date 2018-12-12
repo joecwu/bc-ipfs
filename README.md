@@ -14,8 +14,8 @@ v8.14.0
 ```
 
 The following branches are locked for several purposes. This current `master` branch is the development branch
-and the current stable one is `encryption-v0.3`. All development should be based on `master` and refer to
-`encryption-v0.3` for now.
+and the current stable one is `encryption-v0.4`. All development should be based on `master` and refer to
+`encryption-v0.4` for now.
 
 * `master` - new for development including new features, etc.
 * `encryption-v0.4` - stable, tracks all history
