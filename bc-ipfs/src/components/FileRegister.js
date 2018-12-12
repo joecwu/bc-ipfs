@@ -20,26 +20,30 @@ class FileRegister extends Component {
       file_size: 0,
       register_result_show: false,
       btn_register_disabled: false,
+      error_msg: '',
+      error_msg_show: false,
+      file_obj: {},
+      file_ipfs_hash: '',
+      bc_register_resp: undefined, // per entry is {"ipfsMetaData":"", "encryptedIdx":""}
     };
 
-    // The order/index in these queue matters
-    this.idx_queue = []; // keep track of duplicates
-    this.file_queue = [];
-    this.ipfshash_queue = [];
-    // keep track of duplicate registration, if the user refresh the browser,
-    // everything will be reset as well
-    this.bc_register = []; // per entry is {"ipfsMetaData":"", "encryptedIdx":""}
+    // this.bc_register = [];
 
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.registerToBC = this.registerToBC.bind(this);
+    this.displayErrorMsg = this.displayErrorMsg.bind(this);
+    this.handleErrorMsgDismiss = this.handleErrorMsgDismiss.bind(this);
   }
 
-  saveToIpfs(reader, idx) {
+  displayErrorMsg(msg) {
+    this.setState({ ['error_msg']: msg });
+    this.setState({ ['error_msg_show']: true });
+  }
+
+  saveToIpfs(reader) {
     let ipfsId;
     let fsize;
-    const tmp_iqueue = this.ipfshash_queue;
-    const dqueue = this.idx_queue;
     const buffer = Buffer.from(reader.result);
 
     // disable register button until real file uploaded.
@@ -55,13 +59,10 @@ class FileRegister extends Component {
         fsize = response[0].size;
         console.log('ipfs hash=' + ipfsId);
         console.log('ipfs fsize=' + fsize);
-        tmp_iqueue[idx] = response[0];
-        dqueue.push(reader.name);
-        this.setState({ ['btn_register_disabled']: false });
+        this.setState({ ['btn_register_disabled']: false, ['file_ipfs_hash']: response[0] });
       })
       .catch(err => {
         console.error(err);
-        dqueue[idx] = nil;
         this.setState({ ['btn_register_disabled']: false });
       });
   }
@@ -69,9 +70,6 @@ class FileRegister extends Component {
   captureFileAndMetadata(event) {
     event.stopPropagation();
     event.preventDefault();
-    const dqueue = this.idx_queue;
-    const tmp_fqueue = this.file_queue;
-    const tmp_iqueue = this.ipfshash_queue;
     const func_ptn = this.saveToIpfs;
 
     const target = event.target;
@@ -86,36 +84,26 @@ class FileRegister extends Component {
       return;
     } else if (type === 'file') {
       console.log('Detectuser is trying to select files to upload!');
-      this.setState({ ['register_result_show']: false });
+      // clear previous uploaded data.
+      this.setState({ ['register_result_show']: false, ['file_ipfs_hash']: '', ['file_obj']: {}, ['bc_register_resp']: undefined });
+      if (event.target.files && event.target.files[0] != undefined) {
+        // only support one file upload, so take first file.
+        let f = event.target.files[0];
+        this.setState({ ['file_obj']: f });
+  
+        let reader = new window.FileReader();
+        console.log('Loading file ' + f.name);
+  
+        /*jshint ignore:start*/
+        reader.onload = () => func_ptn(reader);
+        /*jshint ignore:end*/
+        reader.readAsArrayBuffer(f); // load file into browser's memory as blob
+      } else {
+        console.log('No file has been uploaded yet!');
+      }
     } else {
       console.log('Detect unknown type=' + type + ' with name=' + name);
       return;
-    }
-
-    if (event.target.files) {
-      for (let i = 0; i < event.target.files.length; i++) {
-        // TODO: track abs-path instaed of fname, duplicate can happen under diff dir
-        if (dqueue.includes(event.target.files[i].name, 0)) {
-          console.log('Skipping file ' + event.target.files[i].name + ' since it has been uploaded already');
-        } else {
-          let f = event.target.files[i];
-          tmp_fqueue.push(f);
-          let idx = tmp_fqueue.indexOf(f, 0);
-          console.log('Queuing file ' + f.name + ' at index=' + idx);
-          // register index for each file and upload order properly
-          // TODO: will take up lots of memory for multiple files since we pre-load them all into memory
-          let reader = new window.FileReader();
-          tmp_iqueue[idx] = ''; // placeholder to avoid race condition
-          console.log('Loading file ' + f.name + ' idx=' + idx);
-          // TODO: Fix the syntax here for function pointers
-          /*jshint ignore:start*/
-          reader.onload = () => func_ptn(reader, idx);
-          /*jshint ignore:end*/
-          reader.readAsArrayBuffer(f); // load file into browser's memory as blob
-        }
-      }
-    } else {
-      console.log('No file has been uploaded yet!');
     }
   }
 
@@ -126,18 +114,21 @@ class FileRegister extends Component {
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
     console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription);
-    const tmp_fqueue = this.file_queue;
-    const tmp_iqueue = this.ipfshash_queue;
-    const bc_queue = this.bc_register;
+    const file_obj = this.state.file_obj;
 
     const contract_address = lib_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
     let submit_acct = '';
 
-    for (let i = 0; i < tmp_fqueue.length; i++) {
+    if (typeof file_obj.name === undefined) {
+      // no file selected
+      this.setState({ ['btn_register_disabled']: false });
+      // display error msg
+      this.displayErrorMsg('No file selected');
+    } else {
       // The metadata file is generated on the fly on IPFS before it gets registered
-      let real_fsize = tmp_iqueue[i].size;
-      let ipfs_realhash = '' + tmp_iqueue[i].hash;
+      let real_fsize = file_obj.size;
+      let ipfs_realhash = '' + this.state.ipfs_realhash;
       let bc_utilities = new bcutils();
       let potential_key = bc_utilities.genRandomKey();
       let min = 128; // you can redefine the range here
@@ -151,13 +142,18 @@ class FileRegister extends Component {
       let c_rand = 0;
       let realKey = '';
       let encryptedIPFSHash = '';
-      if (typeof bc_queue[ipfssha256] === 'undefined') {
+      if (typeof this.state.bc_register_resp === 'undefined') {
         lib_web3.eth
           .getAccounts(function(err, accounts) {
-            console.log('All available accounts: ' + accounts);
-            submit_acct = accounts[0];
-            console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
-            console.log('Submitting from ' + submit_acct);
+            if(err) {
+              this.displayErrorMsg('No available Ethereum wallet account.');
+              console.error(err);
+            } else {
+              console.log('All available accounts: ' + accounts);
+              submit_acct = accounts[0];
+              console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
+              console.log('Submitting from ' + submit_acct);
+            }
           })
           .then(() => {
             c_rand = Math.floor(l_rand / 13);
@@ -179,7 +175,7 @@ class FileRegister extends Component {
                 console.log(resp);
                 ipfsmid = resp[0].hash;
                 console.log('ipfs metadata hash=' + ipfsmid);
-                console.log('Submitted file=' + tmp_fqueue[i].name);
+                console.log('Submitted file=' + file_obj.name);
                 console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
                 console.log(
                   'Registering: ipfsMetadata=' +
@@ -196,7 +192,11 @@ class FileRegister extends Component {
                 lib_ipfs.pin.add(ipfsmid).then(resp => {
                   console.log('ipfs metadata has been pinned ' + ipfsmid);
                   console.log(resp);
-                }); //End of lib_ipfs.pin.add
+                })
+                .catch(err => {
+                  this.displayErrorMsg(err.message);
+                  console.error(err);
+                }); // end of lib_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
                 lib_contract.methods
                   .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
                   .send(
@@ -208,19 +208,20 @@ class FileRegister extends Component {
                     (error, transactionHash) => {
                       if (transactionHash) {
                         console.log('blockchain confirmed tx=' + transactionHash);
-                        bc_queue[ipfssha256] = {
+                        this.setState({ ['bc_register_resp']: {
                           ipfsMetaData: ipfsmid,
                           encryptedIdx: ipfssha256,
-                        };
+                        }});
                         console.log(
                           'Registration completed for ipfsMetadata=' +
-                            bc_queue[ipfssha256].ipfsMetaData +
+                            ipfsmid +
                             ' encryptedIdx=' +
-                            bc_queue[ipfssha256].encryptedIdx,
+                            ipfssha256,
                         );
                         this.setState({ ['register_result_show']: true });
                         this.setState({ ['file_size']: real_fsize });
                       } else {
+                        this.displayErrorMsg('Registration canceled.');
                         console.log(
                           'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                         );
@@ -228,20 +229,32 @@ class FileRegister extends Component {
                     },
                   )
                   .catch(err => {
+                    this.displayErrorMsg(err.message);
                     console.error(err);
-                  })
-                  .then(() => {
-                    this.setState({ ['btn_register_disabled']: false });
                   }); // end of lib_contract.methods.encryptIPFS
               }); // end of ipfs.add()
+          }).catch(err => {
+            // getAccounts error
+            this.displayErrorMsg(err.message);
+            console.error(err);
+          })
+          .then(() => {
+            this.setState({ ['btn_register_disabled']: false });
           }); // end of getAccounts and current file submission and registration
       } else {
-        console.log('Skipping file ' + tmp_fqueue[i].name + ' with same metadata info ' + ipfsmid);
+        console.log('Skipping file ' + file_obj.name + ' with same metadata info ' + ipfsmid);
         this.setState({ ['btn_register_disabled']: false });
       }
     } // end of for loop
+
   } // end of registerToBC
   /* jshint ignore:end */
+
+
+  handleErrorMsgDismiss() {
+    this.setState({ error_msg_show: false, error_msg: '' });
+  }
+
 
   /* jshint ignore:start */
   render() {
@@ -280,7 +293,7 @@ class FileRegister extends Component {
             <FormControl type="file" onChange={this.captureFileAndMetadata} />
           </FormGroup>
 
-          <Button bsSize="xsmall" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
+          <Button bsSize="xsmall" disabled={this.state.btn_register_disabled || this.state.file_ipfs_hash==''} bsStyle="primary" type="submit">
             Register on BlockChain
           </Button>
           <Image
@@ -290,8 +303,13 @@ class FileRegister extends Component {
             style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
           />
           <p />
-          <Alert bsStyle='success' style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
-            Thanks for your participation. You will get <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
+          <Alert bsStyle="danger" style={{ display: this.state.error_msg_show ? 'block' : 'none' }}>
+            <p>{this.state.error_msg}</p>
+            <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>OK</Button>
+          </Alert>
+          <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
+            Thanks for your participation. You will get{' '}
+            <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
           </Alert>
         </Form>
       </div>
