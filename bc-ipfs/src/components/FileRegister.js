@@ -85,15 +85,20 @@ class FileRegister extends Component {
     } else if (type === 'file') {
       console.log('Detectuser is trying to select files to upload!');
       // clear previous uploaded data.
-      this.setState({ ['register_result_show']: false, ['file_ipfs_hash']: '', ['file_obj']: {}, ['bc_register_resp']: undefined });
+      this.setState({
+        ['register_result_show']: false,
+        ['file_ipfs_hash']: '',
+        ['file_obj']: {},
+        ['bc_register_resp']: undefined,
+      });
       if (event.target.files && event.target.files[0] != undefined) {
         // only support one file upload, so take first file.
         let f = event.target.files[0];
         this.setState({ ['file_obj']: f });
-  
+
         let reader = new window.FileReader();
         console.log('Loading file ' + f.name);
-  
+
         /*jshint ignore:start*/
         reader.onload = () => func_ptn(reader);
         /*jshint ignore:end*/
@@ -145,7 +150,7 @@ class FileRegister extends Component {
       if (typeof this.state.bc_register_resp === 'undefined') {
         lib_web3.eth
           .getAccounts(function(err, accounts) {
-            if(err) {
+            if (err) {
               this.displayErrorMsg('No available Ethereum wallet account.');
               console.error(err);
             } else {
@@ -189,14 +194,16 @@ class FileRegister extends Component {
                 );
                 console.log('Submitting from ' + submit_acct);
                 console.log('Pinning to IPFS ' + ipfsmid);
-                lib_ipfs.pin.add(ipfsmid).then(resp => {
-                  console.log('ipfs metadata has been pinned ' + ipfsmid);
-                  console.log(resp);
-                })
-                .catch(err => {
-                  this.displayErrorMsg(err.message);
-                  console.error(err);
-                }); // end of lib_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
+                lib_ipfs.pin
+                  .add(ipfsmid)
+                  .then(resp => {
+                    console.log('ipfs metadata has been pinned ' + ipfsmid);
+                    console.log(resp);
+                  })
+                  .catch(err => {
+                    this.displayErrorMsg(err.message);
+                    console.error(err);
+                  }); // end of lib_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
                 lib_contract.methods
                   .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
                   .send(
@@ -208,15 +215,14 @@ class FileRegister extends Component {
                     (error, transactionHash) => {
                       if (transactionHash) {
                         console.log('blockchain confirmed tx=' + transactionHash);
-                        this.setState({ ['bc_register_resp']: {
-                          ipfsMetaData: ipfsmid,
-                          encryptedIdx: ipfssha256,
-                        }});
+                        this.setState({
+                          ['bc_register_resp']: {
+                            ipfsMetaData: ipfsmid,
+                            encryptedIdx: ipfssha256,
+                          },
+                        });
                         console.log(
-                          'Registration completed for ipfsMetadata=' +
-                            ipfsmid +
-                            ' encryptedIdx=' +
-                            ipfssha256,
+                          'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                         );
                         this.setState({ ['register_result_show']: true });
                         this.setState({ ['file_size']: real_fsize });
@@ -233,7 +239,8 @@ class FileRegister extends Component {
                     console.error(err);
                   }); // end of lib_contract.methods.encryptIPFS
               }); // end of ipfs.add()
-          }).catch(err => {
+          })
+          .catch(err => {
             // getAccounts error
             this.displayErrorMsg(err.message);
             console.error(err);
@@ -246,15 +253,12 @@ class FileRegister extends Component {
         this.setState({ ['btn_register_disabled']: false });
       }
     } // end of for loop
-
   } // end of registerToBC
   /* jshint ignore:end */
-
 
   handleErrorMsgDismiss() {
     this.setState({ error_msg_show: false, error_msg: '' });
   }
-
 
   /* jshint ignore:start */
   render() {
@@ -293,7 +297,12 @@ class FileRegister extends Component {
             <FormControl type="file" onChange={this.captureFileAndMetadata} />
           </FormGroup>
 
-          <Button bsSize="xsmall" disabled={this.state.btn_register_disabled || this.state.file_ipfs_hash==''} bsStyle="primary" type="submit">
+          <Button
+            bsSize="xsmall"
+            disabled={this.state.btn_register_disabled || this.state.file_ipfs_hash == ''}
+            bsStyle="primary"
+            type="submit"
+          >
             Register on BlockChain
           </Button>
           <Image
@@ -305,7 +314,10 @@ class FileRegister extends Component {
           <p />
           <Alert bsStyle="danger" style={{ display: this.state.error_msg_show ? 'block' : 'none' }}>
             <p>{this.state.error_msg}</p>
-            <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>OK</Button>
+            <p />
+            <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>
+              OK
+            </Button>
           </Alert>
           <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
             Thanks for your participation. You will get{' '}
