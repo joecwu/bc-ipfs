@@ -22,6 +22,8 @@ class FileRegister extends Component {
       btn_register_disabled: false,
       error_msg: '',
       error_msg_show: false,
+      info_msg: '',
+      info_msg_show: false,
       file_obj: {},
       file_ipfs_hash: '',
       bc_register_resp: undefined, // per entry is {"ipfsMetaData":"", "encryptedIdx":""}
@@ -33,12 +35,22 @@ class FileRegister extends Component {
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.registerToBC = this.registerToBC.bind(this);
     this.displayErrorMsg = this.displayErrorMsg.bind(this);
+    this.displayInfoMsg = this.displayInfoMsg.bind(this);
+    this.hideInfoMsg = this.hideInfoMsg.bind(this);
     this.handleErrorMsgDismiss = this.handleErrorMsgDismiss.bind(this);
   }
 
   displayErrorMsg(msg) {
     this.setState({ ['error_msg']: msg });
     this.setState({ ['error_msg_show']: true });
+  }
+
+  displayInfoMsg(msg) {
+    this.setState({ ['info_msg']: msg, ['info_msg_show']: true });
+  }
+
+  hideInfoMsg() {
+    this.setState({ ['info_msg']: '', ['info_msg_show']: false });
   }
 
   saveToIpfs(reader) {
@@ -48,6 +60,7 @@ class FileRegister extends Component {
 
     // disable register button until real file uploaded.
     this.setState({ ['btn_register_disabled']: true });
+    this.displayInfoMsg('adding file to IPFS...');
 
     lib_ipfs
       .add(buffer, {
@@ -60,10 +73,12 @@ class FileRegister extends Component {
         console.log('ipfs hash=' + ipfsId);
         console.log('ipfs fsize=' + fsize);
         this.setState({ ['btn_register_disabled']: false, ['file_ipfs_hash']: response[0] });
+        this.hideInfoMsg();
       })
       .catch(err => {
         console.error(err);
         this.setState({ ['btn_register_disabled']: false });
+        this.hideInfoMsg();
       });
   }
 
@@ -204,6 +219,7 @@ class FileRegister extends Component {
                     this.displayErrorMsg(err.message);
                     console.error(err);
                   }); // end of lib_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
+                this.displayInfoMsg('waiting for wallet transaction\'s approval and complete...');
                 lib_contract.methods
                   .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
                   .send(
@@ -226,8 +242,10 @@ class FileRegister extends Component {
                         );
                         this.setState({ ['register_result_show']: true });
                         this.setState({ ['file_size']: real_fsize });
+                        this.hideInfoMsg();
                       } else {
                         this.displayErrorMsg('Registration canceled.');
+                        this.hideInfoMsg();
                         console.log(
                           'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                         );
@@ -312,6 +330,9 @@ class FileRegister extends Component {
             style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
           />
           <p />
+          <Alert bsStyle="info" style={{ display: this.state.info_msg_show ? 'block' : 'none' }}>
+            <p>{this.state.info_msg}</p>
+          </Alert>
           <Alert bsStyle="danger" style={{ display: this.state.error_msg_show ? 'block' : 'none' }}>
             <p>{this.state.error_msg}</p>
             <p />
