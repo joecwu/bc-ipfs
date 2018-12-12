@@ -3,6 +3,7 @@ import { Panel } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import qs from 'query-string';
 import FileRegisterManually from '../components/FileRegisterManually';
+import EtherWalletAlert from '../components/EtherWalletAlert';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
 class FileRegisterManuallyView extends Component {
@@ -23,6 +24,7 @@ class FileRegisterManuallyView extends Component {
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
+        <EtherWalletAlert />
         <Panel bsStyle="primary">
           <Panel.Heading>
             <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
