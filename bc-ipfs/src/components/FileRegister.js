@@ -39,6 +39,29 @@ class FileRegister extends Component {
     this.displayInfoMsg = this.displayInfoMsg.bind(this);
     this.hideInfoMsg = this.hideInfoMsg.bind(this);
     this.handleErrorMsgDismiss = this.handleErrorMsgDismiss.bind(this);
+    this.setupWebViewJavascriptBridge = this.setupWebViewJavascriptBridge.bind(this);
+
+    this.setupWebViewJavascriptBridge( (bridge) => {
+      // Register
+      bridge.registerHandler('FileRegisterCompleted', (data, responseCallback) => {
+        console.log('FileRegisterCompleted ipfsMetadataHash from iOS ' + data['ipfsMetadataHash'])
+        this.fileRegisterCompleted();
+        let responseData = { 'callback from JS' : 'FileRegisterCompleted'};
+        responseCallback(responseData);
+      });
+    });
+  }
+
+  setupWebViewJavascriptBridge(callback) {
+    if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+    if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+    window.WVJBCallbacks = [callback];
+    let WVJBIframe = document.createElement('iframe');
+    WVJBIframe.style.display = 'none';
+    WVJBIframe.src = 'https://__bridge_loaded__';
+    // WVJBIframe.src = ‘wvjbscheme://__BRIDGE_LOADED__’;
+    document.documentElement.appendChild(WVJBIframe);
+    setTimeout(() => { document.documentElement.removeChild(WVJBIframe);}, 0);
   }
 
   displayErrorMsg(msg) {
@@ -241,6 +264,14 @@ class FileRegister extends Component {
                         console.log(
                           'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                         );
+
+                        this.setupWebViewJavascriptBridge( (bridge) => {
+                          // Call
+                          bridge.callHandler('FileRegisterButtonDidTap', {[transactionHash]: 'registerFile'}, (response) => {
+                            console.log('callback from iOS ' + response);
+                          });
+                        });
+
                         this.setState({ ['register_result_show']: true });
                         this.setState({ ['file_size']: real_fsize });
                         this.setState({ ['btn_register_disabled']: true, ['is_loading']: false });
@@ -280,6 +311,12 @@ class FileRegister extends Component {
   handleErrorMsgDismiss() {
     this.setState({ error_msg_show: false, error_msg: '' });
   }
+
+  /* jshint ignore:start */
+  fileRegisterCompleted() {
+    this.setState({ ['btn_register_disabled']: false });
+  }
+  /* jshint ignore:end */
 
   /* jshint ignore:start */
   render() {
