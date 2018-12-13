@@ -130,7 +130,7 @@ class FileRegister extends Component {
 
   /* jshint ignore:start */
   registerToBC(event) {
-    this.setState({ ['btn_register_disabled']: true , ['is_loading']: true});
+    this.setState({ ['btn_register_disabled']: true, ['is_loading']: true });
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
@@ -197,7 +197,7 @@ class FileRegister extends Component {
                 ipfsmid = resp[0].hash;
                 console.log('ipfs metadata hash=' + ipfsmid);
                 console.log('Submitted file=' + file_obj.name);
-                console.log('IPFS record=https://ipfs.io/ipfs/' + ipfsmid);
+                console.log('IPFS record=https://cloudflare-ipfs.com/ipfs/' + ipfsmid);
                 console.log(
                   'Registering: ipfsMetadata=' +
                     ipfsmid +
@@ -220,7 +220,7 @@ class FileRegister extends Component {
                     this.displayErrorMsg(err.message);
                     console.error(err);
                   }); // end of lib_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
-                this.displayInfoMsg('waiting for wallet transaction\'s approval and complete...');
+                this.displayInfoMsg("waiting for wallet transaction's approval and complete...");
                 lib_contract.methods
                   .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
                   .send(
@@ -268,9 +268,7 @@ class FileRegister extends Component {
             this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
             console.error(err);
           })
-          .then(() => {
-            
-          }); // end of getAccounts and current file submission and registration
+          .then(() => {}); // end of getAccounts and current file submission and registration
       } else {
         console.log('Skipping file ' + file_obj.name + ' with same metadata info ' + ipfsmid);
         this.setState({ ['btn_register_disabled']: true, ['is_loading']: false });
