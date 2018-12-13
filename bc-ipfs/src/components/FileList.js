@@ -35,7 +35,7 @@ class FileList extends Component {
     }
 
     window
-      .fetch('http://es.blcksync.info/blockmed-trans-*/_search/template', {
+      .fetch('https://es.blcksync.info/blockmed-trans-*/_search/template', {
         method: 'POST',
         headers: {
           Authorization: 'Basic YWRtaW46YWRtaW4=',
@@ -123,12 +123,14 @@ class FileList extends Component {
         <Table responsive striped bordered condensed hover>
           <thead>
             <tr>
-              {this.props.hideFields.includes('accessFile') ? null : <th style={{width: "85px"}} />}
+              {this.props.hideFields.includes('accessFile') ? null : <th style={{ width: '85px' }} />}
               {this.props.hideFields.includes('description') ? null : <th>Description</th>}
-              {this.props.hideFields.includes('category') ? null : <th style={{width: "100px"}}>Category</th>}
-              {this.props.hideFields.includes('fileSize') ? null : <th style={{width: "150px"}}>File Size</th>}
-              {this.props.hideFields.includes('tokenCost') ? null : <th style={{width: "150px"}}>BMD Token Cost</th>}
-              {this.props.hideFields.includes('noOfAccessed') ? null : <th style={{width: "120px"}}>No. of Accessed</th>}
+              {this.props.hideFields.includes('category') ? null : <th style={{ width: '100px' }}>Category</th>}
+              {this.props.hideFields.includes('fileSize') ? null : <th style={{ width: '150px' }}>File Size</th>}
+              {this.props.hideFields.includes('tokenCost') ? null : <th style={{ width: '150px' }}>BMD Token Cost</th>}
+              {this.props.hideFields.includes('noOfAccessed') ? null : (
+                <th style={{ width: '120px' }}>No. of Accessed</th>
+              )}
             </tr>
           </thead>
           <tbody>{rows}</tbody>

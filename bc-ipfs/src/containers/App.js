@@ -7,6 +7,7 @@ import FileList from '../components/FileList';
 import FileRegister from '../components/FileRegister';
 import FileRegisterManually from '../components/FileRegisterManually';
 import FileAccessManually from '../components/FileAccessManually';
+import EtherWalletAlert from '../components/EtherWalletAlert';
 
 class App extends Component {
   constructor() {
@@ -20,6 +21,7 @@ class App extends Component {
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
+        <EtherWalletAlert />
         <p className="App-intro">
           To get started, click on button <code>Browse</code> to upload files.
         </p>
