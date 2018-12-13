@@ -35,17 +35,16 @@ class EtherWalletAlert extends Component {
   render() {
     return (
       <Alert bsStyle="danger" style={{ display: this.state.wallet_alert_show ? 'block' : 'none' }}>
-        <h3>Warning!</h3>
-        <p>Unable to connect with your Ethereum wallet account.</p>
-        <p>Please make sure you have Ethereum wallet plugin installed, loginned and have valid account.</p>
+        <h3>Unable to connect with your Ethereum wallet account.</h3>
+        <h4>Please make sure you have Ethereum wallet installed, loginned and have valid account.</h4>
         <p>
-          For desktop user, you can install <a href="https://metamask.io/">MetaMask</a> Chrome or Firefox plugin.
+          For desktop user, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
         </p>
-        <p>For iOS user, please use our native app from App Store. (link TBD)</p>
+        <p>For iOS user, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/mobiledocs/README.md'>here</a></p>
         <p>
           For Android user, you can install Firefox from{' '}
           <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Google Play Store</a> and install{' '}
-          <a href="https://addons.mozilla.org/zh-TW/android/addon/ether-metamask/">MetaMask plugin</a>.
+          <a href="https://addons.mozilla.org/zh-TW/android/addon/ether-metamask/">MetaMask plugin</a>. For more metamask usage, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
         </p>
       </Alert>
     );
