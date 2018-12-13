@@ -27,7 +27,7 @@ class FileListItem extends Component {
   handleAccessFile(event) {
     if (this.state.btn_access_state == 'accessed') {
       // open file directly
-      window.open('https://ipfs.io/ipfs/' + this.state.bc_resp_hash, '_blank');
+      window.open('https://cloudflare-ipfs.com/ipfs/' + this.state.bc_resp_hash, '_blank');
     } else {
       confirmAlert({
         title: 'Confirm to access',

@@ -173,8 +173,8 @@ class FileAccessManually extends Component {
         </Form>
         <p align="left">
           <label>IPFS hash: </label>
-          <a href={'https://ipfs.io/ipfs/' + this.state.bc_resp_hash} target="_blank">
-            {'https://ipfs.io/ipfs/' + this.state.bc_resp_hash}
+          <a href={'https://cloudflare-ipfs.com/ipfs/' + this.state.bc_resp_hash} target="_blank">
+            {'https://cloudflare-ipfs.com/ipfs/' + this.state.bc_resp_hash}
           </a>
         </p>
       </div>
