@@ -20,6 +20,7 @@ module.exports = {
     disableHostCheck: true,
     headers: { "Access-Control-Allow-Origin": "*" },
     historyApiFallback: true,
+    inline: false,
   },
   module: {
     rules: [
