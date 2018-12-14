@@ -3,9 +3,9 @@
 // run with local Provider
 import lib_web3 from './lib_web3';
 
-// contract address 0x2098f0E37E74377380aAbD0B46b1Be7693B847D3 ABI on Rinkeby
-// contract address 0x4C97efc3604FCaEE022E1Ef8FD567531F364E1aa ABI on Ropstan Testnet
-const address = '0x4C97efc3604FCaEE022E1Ef8FD567531F364E1aa';
+// contract address 0x09e97CD16511753E072c2a12b3da2149D9d16bDf ABI on Rinkeby
+// contract address 0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec ABI on Ropstan Testnet
+const address = '0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec';
 const abi = [
   {
     constant: false,
