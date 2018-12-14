@@ -39,7 +39,7 @@ class FileList extends Component {
       .fetch('https://es.blcksync.info/blockmed-ipfs/_search/template', {
         method: 'POST',
         headers: {
-          Authorization: 'Basic YWRtaW46YWRtaW4=',
+          Authorization: 'Basic cmVhZGFsbDpyZWFkYWxs',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
