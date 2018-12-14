@@ -30,10 +30,10 @@ class FileListView extends Component {
               unmountOnExit={true}
             >
               <Tab eventKey="data" title="Data">
-                <FileList pageSize={5} hideFields={['category']} category="data" />
+                <FileList pageSize={10} hideFields={['category','latestPurchaseTime']} category="data" />
               </Tab>
               <Tab eventKey="code" title="Code">
-                <FileList pageSize={5} hideFields={['category']} category="code" />
+                <FileList pageSize={10} hideFields={['category','latestPurchaseTime']} category="code" />
               </Tab>
             </Tabs>
           </Panel.Body>
