@@ -16,7 +16,7 @@ class FileRegisterView extends Component {
           <h1>IPFS Register</h1>
         </header>
         <EtherWalletAlert />
-        <Jumbotron style={{ padding: '30px' }}>
+        <Jumbotron className='desktop-only' style={{ padding: '30px' }}>
           <h2>Have large files to upload?</h2>
           <p>Download our desktop tool to help you upload large files.</p>
           <p>

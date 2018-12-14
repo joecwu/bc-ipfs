@@ -24,6 +24,19 @@
   }
 }
 
+@media screen and (max-width: 600px) {
+  .desktop-only {
+    visibility: hidden;
+    display: none;
+  }
+}
+
+@media screen and (min-width: 599px) {
+  .desktop-only {
+    visibility: visible;
+  }
+}
+
 .App-title {
   text-align: center;
   font-size: 1.5em;

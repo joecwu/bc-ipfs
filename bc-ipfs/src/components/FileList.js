@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import { Button, Form, FormGroup, ControlLabel, FormControl, Table } from 'react-bootstrap';
+import { Button, Form, FormGroup, Image, FormControl, Table } from 'react-bootstrap';
 import FileListItem from './FileListItem';
 
 var PropTypes = require('prop-types');
@@ -21,6 +21,10 @@ class FileList extends Component {
       ],
       keyword: props.keyword,
       category: props.category,
+      pageIndex: props.pageIndex,
+      pageSize: props.pageSize,
+      sortedBy: props.sortedBy,
+      is_loading: false,
     };
     this.fetchItemsFromServer = this.fetchItemsFromServer.bind(this);
     this.search = this.search.bind(this);
@@ -29,16 +33,13 @@ class FileList extends Component {
 
   fetchItemsFromServer() {
     console.log('fetchItemsFromServer');
-    var targetSearchTemplate = 'blockmed-trans-aggs-all';
-    if (this.state.keyword != '') {
-      targetSearchTemplate = 'blockmed-trans-aggs';
-    }
-
+    this.setState({ ['is_loading']: true });
+    var targetSearchTemplate = 'blockmed-ipfs';
     window
-      .fetch('https://es.blcksync.info/blockmed-trans-*/_search/template', {
+      .fetch('https://es.blcksync.info/blockmed-ipfs/_search/template', {
         method: 'POST',
         headers: {
-          Authorization: 'Basic YWRtaW46YWRtaW4=',
+          Authorization: 'Basic cmVhZGFsbDpyZWFkYWxs',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -46,12 +47,18 @@ class FileList extends Component {
           params: {
             query_string: this.state.keyword,
             category: this.state.category,
-            size: 1000, //[WORKAROUND] due to ES aggregation precision issue, we have to fetch large size data to make aggs more accurate
+            size: this.state.pageSize,
+            from: this.state.pageIndex * this.state.pageSize,
+            sort_by_time: this.state.sortedBy == 'time' ? 'true' : '',
+            sort_by_filesize: this.state.sortedBy == 'filesize' ? 'true' : '',
+            sort_by_accessed: this.state.sortedBy == 'accessed' ? 'true' : '',
           },
         }),
       })
       .then(response => response.json())
-      .then(esResponse => this.convertToItems(esResponse));
+      .then(esResponse => this.convertToItems(esResponse))
+      .catch(error => console.error(error))
+      .then(() => this.setState({ ['is_loading']: false }));
   }
 
   componentDidMount() {
@@ -72,16 +79,20 @@ class FileList extends Component {
   convertToItems(esResponse) {
     const { pageIndex, pageSize, sortedBy, keyword } = this.props;
     var items = [];
-    esResponse.aggregations.ipfsMetadataHash.buckets.slice(pageIndex, pageSize).map(hashBucket => {
-      var hitItem = hashBucket.top_hits.hits.hits[0];
+    esResponse.hits.hits.map(hitItem => {
       items.push({
         _id: hitItem._id,
-        hashId: hashBucket.key,
+        hashId: hitItem._id,
         description: hitItem._source.metadata.description,
         category: hitItem._source.metadata.category,
-        fileSize: hashBucket.filesize.value,
-        tokenCost: hitItem._source.returnValues.tokenCost,
-        noOfAccessed: hashBucket.PurchaseTxRecordCount.doc_count,
+        fileSize: hitItem._source.metadata.filesize,
+        tokenCost: hitItem._source.tokenCost,
+        metadataCaptureTime: new Date(hitItem._source.metadataCaptureTime),
+        latestPurchaseTime:
+          typeof hitItem._source.latestPurchaseTime === 'undefined'
+            ? undefined
+            : new Date(hitItem._source.latestPurchaseTime),
+        noOfAccessed: hitItem._source.purchaseTxRecords.length,
       });
     });
     this.setState({ items });
@@ -100,6 +111,8 @@ class FileList extends Component {
         category={item.category}
         fileSize={item.fileSize}
         tokenCost={item.tokenCost}
+        metadataCaptureTime={item.metadataCaptureTime}
+        latestPurchaseTime={item.latestPurchaseTime}
         noOfAccessed={item.noOfAccessed}
       />
       /*jshint ignore:end*/
@@ -118,6 +131,12 @@ class FileList extends Component {
             <Button type="submit" onClick={this.search}>
               Search
             </Button>
+            <Image
+              src="loading.gif"
+              height="30px"
+              width="30px"
+              style={{ display: !this.state.is_loading ? 'none' : 'inline' }}
+            />
           </FormGroup>
         </Form>
         <Table responsive striped bordered condensed hover>
@@ -126,10 +145,16 @@ class FileList extends Component {
               {this.props.hideFields.includes('accessFile') ? null : <th style={{ width: '85px' }} />}
               {this.props.hideFields.includes('description') ? null : <th>Description</th>}
               {this.props.hideFields.includes('category') ? null : <th style={{ width: '100px' }}>Category</th>}
+              {this.props.hideFields.includes('metadataCaptureTime') ? null : (
+                <th style={{ width: '150px' }}>Register Time</th>
+              )}
               {this.props.hideFields.includes('fileSize') ? null : <th style={{ width: '150px' }}>File Size</th>}
               {this.props.hideFields.includes('tokenCost') ? null : <th style={{ width: '150px' }}>BMD Token Cost</th>}
               {this.props.hideFields.includes('noOfAccessed') ? null : (
                 <th style={{ width: '120px' }}>No. of Accessed</th>
+              )}
+              {this.props.hideFields.includes('latestPurchaseTime') ? null : (
+                <th style={{ width: '150px' }}>Last Access Time</th>
               )}
             </tr>
           </thead>
@@ -153,8 +178,8 @@ FileList.propTypes = {
 FileList.defaultProps = {
   hideFields: [],
   pageIndex: 0,
-  pageSize: 5,
-  sortedBy: 'filesize',
+  pageSize: 10,
+  sortedBy: 'time',
   keyword: '',
   category: '',
 };

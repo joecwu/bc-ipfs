@@ -4,6 +4,7 @@ import lib_web3 from '../utils/lib_web3';
 import lib_contract from '../utils/lib_contract';
 import crypto_js from '../utils/lib_crypto';
 import Bytes from './Bytes';
+import DateTime from './DateTime';
 import BMDTokens from './BMDTokens';
 import { getBMDTokensByTokenCost } from '../utils/lib_BMDtoken';
 import { confirmAlert } from 'react-confirm-alert';
@@ -235,7 +236,7 @@ class FileListItem extends Component {
   /*jshint ignore:end*/
 
   render() {
-    const { hashId, description, category, fileSize, tokenCost, noOfAccessed } = this.props;
+    const { hashId, description, category, fileSize, tokenCost, metadataCaptureTime, latestPurchaseTime, noOfAccessed } = this.props;
 
     let btn_access_text = 'Access File';
     if (this.state.btn_access_state == 'accessed') {
@@ -266,6 +267,7 @@ class FileListItem extends Component {
         )}
         {this.props.hideFields.includes('description') ? null : <td>{description}</td>}
         {this.props.hideFields.includes('category') ? null : <td style={{ whiteSpace: 'nowrap' }}>{category}</td>}
+        {this.props.hideFields.includes('metadataCaptureTime') ? null : <td style={{ whiteSpace: 'nowrap' }}><DateTime value={metadataCaptureTime} /></td>}
         {this.props.hideFields.includes('fileSize') ? null : (
           <td style={{ whiteSpace: 'nowrap' }}>
             <Bytes bytes={fileSize} />
@@ -279,6 +281,7 @@ class FileListItem extends Component {
         {this.props.hideFields.includes('noOfAccessed') ? null : (
           <td style={{ whiteSpace: 'nowrap' }}>{noOfAccessed}</td>
         )}
+        {this.props.hideFields.includes('latestPurchaseTime') ? null : <td style={{ whiteSpace: 'nowrap' }}><DateTime value={latestPurchaseTime} /></td>}
       </tr>
     );
     /*jshint ignore:end*/
@@ -292,6 +295,8 @@ FileListItem.propTypes = {
   category: PropTypes.string,
   fileSize: PropTypes.number.isRequired,
   tokenCost: PropTypes.string.isRequired,
+  metadataCaptureTime: PropTypes.instanceOf(Date).isRequired,
+  latestPurchaseTime: PropTypes.instanceOf(Date),
   noOfAccessed: PropTypes.number,
 };
 
