@@ -1,6 +1,7 @@
 /* jshint esversion: 6 */
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const ConfigWebpackPlugin = require("config-webpack");
 
 module.exports = {
   mode: 'development',
@@ -51,6 +52,7 @@ module.exports = {
       template: './src/index.html',
       filename: './index.html',
       inject: 'body'
-    })
+    }),
+    new ConfigWebpackPlugin()
   ]
 };
