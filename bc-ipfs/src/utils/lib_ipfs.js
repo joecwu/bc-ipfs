@@ -6,6 +6,6 @@
 
 // run with local daemon
 const ipfsApi = require('ipfs-api');
-const lib_ipfs = new ipfsApi('ipfs-api.blcksync.info', '443', { protocol: 'https' });
+const lib_ipfs = new ipfsApi(CONFIG.ipfs.api.host, CONFIG.ipfs.api.port, { protocol: CONFIG.ipfs.api.protocol });
 
 export default lib_ipfs;
