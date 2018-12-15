@@ -282,6 +282,6 @@ const abi = [
     type: 'event',
   },
 ];
-const lib_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: CONFIG.ethereum.gasPrice, gas: CONFIG.ethereum.gasPrice });
+const lib_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: CONFIG.ethereum.gasPrice, gas: CONFIG.ethereum.gas });
 
 export default lib_contract;
