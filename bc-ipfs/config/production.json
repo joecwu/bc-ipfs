@@ -1,12 +1,22 @@
 {
-    "ipfs": {
-      "gateway_url": "http://ipfs.blcksync.info:8888/ipfs/"
+  "ipfs": {
+    "api": {
+      "host": "ipfs-api.blcksync.info",
+      "port": "443",
+      "protocol": "https"
     },
-    "ethereum": {
-      "contract": {
-        "address": "0x648279922dd55b22665D7A22685B660626c9FbBF"
-      },
-      "websocket_provider": "wss://mainnet.infura.io/ws"
-    }
+    "gateway_url": "https://cloudflare-ipfs.com/ipfs/"
+  },
+  "ethereum": {
+    "contract": {
+      "address": "0x648279922dd55b22665D7A22685B660626c9FbBF"
+    },
+    "websocket_provider": "wss://mainnet.infura.io/ws"
+  },
+  "es": {
+    "search_url": {
+        "blockmed_ipfs": "https://es.blcksync.info/blockmed-ipfs/_search/template"
+    },
+    "authorization": "Basic cmVhZGFsbDpyZWFkYWxs"
   }
-  
+}
