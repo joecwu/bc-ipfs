@@ -3,9 +3,7 @@
 // run with local Provider
 import lib_web3 from './lib_web3';
 
-// contract address 0x09e97CD16511753E072c2a12b3da2149D9d16bDf ABI on Rinkeby
-// contract address 0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec ABI on Ropstan Testnet
-const address = '0x648279922dd55b22665D7A22685B660626c9FbBF'; // mainnet
+const address = CONFIG.ethereum.contract.address;
 const abi = [
   {
     constant: false,
@@ -284,6 +282,6 @@ const abi = [
     type: 'event',
   },
 ];
-const lib_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: 2000000000, gas: 600000 });
+const lib_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: CONFIG.ethereum.gasPrice, gas: CONFIG.ethereum.gas });
 
 export default lib_contract;

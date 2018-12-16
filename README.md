@@ -243,3 +243,10 @@ npm install -S @types/react-dom@16.0.9 \
     webpack-cli@3.1.2 \
     webpack-dev-server@3.1.10
 ```
+## Appendix
+
+Running with specific environment in dev mode.
+
+```
+env NODE_ENV=production npm start
+```

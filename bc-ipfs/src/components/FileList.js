@@ -36,10 +36,10 @@ class FileList extends Component {
     this.setState({ ['is_loading']: true });
     var targetSearchTemplate = 'blockmed-ipfs';
     window
-      .fetch('https://es.blcksync.info/blockmed-ipfs/_search/template', {
+      .fetch(CONFIG.es.search_url.blockmed_ipfs, {
         method: 'POST',
         headers: {
-          Authorization: 'Basic cmVhZGFsbDpyZWFkYWxs',
+          Authorization: CONFIG.es.authorization,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

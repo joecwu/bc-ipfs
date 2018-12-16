@@ -27,7 +27,7 @@ class FileListItem extends Component {
     this.setupWebViewJavascriptBridge( (bridge) => {
       // Register
       bridge.registerHandler('FileListItemFetchKeyForIPFS', (data, responseCallback) => {
-        console.log('FileListItemFetchKeyForIPFS ipfsMetadataHash from iOS ' + data['ipfsMetadataHash'])
+        console.log('FileListItemFetchKeyForIPFS ipfsMetadataHash from iOS ' + data.ipfsMetadataHash);
         this.fileListItemFetchKeyForIPFS();
         let responseData = { 'callback from JS' : 'FileListItemFetchKeyForIPFS'};
         responseCallback(responseData);
@@ -51,7 +51,7 @@ class FileListItem extends Component {
   handleAccessFile(event) {
     if (this.state.btn_access_state == 'accessed') {
       // open file directly
-      window.open('https://cloudflare-ipfs.com/ipfs/' + this.state.bc_resp_hash, '_blank');
+      window.open(CONFIG.ipfs.gateway_url + this.state.bc_resp_hash, '_blank');
     } else {
       confirmAlert({
         title: 'Confirm to access',
