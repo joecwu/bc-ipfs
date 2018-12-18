@@ -12,7 +12,7 @@
       "address": "0x648279922dd55b22665D7A22685B660626c9FbBF"
     },
     "gasPrice": 6000000000,
-    "gas": 800000,
+    "gas": 1500000,
     "websocket_provider": "wss://mainnet.infura.io/ws"
   },
   "es": {

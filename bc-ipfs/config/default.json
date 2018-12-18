@@ -12,7 +12,7 @@
       "address": "0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec"
     },
     "gasPrice": 6000000000,
-    "gas": 800000,
+    "gas": 1500000,
     "websocket_provider": "wss://ropsten.infura.io/ws"
   },
   "es": {
