@@ -156,8 +156,8 @@ class FileRegisterManually extends Component {
           .send(
             {
               from: submit_acct,
-              gasPrice: 2000000000,
-              gas: 1500000,
+              gasPrice: CONFIG.ethereum.gasPrice,
+              gas: CONFIG.ethereum.gas,
             },
             (error, transactionHash) => {
               if (transactionHash) {
