@@ -15,9 +15,10 @@ v8.14.0
 
 The following branches are locked for several purposes. This current `master` branch is the development branch
 and the current stable one is `encryption-v0.4`. All development should be based on `master` and refer to
-`encryption-v0.4` for now.
+`encryption-v0.5` for now.
 
 * `master` - new for development including new features, etc.
+* `encryption-v0.5` - stable, tracks all history, bug fix
 * `encryption-v0.4` - stable, tracks all history
 * `encryption-v0.3` - stable, and backport features and PR from master if necessary
 * `encryption-v0.2` - old, stable, only for old version and compatibility test.
@@ -38,7 +39,7 @@ git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
 npm install
-npm start
+env NODE_ENV=development npm start
 ```
 
 * Ubuntu 16.04+
@@ -52,7 +53,7 @@ git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
 npm install
-npm start
+env NODE_ENV=development npm start
 ```
 
 ## Docker
@@ -110,7 +111,7 @@ Within the development container `bc-geth-ipfs-dev-11`, invoke the following com
 * `npm` installation
 ```
 cd bc-ipfs
-npm install
+env NODE_ENV=development npm install
 ```
 * `ipfs` init and start
 ```
@@ -127,7 +128,7 @@ ipfs daemon &
 * `npm` start to kick off webpack and react, etc. and open your browser to access
 `localhost:3000`.
 ```
-npm start
+env NODE_ENV=development npm start
 ```
 
 # Just looking for an IPFS image to run IPFS?
@@ -224,7 +225,8 @@ npm install -S react@16.6.1 \
   react-confirm-alert@2.0.7 \
   url-parse@1.4.4 \
   web3@1.0.0-beta.36 \
-  whatwg-fetch@3.0.0
+  whatwg-fetch@3.0.0 \
+  config-webpack
 ```
 
 **Development Only**
@@ -247,6 +249,12 @@ npm install -S @types/react-dom@16.0.9 \
 
 Running with specific environment in dev mode.
 
+**Development**
+```
+env NODE_ENV=development npm start
+```
+
+**Production**
 ```
 env NODE_ENV=production npm start
 ```
