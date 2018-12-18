@@ -11,11 +11,13 @@
     "contract": {
       "address": "0x648279922dd55b22665D7A22685B660626c9FbBF"
     },
+    "gasPrice": 6000000000,
+    "gas": 800000,
     "websocket_provider": "wss://mainnet.infura.io/ws"
   },
   "es": {
     "search_url": {
-        "blockmed_ipfs": "https://es.blcksync.info/blockmed-ipfs/_search/template"
+      "blockmed_ipfs": "https://es.blcksync.info/blockmed-ipfs/_search/template"
     },
     "authorization": "Basic cmVhZGFsbDpyZWFkYWxs"
   }
