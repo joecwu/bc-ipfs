@@ -332,8 +332,6 @@ class FileRegister extends Component {
   render() {
     return (
       <div>
-        <p align="left">The better you describe your files, the easier others can discover and find it.</p>
-        <p align="left">This helps to increase the chances of rewards and incentives to use your files.</p>
         <Form onSubmit={this.registerToBC} align="left">
           <FormGroup controlId="formFileCategory">
             <ControlLabel>Select file category:</ControlLabel>
@@ -355,8 +353,9 @@ class FileRegister extends Component {
               type="text"
               name="file_description"
               value={this.state.file_description}
-              placeholder="Enter your description here!"
+              placeholder={'The better you describe your files, the easier others can discover and find it.\nThis helps to increase the chances of rewards and incentives to use your files.'}
               onChange={this.captureFileAndMetadata}
+              style={{ height: "100px" }}
             />
             <FormControl.Feedback />
           </FormGroup>
