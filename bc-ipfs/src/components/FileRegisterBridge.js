@@ -237,7 +237,7 @@ class FileRegisterBridge extends Component {
           />
           <FormControl.Feedback />
         </FormGroup>
-        <Button bsSize="medium" disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
+        <Button disabled={this.state.btn_register_disabled} bsStyle="primary" type="submit">
           Continued to register to BlockChain
         </Button>
         <Image

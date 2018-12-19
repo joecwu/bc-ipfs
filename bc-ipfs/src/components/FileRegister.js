@@ -366,7 +366,6 @@ class FileRegister extends Component {
           </FormGroup>
 
           <Button
-            bsSize="xsmall"
             disabled={this.state.btn_register_disabled || this.state.file_ipfs_hash == ''}
             bsStyle="primary"
             type="submit"
