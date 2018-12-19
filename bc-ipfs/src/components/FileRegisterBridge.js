@@ -77,7 +77,7 @@ class FileRegisterBridge extends Component {
     const name = target.name;
 
     if (type === 'text' || type === 'textarea' || type === 'select-one') {
-      console.log('Capturing input from ' + name + ' with value = ' + target.value);
+      console.debug('Capturing input from ' + name + ' with value = ' + target.value);
       this.setState({
         [name]: target.value,
       });
