@@ -3,6 +3,7 @@ import { Panel } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import FileAccessManually from '../components/FileAccessManually';
 import EtherWalletAlert from '../components/EtherWalletAlert';
+import BrowserAlert from '../components/BrowserAlert';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
 class FileAccessManuallyView extends Component {
@@ -16,6 +17,7 @@ class FileAccessManuallyView extends Component {
         <header className="App-header">
           <h1>IPFS Access</h1>
         </header>
+        <BrowserAlert />
         <EtherWalletAlert />
         <Panel bsStyle="primary">
           <Panel.Heading>

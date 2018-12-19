@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Panel, Jumbotron, Button, Alert } from 'react-bootstrap';
 import FileRegister from '../components/FileRegister';
+import BrowserAlert from '../components/BrowserAlert';
 import GetEtherWalletPanel from '../components/panels/GetEtherWalletPanel';
 import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
 import isMobile from '../utils/lib_user_agent';
@@ -17,6 +18,7 @@ class FileRegisterView extends Component {
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
+        <BrowserAlert />
         <GetEtherWalletPanel title="1. Get Ethereum Wallet" />
         <PurchaseEtherPanel title="2. Purchase Ethereum Tokens" />
         <Panel bsStyle="primary" defaultExpanded="true">
