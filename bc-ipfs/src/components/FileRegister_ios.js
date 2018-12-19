@@ -3,7 +3,7 @@ import { Button, Form, FormControl, FormGroup, ControlLabel, Alert, Image } from
 
 import lib_ipfs from '../utils/lib_ipfs';
 import lib_web3 from '../utils/lib_web3';
-import lib_contract from '../utils/lib_contract';
+import lib_reward_contract from '../utils/lib_reward_contract';
 import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
@@ -166,7 +166,7 @@ class FileRegister extends Component {
     console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription);
     const file_obj = this.state.file_obj;
 
-    const contract_address = lib_contract.options.address;
+    const contract_address = lib_reward_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
     let submit_acct = '';
 
@@ -248,9 +248,9 @@ class FileRegister extends Component {
                   .catch(err => {
                     this.displayErrorMsg(err.message);
                     console.error(err);
-                  }); // end of lib_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
+                  }); // end of lib_reward_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
                 this.displayInfoMsg("waiting for wallet transaction's approval and complete...");
-                lib_contract.methods
+                lib_reward_contract.methods
                   .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
                   .send(
                     {
@@ -300,7 +300,7 @@ class FileRegister extends Component {
                     this.displayErrorMsg(err.message);
                     this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
                     console.error(err);
-                  }); // end of lib_contract.methods.encryptIPFS
+                  }); // end of lib_reward_contract.methods.encryptIPFS
               }); // end of ipfs.add()
           })
           .catch(err => {

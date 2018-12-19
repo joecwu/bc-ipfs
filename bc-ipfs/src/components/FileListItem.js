@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import lib_web3 from '../utils/lib_web3';
-import lib_contract from '../utils/lib_contract';
+import lib_reward_contract from '../utils/lib_reward_contract';
 import crypto_js from '../utils/lib_crypto';
 import Bytes from './Bytes';
 import DateTime from './DateTime';
@@ -82,7 +82,7 @@ class FileListItem extends Component {
     console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedTxt = ' + a_encrypted_hash);
     event.preventDefault();
 
-    const contract_address = lib_contract.options.address;
+    const contract_address = lib_reward_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
     let submit_acct = '';
     try {
@@ -93,7 +93,7 @@ class FileListItem extends Component {
           console.log('Applying the first eth account[0]: ' + submit_acct + ' for contract ' + contract_address);
         })
         .then(() => {
-          lib_contract.methods
+          lib_reward_contract.methods
             .decryptIPFS(a_ipfsmeta)
             .send(
               {
@@ -117,7 +117,7 @@ class FileListItem extends Component {
             .then(() => {
               let realKey = '';
               let decryptIPFSHash = '';
-              lib_contract.methods
+              lib_reward_contract.methods
                 .fetchKeyForIPFS()
                 .call(
                   {
@@ -184,7 +184,7 @@ class FileListItem extends Component {
       .then(() => {
         let realKey = '';
         let decryptIPFSHash = '';
-        lib_contract.methods
+        lib_reward_contract.methods
         .fetchKeyForIPFS()
         .call(
         {

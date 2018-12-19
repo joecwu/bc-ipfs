@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, FormControl, FormGroup, ControlLabel, Alert, Image } from 'react-bootstrap';
 
 import lib_web3 from '../utils/lib_web3';
-import lib_contract from '../utils/lib_contract';
+import lib_reward_contract from '../utils/lib_reward_contract';
 import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
@@ -110,7 +110,7 @@ class FileRegisterManually extends Component {
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
     // single file upload and registration only
-    const contract_address = lib_contract.options.address;
+    const contract_address = lib_reward_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
     let submit_acct = '';
     let ipfs_realhash = this.state.ipfs_realhash;
@@ -151,7 +151,7 @@ class FileRegisterManually extends Component {
         this.setState({ ['ipfs_gen_metatext']: ipfsmeta_norm });
       })
       .then(() => {
-        lib_contract.methods
+        lib_reward_contract.methods
           .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
           .send(
             {
@@ -179,7 +179,7 @@ class FileRegisterManually extends Component {
           })
           .then(() => {
             this.setState({ ['btn_register_disabled']: false });
-          }); // end of lib_contract.methods.encryptIPFS
+          }); // end of lib_reward_contract.methods.encryptIPFS
       });
   }
   /* jshint ignore:end */
