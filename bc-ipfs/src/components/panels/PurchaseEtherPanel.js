@@ -170,7 +170,7 @@ class PurchaseEthPanel extends Component {
                   <Image src="info.png" height="15px" width="15px" />
                 </OverlayTrigger>
               </HelpBlock>
-              <HelpBlock style={{ dislpay: this.state.account_addr == '' ? 'none' : 'block' }}>
+              <HelpBlock style={{ display: (this.state.account_addr != '') ? 'block' : 'none' }}>
                 Click{' '}<strong>
                 <a
                   href={`https://buy.coinbase.com/widget?address=${this.state.account_addr}&amount=${
