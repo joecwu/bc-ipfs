@@ -91,6 +91,7 @@ class PurchaseEthPanel extends Component {
             .getBalance(this.state.account_addr.toString())
             .then(balance => {
               console.debug(`got balance. account:[${this.state.account_addr}] balance:[${balance}]`);
+              //TODO balance should divid 10^18
               this.setState({ ['account_balance']: balance, ['show']: balance < 1 });
             })
             .catch(err => {
