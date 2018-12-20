@@ -63,14 +63,14 @@ class ExchangeBMDTokensPanel extends Component {
         this.state.account_addr
       ).call()
       .then((rawBalance) => {
+        console.debug(`got BMD rawBalance:[${rawBalance}]`)
         balance = div18decimals(rawBalance);
-        console.log(balance);
       })
       .catch(err => {
         console.error(err);
       })
       .then(() => {
-        this.setState({['bmd_balance']: balance})
+        this.setState({['bmd_balance']: balance, ['show']: balance < 1})
       });
   }
 
@@ -107,6 +107,8 @@ class ExchangeBMDTokensPanel extends Component {
   }
 
   fetchAccountInfo() {
+    let has_wallet = false;
+    let has_account = false;
     lib_web3.eth
       .getAccounts(function(err, accounts) {
         if (err) {
@@ -140,7 +142,6 @@ class ExchangeBMDTokensPanel extends Component {
             .then(rawBalance => {
               const balance = div18decimals(rawBalance);
               console.debug(`got balance. account:[${this.state.account_addr}] balance:[${balance}]`);
-              //TODO balance should divid 10^18
               this.setState({ ['account_balance']: balance, ['show']: balance < 1 });
             })
             .catch(err => {
@@ -154,8 +155,6 @@ class ExchangeBMDTokensPanel extends Component {
   }
 
   componentDidMount() {
-    let has_wallet = false;
-    let has_account = false;
     this.fetchExchangeRate();
     this.fetchAccountInfo();
   }
@@ -187,19 +186,6 @@ class ExchangeBMDTokensPanel extends Component {
 
   render() {
     return (
-      // <Alert bsStyle="danger" style={{ display: this.state.wallet_alert_show ? 'block' : 'none' }}>
-      //   <h3>Unable to connect with your Ethereum wallet account.</h3>
-      //   <h4>Please make sure you have Ethereum wallet installed, loginned and have valid account.</h4>
-      //   <p>
-      //     For desktop user, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
-      //   </p>
-      //   <p>For iOS user, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/mobiledocs/README.md'>here</a></p>
-      //   <p>
-      //     For Android user, you can install Firefox from{' '}
-      //     <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Google Play Store</a> and install{' '}
-      //     <a href="https://addons.mozilla.org/zh-TW/android/addon/ether-metamask/">MetaMask plugin</a>. For more MetaMask usage, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
-      //   </p>
-      // </Alert>
       <Panel bsStyle="primary" expanded={this.state.show} onToggle={this.toggle}>
         <Panel.Heading>
           <Panel.Title toggle componentClass="h3">
