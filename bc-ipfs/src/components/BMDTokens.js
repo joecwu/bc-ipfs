@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
-import { div18decimals } from '../utils/lib_BMDtoken';
+import { div18decimals } from '../utils/lib_token';
 var PropTypes = require('prop-types');
 
 /*jshint ignore:start*/

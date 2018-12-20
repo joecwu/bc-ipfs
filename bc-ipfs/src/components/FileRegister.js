@@ -7,7 +7,7 @@ import lib_reward_contract from '../utils/lib_reward_contract';
 import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
-import { getBMDTokensByFilesize } from '../utils/lib_BMDtoken';
+import { getBMDTokensByFilesize } from '../utils/lib_token';
 
 class FileRegister extends Component {
   constructor() {

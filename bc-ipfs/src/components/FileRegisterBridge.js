@@ -7,7 +7,7 @@ import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
 var PropTypes = require('prop-types');
-import { getBMDTokensByFilesize } from '../utils/lib_BMDtoken';
+import { getBMDTokensByFilesize } from '../utils/lib_token';
 
 class FileRegisterBridge extends Component {
   constructor() {
