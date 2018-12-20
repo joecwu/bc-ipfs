@@ -3,9 +3,9 @@ import { Tabs, Tab, Panel } from 'react-bootstrap';
 import FileList from '../components/FileList';
 import EtherWalletAlert from '../components/EtherWalletAlert';
 import BrowserAlert from '../components/BrowserAlert';
-import './App.css'; //TODO: defien FileListView own CSS
+import './App.css'; //TODO: defien FileAccessView own CSS
 
-class FileListView extends Component {
+class FileAccessView extends Component {
   constructor() {
     super();
   }
@@ -46,4 +46,4 @@ class FileListView extends Component {
   }
 }
 
-export default FileListView;
+export default FileAccessView;
