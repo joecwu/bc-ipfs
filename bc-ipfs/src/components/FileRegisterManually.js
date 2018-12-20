@@ -254,7 +254,7 @@ class FileRegisterManually extends Component {
             Thanks for your participation. You will get{' '}
             <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
             <br />
-            <strong>Tips:</strong> Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md' target='_blank'>here</a> to see how add symbol to your wallet.
+            <strong>Tips:</strong> Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md' target='_blank'>here</a> to see how to add symbol to your wallet.
           </Alert>
         </Form>
       </div>

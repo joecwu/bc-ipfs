@@ -162,7 +162,7 @@ class PurchaseEtherForBMDPanel extends Component {
               </strong>
             </Alert>
             <FormGroup controlId="formBlockMedToken" validationState={isNaN(this.state.bmd_token_amount)? 'error' : 'success'}>
-              <ControlLabel>How many BlockMed tokens do you what to have?</ControlLabel>
+              <ControlLabel>How many BlockMed tokens do you what to exchange?</ControlLabel>
               <FormControl type="text" name="bmd_token_amount" onChange={this.captureFileAndMetadata} />
               <HelpBlock style={{ display: typeof this.state.exchange_rate != 'undefined' ? 'block' : 'none' }}>
                 You need <strong>{this.getEthTokens()}</strong> Ethereum tokens to exchange for BlockMed(BMD) tokens.{' '}
