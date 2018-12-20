@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import qs from 'query-string';
 import FileRegisterBridge from '../components/FileRegisterBridge';
 import EtherWalletAlert from '../components/EtherWalletAlert';
+import BrowserAlert from '../components/BrowserAlert';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
 class FileRegisterBridgeView extends Component {
@@ -23,6 +24,7 @@ class FileRegisterBridgeView extends Component {
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
+        <BrowserAlert />
         <EtherWalletAlert />
         <Panel bsStyle="primary">
           <Panel.Heading>

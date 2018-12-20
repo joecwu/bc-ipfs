@@ -3,7 +3,7 @@
 // run with local Provider
 import lib_web3 from './lib_web3';
 
-const address = CONFIG.ethereum.contract.address;
+const address = CONFIG.ethereum.reward_contract.address;
 const abi = [
   {
     constant: false,
@@ -282,6 +282,6 @@ const abi = [
     type: 'event',
   },
 ];
-const lib_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: CONFIG.ethereum.gasPrice, gas: CONFIG.ethereum.gas });
+const lib_reward_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: CONFIG.ethereum.reward_contract.gasPrice, gas: CONFIG.ethereum.reward_contract.gas });
 
-export default lib_contract;
+export default lib_reward_contract;

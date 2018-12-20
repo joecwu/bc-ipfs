@@ -4,6 +4,7 @@ import './index.css';
 import App from './containers/App';
 import FileListView from './containers/FileListView';
 import FileRegisterView from './containers/FileRegisterView';
+import FileRegisterView_ios from './containers/FileRegisterView_ios';
 import FileRegisterManuallyView from './containers/FileRegisterManuallyView';
 import FileRegisterBridgeView from './containers/FileRegisterBridgeView';
 import FileAccessManuallyView from './containers/FileAccessManuallyView';
@@ -17,7 +18,8 @@ ReactDOM.render(
       <Route exact path="/" component={App} />
       <Route path="/file-list" component={FileListView} />
       <Route path="/file-access-manually" component={FileAccessManuallyView} />
-      <Route path="/file-register" component={FileRegisterView} />
+      <Route path="/file-register" component={FileRegisterView_ios} />
+      <Route path="/file-register-desktop" component={FileRegisterView} />
       <Route path="/file-register-manually" component={FileRegisterManuallyView} />
       <Route path="/file-register-bridge" component={FileRegisterBridgeView} />
     </Switch>

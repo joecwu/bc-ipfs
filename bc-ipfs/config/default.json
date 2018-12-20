@@ -8,16 +8,21 @@
     "gateway_url": "https://cloudflare-ipfs.com/ipfs/"
   },
   "ethereum": {
-    "contract": {
-      "address": "0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec"
+    "reward_contract": {
+      "address": "0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec",
+      "gasPrice": 6000000000,
+      "gas": 1500000
     },
-    "gasPrice": 6000000000,
-    "gas": 1500000,
+    "trading_contract": {
+      "address": "0x4bd13679EB719937676af1CeA42A95efc30cE69E",
+      "gasPrice": 6000000000,
+      "gas": 1500000
+    },
     "websocket_provider": "wss://ropsten.infura.io/ws"
   },
   "es": {
     "search_url": {
-      "blockmed_ipfs": "http://es-dev.blcksync.info/blockmed-ipfs/_search/template"
+      "blockmed_ipfs": "https://es-dev.blcksync.info/blockmed-ipfs/_search/template"
     },
     "authorization": "Basic cmVhZGFsbDpyZWFkYWxs"
   },

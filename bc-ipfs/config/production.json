@@ -8,11 +8,16 @@
     "gateway_url": "https://cloudflare-ipfs.com/ipfs/"
   },
   "ethereum": {
-    "contract": {
-      "address": "0x648279922dd55b22665D7A22685B660626c9FbBF"
+    "reward_contract": {
+      "address": "0x648279922dd55b22665D7A22685B660626c9FbBF",
+      "gasPrice": 6000000000,
+      "gas": 1500000
     },
-    "gasPrice": 6000000000,
-    "gas": 1500000,
+    "trading_contract": {
+      "address": "0x434d7cAeb4d6332d5b57ab1d44036f49aA321F8C",
+      "gasPrice": 6000000000,
+      "gas": 1500000
+    },
     "websocket_provider": "wss://mainnet.infura.io/ws"
   },
   "es": {

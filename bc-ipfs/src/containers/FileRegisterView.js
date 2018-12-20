@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Panel, Jumbotron, Button, Alert } from 'react-bootstrap';
 import FileRegister from '../components/FileRegister';
-import EtherWalletAlert from '../components/EtherWalletAlert';
+import BrowserAlert from '../components/BrowserAlert';
+import GetEtherWalletPanel from '../components/panels/GetEtherWalletPanel';
+import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
+import isMobile from '../utils/lib_user_agent';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
 class FileRegisterView extends Component {
@@ -15,25 +18,36 @@ class FileRegisterView extends Component {
         <header className="App-header">
           <h1>IPFS Register</h1>
         </header>
-        <EtherWalletAlert />
-        <Jumbotron className='desktop-only' style={{ padding: '30px' }}>
-          <h2>Have large files to upload?</h2>
-          <p>Download our desktop tool to help you upload large files.</p>
-          <p>
-            <Button bsStyle="primary" href={CONFIG.desktop_tool.mac}>MacOS</Button>{' '}
-            <Button bsStyle="primary" href={CONFIG.desktop_tool.windows}>Window</Button>{' '}
-            <Button bsStyle="primary" href={CONFIG.desktop_tool.rpm}>Linux(RPM)</Button>{' '}
-            <Button bsStyle="primary" href={CONFIG.desktop_tool.deb}>Linux(Deb)</Button>{' '}
-          </p>
-        </Jumbotron>
-        <Panel bsStyle="primary">
+        <BrowserAlert />
+        <GetEtherWalletPanel title="1. Get Ethereum Wallet" />
+        <PurchaseEtherPanel title="2. Purchase Ethereum Tokens" />
+        <Panel bsStyle="primary" defaultExpanded="true">
           <Panel.Heading>
-            <Panel.Title componentClass="h3">Registering Files</Panel.Title>
+            <Panel.Title toggle componentClass="h3">3. Registering Files</Panel.Title>
           </Panel.Heading>
-          <Panel.Body>
-            <FileRegister />
-          </Panel.Body>
+          <Panel.Collapse>
+            <Panel.Body>
+              <FileRegister />
+            </Panel.Body>
+          </Panel.Collapse>
         </Panel>
+        <Panel bsStyle="primary" defaultExpanded={!isMobile.any()}>
+          <Panel.Heading>
+            <Panel.Title toggle componentClass="h3">4. Have Large Files to upload?</Panel.Title>
+          </Panel.Heading>
+          <Panel.Collapse>
+            <Panel.Body>
+              <p>Download our desktop tool to help you upload large files.</p>
+              <p>
+                <Button bsStyle="info" href={CONFIG.desktop_tool.mac}>MacOS</Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.windows}>Window</Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.rpm}>Linux(RPM)</Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.deb}>Linux(Deb)</Button>{' '}
+              </p>
+            </Panel.Body>
+          </Panel.Collapse>
+        </Panel>
+
       </div>
     );
     /*jshint ignore:end*/
