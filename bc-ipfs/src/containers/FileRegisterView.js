@@ -4,6 +4,7 @@ import FileRegister from '../components/FileRegister';
 import BrowserAlert from '../components/BrowserAlert';
 import GetEtherWalletPanel from '../components/panels/GetEtherWalletPanel';
 import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
+import ExchangeBMDTokensPanel from '../components/panels/ExchangeBMDTokensPanel';
 import isMobile from '../utils/lib_user_agent';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
@@ -47,6 +48,7 @@ class FileRegisterView extends Component {
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
+        <ExchangeBMDTokensPanel title="5. Exchange BlockMed(BMD) Tokens" />
 
       </div>
     );
