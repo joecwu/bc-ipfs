@@ -141,10 +141,10 @@ class PurchaseEtherPanel extends Component {
             <FormGroup controlId="formWalletInfo" style={{ display: this.state.account_addr != '' ? 'block' : 'none' }}>
               <ControlLabel>Your Ethereum Wallet Info:</ControlLabel>
               <p>
-                Wallet Address: <strong>{this.state.account_addr}</strong>
+                Address: <strong>{this.state.account_addr}</strong>
               </p>
               <p>
-                Wallet Balance: <strong>{this.state.account_balance}</strong>
+                Balance: <strong>{this.state.account_balance}</strong> ETH
               </p>
             </FormGroup>
             <FormGroup
