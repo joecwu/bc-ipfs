@@ -161,7 +161,7 @@ class PurchaseEthPanel extends Component {
                 <a href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md">here</a>.{' '}
               </strong>
             </Alert>
-            <FormGroup controlId="formBlockMedToken" validationState={isNaN(this.state.bmd_token_amount)? 'warning' : 'success'}>
+            <FormGroup controlId="formBlockMedToken" validationState={isNaN(this.state.bmd_token_amount)? 'error' : 'success'}>
               <ControlLabel>How many BlockMed tokens do you what to have?</ControlLabel>
               <FormControl type="text" name="bmd_token_amount" onChange={this.captureFileAndMetadata} />
               <HelpBlock style={{ display: typeof this.state.exchange_rate != 'undefined' ? 'block' : 'none' }}>
