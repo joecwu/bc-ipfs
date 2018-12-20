@@ -10,6 +10,15 @@ export const div18decimals = value => {
   return token_cost;
 };
 
+export const mul18decimals = value => {
+  var decimals = 18;
+  /* jshint ignore:start */
+  var eth_to_wei = new BigNumber(10 ** decimals);
+  /* jshint ignore:end */
+  let wei = new BigNumber(value).multipliedBy(eth_to_wei).toNumber();
+  return wei;
+};
+
 export const getBMDTokensByFilesize = value => {
   var decimals = 18;
   /* jshint ignore:start */
@@ -23,5 +32,6 @@ export const getBMDTokensByFilesize = value => {
 
 module.exports = {
   div18decimals: div18decimals,
+  mul18decimals: mul18decimals,
   getBMDTokensByFilesize: getBMDTokensByFilesize,
 };
