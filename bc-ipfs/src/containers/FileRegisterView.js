@@ -3,7 +3,7 @@ import { Panel, Jumbotron, Button, Alert } from 'react-bootstrap';
 import FileRegister from '../components/FileRegister';
 import BrowserAlert from '../components/BrowserAlert';
 import GetEtherWalletPanel from '../components/panels/GetEtherWalletPanel';
-import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
+import PurchaseEtherForBMDPanel from '../components/panels/PurchaseEtherForBMDPanel';
 import isMobile from '../utils/lib_user_agent';
 import './App.css'; //TODO: defien FileRegisterView own CSS
 
@@ -20,7 +20,7 @@ class FileRegisterView extends Component {
         </header>
         <BrowserAlert />
         <GetEtherWalletPanel title="1. Get Ethereum Wallet" />
-        <PurchaseEtherPanel title="2. Purchase Ethereum Tokens" />
+        <PurchaseEtherForBMDPanel title="2. Purchase Ethereum Tokens" />
         <Panel bsStyle="primary" defaultExpanded="true">
           <Panel.Heading>
             <Panel.Title toggle componentClass="h3">3. Registering Files</Panel.Title>

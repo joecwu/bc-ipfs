@@ -4,7 +4,7 @@ import lib_web3 from '../../utils/lib_web3';
 import lib_trading_contract from '../../utils/lib_trading_contract';
 var PropTypes = require('prop-types');
 
-class PurchaseEthPanel extends Component {
+class PurchaseEtherForBMDPanel extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -190,12 +190,12 @@ class PurchaseEthPanel extends Component {
   }
 }
 
-PurchaseEthPanel.propTypes = {
+PurchaseEtherForBMDPanel.propTypes = {
   title: PropTypes.string,
 };
 
-PurchaseEthPanel.defaultProps = {
+PurchaseEtherForBMDPanel.defaultProps = {
   title: 'Purchase Ethereum',
 };
 
-export default PurchaseEthPanel;
+export default PurchaseEtherForBMDPanel;
