@@ -20,8 +20,8 @@ class FileRegisterView extends Component {
         </header>
         <BrowserAlert />
         <GetEtherWalletPanel title="1. Get Ethereum Wallet" />
-        <PurchaseEtherForBMDPanel title="2. Purchase Ethereum Tokens" />
-        <Panel bsStyle="primary" defaultExpanded="true">
+        <PurchaseEtherPanel title="2. Fund Your Wallet with Ethereum" />
+        <Panel bsStyle="primary" defaultExpanded={true}>
           <Panel.Heading>
             <Panel.Title toggle componentClass="h3">3. Registering Files</Panel.Title>
           </Panel.Heading>
