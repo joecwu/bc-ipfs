@@ -213,20 +213,23 @@ to capture all required npm modules. Please report any other missing ones if you
 
 **Required**
 ```
-npm install -S react@16.6.1 \
+npm install -S react@16.6.3 \
   @types/react@16.7.3 \
+  react-router-dom@4.3.1 \
   crypto-js@3.1.9-1 \
   ethereumjs-tx@1.3.7 \
   ipfs-api@26.1.2 \
   jquery@3.3.1 \
   js-sha256@0.9.0 \
   react-bootstrap@0.32.4 \
-  react-dom@16.6.1 \
+  react-dom@16.6.3 \
   react-confirm-alert@2.0.7 \
   url-parse@1.4.4 \
   web3@1.0.0-beta.36 \
   whatwg-fetch@3.0.0 \
-  config-webpack
+  config-webpack@1.0.4 \
+  bignumber.js@8.0.1 \
+  bootstrap@3.3.7
 ```
 
 **Development Only**
