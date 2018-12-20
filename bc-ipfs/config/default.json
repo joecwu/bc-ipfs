@@ -18,6 +18,11 @@
       "gasPrice": 6000000000,
       "gas": 1500000
     },
+    "token_contract": {
+      "address": "0xe90051496b797f5a04196ff3196aa21ed36bc392",
+      "gasPrice": 6000000000,
+      "gas": 1500000
+    },
     "websocket_provider": "wss://ropsten.infura.io/ws"
   },
   "es": {
