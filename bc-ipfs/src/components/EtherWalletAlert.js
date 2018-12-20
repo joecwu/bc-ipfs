@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Alert } from 'react-bootstrap';
 import lib_web3 from '../utils/lib_web3';
 var PropTypes = require('prop-types');
-
+// Deprecated
 class EtherWalletAlert extends Component {
   constructor(props, context) {
     super(props, context);
