@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 import { BigNumber } from 'bignumber.js';
 
-export const getBMDTokensByTokenCost = value => {
+export const div18decimals = value => {
   var decimals = 18;
   /* jshint ignore:start */
   var eth_to_wei = new BigNumber(10 ** decimals);
@@ -22,6 +22,6 @@ export const getBMDTokensByFilesize = value => {
 };
 
 module.exports = {
-  getBMDTokensByTokenCost: getBMDTokensByTokenCost,
+  div18decimals: div18decimals,
   getBMDTokensByFilesize: getBMDTokensByFilesize,
 };
