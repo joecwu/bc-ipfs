@@ -86,7 +86,7 @@ class FileListItem extends Component {
     let a_ipfsmeta = this.props.hashId;
     let a_encrypted_hash = '';
     console.log('Accessing with metadata = ' + a_ipfsmeta + ' and encryptedTxt = ' + a_encrypted_hash);
-    event.preventDefault();
+    event.persist();
 
     const contract_address = lib_reward_contract.options.address;
     console.log('Identified contract address = ' + contract_address);
