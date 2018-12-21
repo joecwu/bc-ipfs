@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
-import { Alert, Panel, Image, FormGroup, ControlLabel, HelpBlock, FormControl, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import {
+  Alert,
+  Button,
+  Panel,
+  Image,
+  FormGroup,
+  ControlLabel,
+  HelpBlock,
+  FormControl,
+  Tooltip,
+  OverlayTrigger,
+} from 'react-bootstrap';
 import lib_web3 from '../../utils/lib_web3';
+import { div18decimals } from '../../utils/lib_token';
 import lib_trading_contract from '../../utils/lib_trading_contract';
 var PropTypes = require('prop-types');
 
-class PurchaseEthPanel extends Component {
+class PurchaseEtherPanel extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -13,53 +25,18 @@ class PurchaseEthPanel extends Component {
       has_account: false,
       account_addr: '',
       account_balance: undefined,
-      bmd_token_amount: 0,
+      usd_amount: 0,
       show: false,
       coinbase_code: '9ec56d01-7e81-5017-930c-513daa27bb6a',
-      exchange_rate: undefined,
     };
 
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
-    this.fetchExchangeRate = this.fetchExchangeRate.bind(this);
-    this.getEthTokens = this.getEthTokens.bind(this);
-    this.toggle = this.toggle.bind(this);    
-    this.exchange_rate_tooltip = this.exchange_rate_tooltip.bind(this);
-  }
-
-  exchange_rate_tooltip() {
-    return (
-      <Tooltip id="tooltip">
-        The exchange rate of BlockMed(BMD) renews once a day.
-      </Tooltip>
-    );
-  }
-
-  getEthTokens() {
-    console.log(typeof this.state.bmd_token_amount);
-    if ((typeof this.state.exchange_rate !== 'undefined') && !isNaN(this.state.bmd_token_amount)) {
-      return this.state.bmd_token_amount / this.state.exchange_rate;
-    }
-    return 0;
-  }
-
-  fetchExchangeRate() {
-    console.log('fetching exchange rate');
-    lib_trading_contract.methods
-      .exchangeRate()
-      .call()
-      .then(rate => {
-        console.log(`fetched exchange rate:[${rate}]`);
-        this.setState({ ['exchange_rate']: rate });
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    this.toggle = this.toggle.bind(this);
   }
 
   componentDidMount() {
     let has_wallet = false;
     let has_account = false;
-    this.fetchExchangeRate();
     lib_web3.eth
       .getAccounts(function(err, accounts) {
         if (err) {
@@ -89,8 +66,9 @@ class PurchaseEthPanel extends Component {
           console.info(`getting account balance address:[${this.state.account_addr}]`);
           lib_web3.eth
             .getBalance(this.state.account_addr.toString())
-            .then(balance => {
-              console.debug(`got balance. account:[${this.state.account_addr}] balance:[${balance}]`);
+            .then(rawBalance => {
+              console.debug(`got balance. account:[${this.state.account_addr}] rawBalance:[${rawBalance}]`);
+              const balance = div18decimals(rawBalance);
               //TODO balance should divid 10^18
               this.setState({ ['account_balance']: balance, ['show']: balance < 1 });
             })
@@ -131,19 +109,6 @@ class PurchaseEthPanel extends Component {
 
   render() {
     return (
-      // <Alert bsStyle="danger" style={{ display: this.state.wallet_alert_show ? 'block' : 'none' }}>
-      //   <h3>Unable to connect with your Ethereum wallet account.</h3>
-      //   <h4>Please make sure you have Ethereum wallet installed, loginned and have valid account.</h4>
-      //   <p>
-      //     For desktop user, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
-      //   </p>
-      //   <p>For iOS user, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/mobiledocs/README.md'>here</a></p>
-      //   <p>
-      //     For Android user, you can install Firefox from{' '}
-      //     <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Google Play Store</a> and install{' '}
-      //     <a href="https://addons.mozilla.org/zh-TW/android/addon/ether-metamask/">MetaMask plugin</a>. For more MetaMask usage, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
-      //   </p>
-      // </Alert>
       <Panel bsStyle="primary" expanded={this.state.show} onToggle={this.toggle}>
         <Panel.Heading>
           <Panel.Title toggle componentClass="h3">
@@ -161,27 +126,44 @@ class PurchaseEthPanel extends Component {
                 <a href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md">here</a>.{' '}
               </strong>
             </Alert>
-            <FormGroup controlId="formBlockMedToken" validationState={isNaN(this.state.bmd_token_amount)? 'warning' : 'success'}>
-              <ControlLabel>How many BlockMed tokens do you what to have?</ControlLabel>
-              <FormControl type="text" name="bmd_token_amount" onChange={this.captureFileAndMetadata} />
-              <HelpBlock style={{ display: typeof this.state.exchange_rate != 'undefined' ? 'block' : 'none' }}>
-                You need <strong>{this.getEthTokens()}</strong> Ethereum tokens to exchange for BlockMed(BMD) tokens.{' '}
-                <OverlayTrigger placement="right" overlay={this.exchange_rate_tooltip()}>
-                  <Image src="info.png" height="15px" width="15px" />
-                </OverlayTrigger>
-              </HelpBlock>
-              <HelpBlock style={{ display: (this.state.account_addr != '') ? 'block' : 'none' }}>
-                Click{' '}<strong>
-                <a
-                  href={`https://buy.coinbase.com/widget?address=${this.state.account_addr}&amount=${
-                    this.state.bmd_token_amount
-                  }&code=${this.state.coinbase_code}&crypto_currency=ETH`}
-                  target="_blank"
-                >
-                  here
-                </a>{' '}</strong>
-                to Coinbase to purchase Ethereum.
-              </HelpBlock>
+            <Alert
+              bsStyle="danger"
+              style={{
+                display:
+                  typeof this.state.account_balance !== 'undefined' && this.state.account_balance < 1
+                    ? 'block'
+                    : 'none',
+              }}
+            >
+              Insufficient Ethereum to pay gas! Please fund your wallet with more Ethereum (ETH)!
+            </Alert>
+
+            <FormGroup controlId="formWalletInfo" style={{ display: this.state.account_addr != '' ? 'block' : 'none' }}>
+              <ControlLabel>Your Ethereum Wallet Info:</ControlLabel>
+              <p>
+                Address: <strong>{this.state.account_addr}</strong>
+              </p>
+              <p>
+                Balance: <strong>{this.state.account_balance}</strong> ETH
+              </p>
+            </FormGroup>
+            <FormGroup
+              controlId="formBlockMedToken"
+              validationState={isNaN(this.state.usd_amount) ? 'error' : 'success'}
+            >
+              <ControlLabel>How many USD do you what to exchange for Ethereum(ETH)?</ControlLabel>
+              <FormControl type="text" name="usd_amount" onChange={this.captureFileAndMetadata} />
+              <br />
+              <Button
+                bsStyle="primary"
+                disabled={this.state.account_addr == ''}
+                href={`https://buy.coinbase.com/widget?address=${this.state.account_addr}&amount=${
+                  this.state.usd_amount
+                }&code=${this.state.coinbase_code}&crypto_currency=ETH`}
+                target="_blank"
+              >
+                Purchase
+              </Button>
             </FormGroup>
           </Panel.Body>
         </Panel.Collapse>
@@ -190,12 +172,12 @@ class PurchaseEthPanel extends Component {
   }
 }
 
-PurchaseEthPanel.propTypes = {
+PurchaseEtherPanel.propTypes = {
   title: PropTypes.string,
 };
 
-PurchaseEthPanel.defaultProps = {
-  title: 'Purchase Ethereum',
+PurchaseEtherPanel.defaultProps = {
+  title: 'Fund Your Wallet',
 };
 
-export default PurchaseEthPanel;
+export default PurchaseEtherPanel;

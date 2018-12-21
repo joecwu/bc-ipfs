@@ -18,6 +18,11 @@
       "gasPrice": 6000000000,
       "gas": 1500000
     },
+    "token_contract": {
+      "address": "0xd9a2dc793e1bbce46e2a7e766d7c76fdaf465e48",
+      "gasPrice": 6000000000,
+      "gas": 1500000
+    },
     "websocket_provider": "wss://mainnet.infura.io/ws"
   },
   "es": {

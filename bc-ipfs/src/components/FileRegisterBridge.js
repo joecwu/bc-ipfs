@@ -7,7 +7,7 @@ import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
 import crypto_js from '../utils/lib_crypto';
 var PropTypes = require('prop-types');
-import { getBMDTokensByFilesize } from '../utils/lib_BMDtoken';
+import { getBMDTokensByFilesize } from '../utils/lib_token';
 
 class FileRegisterBridge extends Component {
   constructor() {
@@ -258,6 +258,8 @@ class FileRegisterBridge extends Component {
         <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
           Thanks for your participation. You will get{' '}
           <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
+          <br />
+          <strong>Tips:</strong> Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md' target='_blank'>here</a> to see how to add symbol to your wallet.
         </Alert>
       </Form>
     );

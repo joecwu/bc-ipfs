@@ -1,13 +1,22 @@
 /* jshint esversion: 6 */
 import { BigNumber } from 'bignumber.js';
 
-export const getBMDTokensByTokenCost = value => {
+export const div18decimals = value => {
   var decimals = 18;
   /* jshint ignore:start */
   var eth_to_wei = new BigNumber(10 ** decimals);
   /* jshint ignore:end */
   let token_cost = new BigNumber(value).div(eth_to_wei).toNumber();
   return token_cost;
+};
+
+export const mul18decimals = value => {
+  var decimals = 18;
+  /* jshint ignore:start */
+  var eth_to_wei = new BigNumber(10 ** decimals);
+  /* jshint ignore:end */
+  let wei = new BigNumber(value).multipliedBy(eth_to_wei).toNumber();
+  return wei;
 };
 
 export const getBMDTokensByFilesize = value => {
@@ -22,6 +31,7 @@ export const getBMDTokensByFilesize = value => {
 };
 
 module.exports = {
-  getBMDTokensByTokenCost: getBMDTokensByTokenCost,
+  div18decimals: div18decimals,
+  mul18decimals: mul18decimals,
   getBMDTokensByFilesize: getBMDTokensByFilesize,
 };

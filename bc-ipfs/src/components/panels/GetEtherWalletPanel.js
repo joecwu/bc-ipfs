@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Panel, Image } from 'react-bootstrap';
+import { Alert, Panel, Image, Button } from 'react-bootstrap';
 import lib_web3 from '../../utils/lib_web3';
 var PropTypes = require('prop-types');
 
@@ -85,8 +85,11 @@ class EtherWalletInstructionPanel extends Component {
               </strong>
             </Alert>
             <p>
-              Click <a href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md" target="_blank">here</a> to get a
-              wallet instruction.
+              Click{' '}
+              <Button bsStyle="info" href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md" target="_blank">
+                here
+              </Button>{' '}
+              to get a wallet instruction.
             </p>
           </Panel.Body>
         </Panel.Collapse>

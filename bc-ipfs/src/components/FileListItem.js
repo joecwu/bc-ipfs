@@ -6,7 +6,7 @@ import crypto_js from '../utils/lib_crypto';
 import Bytes from './Bytes';
 import DateTime from './DateTime';
 import BMDTokens from './BMDTokens';
-import { getBMDTokensByTokenCost } from '../utils/lib_BMDtoken';
+import { div18decimals } from '../utils/lib_token';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -55,7 +55,7 @@ class FileListItem extends Component {
     } else {
       confirmAlert({
         title: 'Confirm to access',
-        message: `Access this file will cost ${getBMDTokensByTokenCost(
+        message: `Access this file will cost ${div18decimals(
           this.props.tokenCost,
         )} BMD tokens, click 'Yes' to access or 'No' to cancel.`,
         buttons: [
