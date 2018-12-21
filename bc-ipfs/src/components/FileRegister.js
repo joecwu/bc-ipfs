@@ -353,9 +353,11 @@ class FileRegister extends Component {
               type="text"
               name="file_description"
               value={this.state.file_description}
-              placeholder={'The better you describe your files, the easier others can discover and find it.\nThis helps to increase the chances of rewards and incentives to use your files.'}
+              placeholder={
+                'The better you describe your files, the easier others can discover and find it.\nThis helps to increase the chances of rewards and incentives to use your files.'
+              }
               onChange={this.captureFileAndMetadata}
-              style={{ height: "100px" }}
+              style={{ height: '100px' }}
             />
             <FormControl.Feedback />
           </FormGroup>
@@ -392,7 +394,14 @@ class FileRegister extends Component {
             Thanks for your participation. You will get{' '}
             <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
             <br />
-            <strong>Tips:</strong> Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md' target='_blank'>here</a> to see how to add symbol to your wallet.
+            <strong>Tips:</strong> Click{' '}
+            <a
+              href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md"
+              target="_blank"
+            >
+              here
+            </a>{' '}
+            to see how to add symbol to your wallet.
           </Alert>
         </Form>
       </div>

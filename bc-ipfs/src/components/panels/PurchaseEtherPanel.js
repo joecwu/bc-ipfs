@@ -25,6 +25,7 @@ class PurchaseEtherPanel extends Component {
       has_account: false,
       account_addr: '',
       account_balance: undefined,
+      eth_wei_balance: 0, // same as account_balance, but in unit wei
       usd_amount: 0,
       show: false,
       coinbase_code: '9ec56d01-7e81-5017-930c-513daa27bb6a',
@@ -70,7 +71,7 @@ class PurchaseEtherPanel extends Component {
               console.debug(`got balance. account:[${this.state.account_addr}] rawBalance:[${rawBalance}]`);
               const balance = div18decimals(rawBalance);
               //TODO balance should divid 10^18
-              this.setState({ ['account_balance']: balance, ['show']: balance < 1 });
+              this.setState({ ['account_balance']: balance, ['show']: balance < 1, ['eth_wei_balance']: rawBalance });
             })
             .catch(err => {
               this.setState({ ['show']: has_account && has_wallet });
@@ -107,6 +108,7 @@ class PurchaseEtherPanel extends Component {
     this.setState({ ['show']: !this.state.show });
   }
 
+  /*jshint ignore:start*/
   render() {
     return (
       <Panel bsStyle="primary" expanded={this.state.show} onToggle={this.toggle}>
@@ -130,7 +132,8 @@ class PurchaseEtherPanel extends Component {
               bsStyle="danger"
               style={{
                 display:
-                  typeof this.state.account_balance !== 'undefined' && this.state.account_balance < 1
+                  typeof this.state.account_balance !== 'undefined' &&
+                  this.state.eth_wei_balance < CONFIG.ethereum.minimal_fund
                     ? 'block'
                     : 'none',
               }}
@@ -170,6 +173,7 @@ class PurchaseEtherPanel extends Component {
       </Panel>
     );
   }
+  /*jshint ignore:end*/
 }
 
 PurchaseEtherPanel.propTypes = {

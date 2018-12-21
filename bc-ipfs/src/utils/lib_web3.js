@@ -20,7 +20,7 @@ if (window.ethereum) {
   }
 } else {
   // backward compatibility
-  local_web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://127.0.0.1:8546'));
+  local_web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(CONFIG.ethereum.websocket_provider));
 }
 
 const lib_web3 = local_web3;

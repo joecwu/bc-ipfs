@@ -24,9 +24,13 @@ export const getBMDTokensByFilesize = value => {
   /* jshint ignore:start */
   var eth_to_wei = new BigNumber(10 ** decimals);
   /* jshint ignore:end */
+  // TODO: This 200 will change in the future, extract into a parameter in CONFIG
   var filesize_to_token_ex = 200 * 1024 * 1024 * 1024; // 1token = 200GB
-  
-  let expect_reward = new BigNumber(value).multipliedBy(eth_to_wei).dividedBy(filesize_to_token_ex).integerValue(BigNumber.ROUND_FLOOR) ;
+
+  let expect_reward = new BigNumber(value)
+    .multipliedBy(eth_to_wei)
+    .dividedBy(filesize_to_token_ex)
+    .integerValue(BigNumber.ROUND_FLOOR);
   return expect_reward.div(eth_to_wei).toNumber();
 };
 

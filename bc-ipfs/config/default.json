@@ -16,12 +16,13 @@
     "trading_contract": {
       "address": "0x4bd13679EB719937676af1CeA42A95efc30cE69E",
       "gasPrice": 6000000000,
-      "gas": 1500000
+      "gas": 75000,
+      "minimal_fund": 5000000000000000
     },
     "token_contract": {
       "address": "0xe90051496b797f5a04196ff3196aa21ed36bc392",
       "gasPrice": 6000000000,
-      "gas": 1500000
+      "gas": 500000
     },
     "websocket_provider": "wss://ropsten.infura.io/ws"
   },

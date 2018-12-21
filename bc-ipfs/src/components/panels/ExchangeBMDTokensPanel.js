@@ -28,6 +28,7 @@ class ExchangeBMDTokensPanel extends Component {
       has_account: false,
       account_addr: '',
       account_balance: undefined,
+      eth_wei_balance: 0, // same as account_balance, but in unit wei
       bmd_balance: undefined,
       bmd_token_amount: 0,
       show: false,
@@ -44,9 +45,11 @@ class ExchangeBMDTokensPanel extends Component {
     this.performTokenExchange = this.performTokenExchange.bind(this);
   }
 
+  /* jshint ignore:start */
   exchangeRateTooltip() {
-    return <Tooltip id="tooltip">The exchange rate of BlockMed(BMD) renews once a day.</Tooltip>;
+    return <Tooltip id="tooltip">The exchange rate of BlockMed (BMD) renews once a day.</Tooltip>;
   }
+  /* jshint ignore:end */
 
   getEthTokens() {
     if (typeof this.state.exchange_rate !== 'undefined' && !isNaN(this.state.bmd_token_amount)) {
@@ -59,18 +62,18 @@ class ExchangeBMDTokensPanel extends Component {
     var balance;
     console.log(`getRemainingBMD account:[${this.state.account_addr}]`);
     lib_token_contract.methods
-      .balanceOf(
-        this.state.account_addr
-      ).call()
-      .then((rawBalance) => {
-        console.debug(`got BMD rawBalance:[${rawBalance}]`)
+      .balanceOf(this.state.account_addr)
+      .call()
+      .then(rawBalance => {
+        console.debug(`got BMD rawBalance:[${rawBalance}]`);
         balance = div18decimals(rawBalance);
+        this.setState({ ['eth_wei_balance']: rawBalance });
       })
       .catch(err => {
         console.error(err);
       })
       .then(() => {
-        this.setState({['bmd_balance']: balance, ['show']: balance < 1})
+        this.setState({ ['bmd_balance']: balance, ['show']: balance < 1 });
       });
   }
 
@@ -85,7 +88,7 @@ class ExchangeBMDTokensPanel extends Component {
         value: mul18decimals(ethAmount),
       })
       .then(resp => {
-        console.log('performTokenExchange success.')
+        console.log('performTokenExchange success.');
       })
       .catch(err => {
         console.error(err);
@@ -184,6 +187,7 @@ class ExchangeBMDTokensPanel extends Component {
     this.setState({ ['show']: !this.state.show });
   }
 
+  /*jshint ignore:start*/
   render() {
     return (
       <Panel bsStyle="primary" expanded={this.state.show} onToggle={this.toggle}>
@@ -219,7 +223,7 @@ class ExchangeBMDTokensPanel extends Component {
               controlId="formBlockMedToken"
               validationState={isNaN(this.state.bmd_token_amount) ? 'error' : 'success'}
             >
-              <ControlLabel>How many BlockMed(BMD) tokens do you what to have?</ControlLabel>
+              <ControlLabel>How many BlockMed (BMD) tokens do you what to exchange?</ControlLabel>
               <FormControl type="text" name="bmd_token_amount" onChange={this.captureFileAndMetadata} />
               <HelpBlock style={{ display: typeof this.state.exchange_rate != 'undefined' ? 'block' : 'none' }}>
                 You need <strong>{this.getEthTokens()}</strong> Ethereum tokens to exchange for BlockMed(BMD) tokens.{' '}
@@ -231,15 +235,17 @@ class ExchangeBMDTokensPanel extends Component {
               </HelpBlock>
               <Alert
                 bsStyle="danger"
-                style={{ display: (this.state.account_balance < this.getEthTokens() ) ? 'block' : 'none' }}
+                style={{ display: this.state.account_balance < this.getEthTokens() ? 'block' : 'none' }}
               >
-                <strong>
-                  Insufficient Ethereum(ETH), please fund your wallet with Ethereum first.
-                </strong>
+                <strong>Insufficient Ethereum(ETH), please fund your wallet with Ethereum first.</strong>
               </Alert>
               <Button
                 bsStyle="primary"
-                disabled={this.state.account_addr == '' || this.state.bmd_token_amount=='' || isNaN(this.state.bmd_token_amount)}
+                disabled={
+                  this.state.account_addr == '' ||
+                  this.state.bmd_token_amount == '' ||
+                  isNaN(this.state.bmd_token_amount)
+                }
                 onClick={this.performTokenExchange}
               >
                 Exchange BMD Tokens
@@ -250,6 +256,7 @@ class ExchangeBMDTokensPanel extends Component {
       </Panel>
     );
   }
+  /*jshint ignore:end*/
 }
 
 ExchangeBMDTokensPanel.propTypes = {
