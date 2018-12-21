@@ -118,7 +118,7 @@ env NODE_ENV=development npm install
 ipfs init
 ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
 ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
-# See https://github.com/ipfs/js-ipfs-api#cors for more refining policies on
+# See https://github.com/ipfs/js-ipfs-http-client#cors for more refining policies on
 # acceptable URLs (CORS = Cross Origin Resource Sharing)
 # The following policy creates SECURITY BREACH!!!!!!!!!!
 ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
@@ -148,7 +148,7 @@ ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
 ```
 
 See: https://github.com/INFURA/tutorials/wiki/IPFS-and-CORS for an example
-on `API.HTTPHeaders.Access-Control-Allow-Origin` and read https://github.com/ipfs/js-ipfs-api#cors
+on `API.HTTPHeaders.Access-Control-Allow-Origin` and read https://github.com/ipfs/js-ipfs-http-client#cors
 for more detail info on `CORS`.
 
 See https://github.com/ipfs/go-ipfs for more details on how to run this container. A
@@ -218,7 +218,7 @@ npm install -S react@16.6.3 \
   react-router-dom@4.3.1 \
   crypto-js@3.1.9-1 \
   ethereumjs-tx@1.3.7 \
-  ipfs-api@26.1.2 \
+  ipfs-http-client@28.1.0 \
   jquery@3.3.1 \
   js-sha256@0.9.0 \
   react-bootstrap@0.32.4 \

@@ -270,6 +270,7 @@ class FileRegister extends Component {
                         console.log(
                           'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                         );
+                        this.setState({ ['file_size']: real_fsize });
 
                         this.setupWebViewJavascriptBridge(bridge => {
                           // Call
@@ -281,11 +282,6 @@ class FileRegister extends Component {
                             },
                           );
                         });
-
-                        this.setState({ ['register_result_show']: true });
-                        this.setState({ ['file_size']: real_fsize });
-                        this.setState({ ['btn_register_disabled']: true, ['is_loading']: false });
-                        this.hideInfoMsg();
                       } else {
                         this.displayErrorMsg('Registration canceled.');
                         this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
@@ -300,6 +296,12 @@ class FileRegister extends Component {
                     this.displayErrorMsg(err.message);
                     this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
                     console.error(err);
+                  })
+                  .then(() => {
+                    this.setState({ ['register_result_show']: true });
+                    this.setState({ ['file_size']: real_fsize });
+                    this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+                    this.hideInfoMsg();
                   }); // end of lib_reward_contract.methods.encryptIPFS
               }); // end of ipfs.add()
           })
