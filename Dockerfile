@@ -71,6 +71,7 @@ RUN mkdir $HOME/bin && \
     web3@1.0.0-beta.36 \
     whatwg-fetch@3.0.0 \
     config-webpack@1.0.4 \
+    config@1.30.0 \
     bignumber.js@8.0.1 \
     bootstrap@3.3.7 \
     && npm install -S @types/react-dom@16.0.9 \
