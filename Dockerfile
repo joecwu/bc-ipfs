@@ -32,6 +32,7 @@ RUN addgroup -g $IPFS_GID $IPFS_USER && \
 # Install go-ipfs and gx
 RUN source /etc/profile.d/go_path.sh && \
     go get -u -d github.com/ipfs/go-ipfs && cd $GOPATH/src/github.com/ipfs/go-ipfs && \
+    git checkout fix/disable-keepalives && \
     make install_unsupported
 
 # Install geth
@@ -50,7 +51,7 @@ RUN mkdir $HOME/bin && \
     bn.js@4.11.8 \
     secp256k1@3.4.0 \
     debug@3.1.0 \
-    ipfs-api@26.1.2 \
+    ipfs-http-client@28.1.0 \
     dat@13.10.0 \
     && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ; \
     cd $HOME; git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; \
@@ -60,7 +61,7 @@ RUN mkdir $HOME/bin && \
     react-router-dom@4.3.1 \
     crypto-js@3.1.9-1 \
     ethereumjs-tx@1.3.7 \
-    ipfs-api@26.1.2 \
+    ipfs-http-client@28.1.0 \
     jquery@3.3.1 \
     js-sha256@0.9.0 \
     react-bootstrap@0.32.4 \
