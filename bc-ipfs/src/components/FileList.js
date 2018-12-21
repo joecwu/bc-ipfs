@@ -88,10 +88,12 @@ class FileList extends Component {
         fileSize: hitItem._source.metadata.filesize,
         tokenCost: hitItem._source.tokenCost,
         metadataCaptureTime: new Date(hitItem._source.metadataCaptureTime),
+        /*jshint ignore:start*/
         latestPurchaseTime:
           typeof hitItem._source.latestPurchaseTime === 'undefined'
             ? undefined
             : new Date(hitItem._source.latestPurchaseTime),
+        /*jshint ignore:end*/
         noOfAccessed: hitItem._source.purchaseTxRecords.length,
       });
     });

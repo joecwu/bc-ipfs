@@ -9,12 +9,7 @@ const browser = {
   },
   // Safari 3.0+ "[object HTMLElementConstructor]"
   isSafari: function() {
-    return (
-      /constructor/i.test(window.HTMLElement) ||
-      (function(p) {
-        return p.toString() === '[object SafariRemoteNotification]';
-      })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification))
-    );
+    return /Apple Computer, Inc/.test(navigator.vendor) && /Safari/.test(navigator.userAgent);
   },
   // Internet Explorer 6-11
   isIE: function() {
@@ -26,7 +21,7 @@ const browser = {
   },
   // Chrome 1 - 68
   isChrome: function() {
-    return !!window.chrome && !!window.chrome.webstore;
+    return /Google Inc/.test(navigator.vendor) && /Chrome/.test(navigator.userAgent);
   },
   // Blink engine detection
   isBlink: function() {

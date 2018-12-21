@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 import React, { Component } from 'react';
 import { Alert } from 'react-bootstrap';
 import lib_web3 from '../utils/lib_web3';
@@ -14,22 +15,23 @@ class EtherWalletAlert extends Component {
 
   componentDidMount() {
     let wallet_alert_show = false;
-    lib_web3.eth.getAccounts(function(err, accounts) {
-      if (err) {
-        wallet_alert_show = true;
-        console.error(err);
-      } else {
-        console.log('All available accounts: ' + accounts);
-        if(accounts.length == 0 ) {
+    lib_web3.eth
+      .getAccounts(function(err, accounts) {
+        if (err) {
           wallet_alert_show = true;
+          console.error(err);
+        } else {
+          console.log('All available accounts: ' + accounts);
+          if (accounts.length == 0) {
+            wallet_alert_show = true;
+          }
+          // submit_acct = accounts[0];
         }
-        // submit_acct = accounts[0];
-      }
-    }).catch( (err) => {
-
-    }).then( () => {
-      this.setState({ ['wallet_alert_show']: wallet_alert_show });
-    });
+      })
+      .catch(err => {})
+      .then(() => {
+        this.setState({ ['wallet_alert_show']: wallet_alert_show });
+      });
   }
 
   render() {
@@ -47,9 +49,14 @@ class EtherWalletAlert extends Component {
       //     <a href="https://addons.mozilla.org/zh-TW/android/addon/ether-metamask/">MetaMask plugin</a>. For more MetaMask usage, please see instruction <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/metamask_exchange_instructions.md'>here</a>.
       //   </p>
       // </Alert>
+      /* jshint ignore:start */
       <Alert bsStyle="danger" style={{ display: this.state.wallet_alert_show ? 'block' : 'none' }}>
-        <strong>We have detected either you don’t have a wallet or your wallet is not unlocked. Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md'>here</a> to get a wallet.</strong>
+        <strong>
+          We have detected either you don’t have a wallet or your wallet is not unlocked. Click{' '}
+          <a href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md">here</a> to get a wallet.
+        </strong>
       </Alert>
+      /* jshint ignore:end */
     );
   }
 }
