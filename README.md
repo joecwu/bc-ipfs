@@ -228,6 +228,7 @@ npm install -S react@16.6.3 \
   web3@1.0.0-beta.36 \
   whatwg-fetch@3.0.0 \
   config-webpack@1.0.4 \
+  config@1.30.0 \
   bignumber.js@8.0.1 \
   bootstrap@3.3.7
 ```
