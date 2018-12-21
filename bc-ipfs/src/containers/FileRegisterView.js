@@ -24,7 +24,9 @@ class FileRegisterView extends Component {
         <PurchaseEtherPanel title="2. Fund Your Wallet with Ethereum" />
         <Panel bsStyle="primary" defaultExpanded={true}>
           <Panel.Heading>
-            <Panel.Title toggle componentClass="h3">3. Registering Files</Panel.Title>
+            <Panel.Title toggle componentClass="h3">
+              3. Registering Files
+            </Panel.Title>
           </Panel.Heading>
           <Panel.Collapse>
             <Panel.Body>
@@ -34,22 +36,34 @@ class FileRegisterView extends Component {
         </Panel>
         <Panel bsStyle="primary" defaultExpanded={!isMobile.any()}>
           <Panel.Heading>
-            <Panel.Title toggle componentClass="h3">4. Have Large Files to upload?</Panel.Title>
+            <Panel.Title toggle componentClass="h3">
+              4. Have Large Files to upload?
+            </Panel.Title>
           </Panel.Heading>
           <Panel.Collapse>
             <Panel.Body>
+              <Alert bsStyle="warning" style={{ display: isMobile.any() ? 'block' : 'none' }}>
+                <strong>Please use desktop to download the tools. </strong>
+              </Alert>
               <p>Download our desktop tool to help you upload large files.</p>
               <p>
-                <Button bsStyle="info" href={CONFIG.desktop_tool.mac}>MacOS</Button>{' '}
-                <Button bsStyle="info" href={CONFIG.desktop_tool.windows}>Window</Button>{' '}
-                <Button bsStyle="info" href={CONFIG.desktop_tool.rpm}>Linux(RPM)</Button>{' '}
-                <Button bsStyle="info" href={CONFIG.desktop_tool.deb}>Linux(Deb)</Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.mac} disabled={isMobile.any()}>
+                  MacOS
+                </Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.windows} disabled={isMobile.any()}>
+                  Window
+                </Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.rpm} disabled={isMobile.any()}>
+                  Linux(RPM)
+                </Button>{' '}
+                <Button bsStyle="info" href={CONFIG.desktop_tool.deb} disabled={isMobile.any()}>
+                  Linux(Deb)
+                </Button>{' '}
               </p>
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
         <ExchangeBMDTokensPanel title="5. Exchange BlockMed(BMD) Tokens" />
-
       </div>
     );
     /*jshint ignore:end*/

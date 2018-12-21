@@ -106,7 +106,8 @@ class FileRegister extends Component {
         this.hideInfoMsg();
       })
       .catch(err => {
-        console.error(err);
+        console.error('saveToIpfs error.', err);
+        this.displayErrorMsg(`Unable to safe file to IPFS. message:[${err.message}]`);
         this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
         this.hideInfoMsg();
       });
