@@ -47,7 +47,7 @@ class FileRegisterBridge extends Component {
       this.setState({ ['ipfs_realhash']: this.props.hashId, ['ipfs_realhash_disabled']: true });
     }
     if (this.props.fileSize) {
-      this.setState({ ['ipfs_filesize']: this.props.fileSize, ['ipfs_filesize_disabled']: true });
+      this.setState({ ['ipfs_filesize']: Number(this.props.fileSize), ['ipfs_filesize_disabled']: true });
       // show file reward in the begining
       // this.setState({ ['file_size']: this.props.fileSize, ['register_result_show']: true });
     }

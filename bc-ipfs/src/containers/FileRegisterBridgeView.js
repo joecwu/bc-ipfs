@@ -13,8 +13,7 @@ class FileRegisterBridgeView extends Component {
   }
   componentDidMount() {
     // How do we get the values for filter and origin?
-
-    console.log(this.props);
+    console.debug(this.props);
   }
   render() {
     const params = qs.parse(this.props.location.search);
@@ -31,7 +30,12 @@ class FileRegisterBridgeView extends Component {
             <Panel.Title componentClass="h3">Registering File</Panel.Title>
           </Panel.Heading>
           <Panel.Body>
-            <FileRegisterBridge fileSize={params.fileSize} hashId={params.hashId} category={params.category} description={params.description} />
+            <FileRegisterBridge
+              fileSize={Number(params.fileSize)}
+              hashId={params.hashId}
+              category={params.category}
+              description={params.description}
+            />
           </Panel.Body>
         </Panel>
       </div>
