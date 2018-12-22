@@ -102,7 +102,7 @@ class FileRegister extends Component {
         fsize = response[0].size;
         console.log('ipfs hash=' + ipfsId);
         console.log('ipfs fsize=' + fsize);
-        this.setState({ ['btn_register_disabled']: false, ['is_loading']: false, ['file_ipfs_hash']: response[0] });
+        this.setState({ ['btn_register_disabled']: false, ['is_loading']: false, ['file_ipfs_hash']: ipfsId });
         this.hideInfoMsg();
       })
       .catch(err => {
@@ -164,7 +164,7 @@ class FileRegister extends Component {
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
-    console.log('Submitting with fileCategory = ' + fileCategory + 'fileDescription = ' + fileDescription);
+    console.log('Submitting with fileCategory = ' + fileCategory + ' fileDescription = ' + fileDescription);
     const file_obj = this.state.file_obj;
 
     const contract_address = lib_reward_contract.options.address;
@@ -179,7 +179,7 @@ class FileRegister extends Component {
     } else {
       // The metadata file is generated on the fly on IPFS before it gets registered
       let real_fsize = file_obj.size;
-      let ipfs_realhash = '' + this.state.ipfs_realhash;
+      let ipfs_realhash = '' + this.state.file_ipfs_hash;
       let bc_utilities = new bcutils();
       let potential_key = bc_utilities.genRandomKey();
       let min = 128; // you can redefine the range here
