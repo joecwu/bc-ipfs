@@ -251,13 +251,18 @@ class FileRegister extends Component {
                     console.error(err);
                   }); // end of lib_reward_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
                 this.displayInfoMsg("waiting for wallet transaction's approval and complete...");
+                console.debug('sending encryptIPFS contract', {
+                  from: submit_acct,
+                  gasPrice: CONFIG.ethereum.reward_contract.gasPrice,
+                  gas: CONFIG.ethereum.reward_contract.gas,
+                });
                 lib_reward_contract.methods
                   .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
                   .send(
                     {
                       from: submit_acct,
-                      gasPrice: CONFIG.ethereum.gasPrice,
-                      gas: CONFIG.ethereum.gas,
+                      gasPrice: CONFIG.ethereum.reward_contract.gasPrice,
+                      gas: CONFIG.ethereum.reward_contract.gas,
                     },
                     (error, transactionHash) => {
                       if (transactionHash) {

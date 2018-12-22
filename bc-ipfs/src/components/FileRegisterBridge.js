@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, FormControl, FormGroup, ControlLabel, Alert, Image } from 'react-bootstrap';
 
+import lib_ipfs from '../utils/lib_ipfs';
 import lib_web3 from '../utils/lib_web3';
 import lib_reward_contract from '../utils/lib_reward_contract';
 import bcutils from '../utils/lib_bcutils';
@@ -29,6 +30,7 @@ class FileRegisterBridge extends Component {
       error_msg_show: false,
       info_msg: '',
       info_msg_show: false,
+      is_loading: false,
     };
 
     // The order/index in these queue matters
@@ -39,6 +41,8 @@ class FileRegisterBridge extends Component {
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
     this.manualRegisterToBC = this.manualRegisterToBC.bind(this);
     this.displayErrorMsg = this.displayErrorMsg.bind(this);
+    this.displayInfoMsg = this.displayInfoMsg.bind(this);
+    this.hideInfoMsg = this.hideInfoMsg.bind(this);
     this.handleErrorMsgDismiss = this.handleErrorMsgDismiss.bind(this);
   }
 
@@ -47,7 +51,7 @@ class FileRegisterBridge extends Component {
       this.setState({ ['ipfs_realhash']: this.props.hashId, ['ipfs_realhash_disabled']: true });
     }
     if (this.props.fileSize) {
-      this.setState({ ['ipfs_filesize']: this.props.fileSize, ['ipfs_filesize_disabled']: true });
+      this.setState({ ['ipfs_filesize']: Number(this.props.fileSize), ['ipfs_filesize_disabled']: true });
       // show file reward in the begining
       // this.setState({ ['file_size']: this.props.fileSize, ['register_result_show']: true });
     }
@@ -90,9 +94,12 @@ class FileRegisterBridge extends Component {
 
   /* jshint ignore:start */
   manualRegisterToBC(event) {
-    this.setState({ ['btn_register_disabled']: true });
+    this.setState({ ['btn_register_disabled']: true, ['is_loading']: true });
     this.setState({ ['register_result_show']: false });
-    this.setState({ ['info_msg']: 'waiting for wallet transaction\'s approval and complete...', ['info_msg_show']: true });
+    this.setState({
+      ['info_msg']: "waiting for wallet transaction's approval and complete...",
+      ['info_msg_show']: true,
+    });
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
@@ -141,47 +148,104 @@ class FileRegisterBridge extends Component {
         let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
         console.log('generated JSON for manual registration ' + ipfsmeta_norm);
         this.setState({ ['ipfs_gen_metatext']: ipfsmeta_norm });
-      })
-      .then(() => {
-        lib_reward_contract.methods
-          .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
-          .send(
-            {
-              from: submit_acct,
-              gasPrice: 2000000000,
-              gas: 1500000,
-            },
-            (error, transactionHash) => {
-              if (transactionHash) {
-                this.setState({ ['register_result_show']: true });
-                this.setState({ ['file_size']: real_fsize });
-                console.log('blockchain confirmed tx=' + transactionHash);
-                console.log(
-                  'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
-                );
-              } else {
-                this.displayErrorMsg(error.message);
-                console.log(
-                  'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
-                );
-              }
-            },
-          )
-          .catch(err => {
-            console.error(err);
-            this.displayErrorMsg(err.message);
-            this.setState({ ['register_result_show']: false });
+        lib_ipfs
+          .add(Buffer.from(ipfsmeta_norm), {
+            progress: prog => console.log('IPFS Metadata uploaded bytes:' + prog),
           })
-          .then(() => {
-            this.setState({ ['btn_register_disabled']: false });
-            this.setState({ ['info_msg']: '', ['info_msg_show']: false });
-          }); // end of lib_reward_contract.methods.encryptIPFS
-      });
+          .then(resp => {
+            console.log(resp);
+            ipfsmid = resp[0].hash;
+            console.log('ipfs metadata hash=' + ipfsmid);
+            console.log('IPFS record=https://cloudflare-ipfs.com/ipfs/' + ipfsmid);
+            console.log(
+              'Registering: ipfsMetadata=' +
+                ipfsmid +
+                ' encryptedRealIPFS=' +
+                encryptedIPFSHash +
+                ' ipfsRealHash=' +
+                ipfs_realhash +
+                ' realFsize=' +
+                real_fsize,
+            );
+            console.log('Submitting from ' + submit_acct);
+            console.log('Pinning to IPFS ' + ipfsmid);
+            lib_ipfs.pin
+              .add(ipfsmid)
+              .then(resp => {
+                console.log('ipfs metadata has been pinned ' + ipfsmid);
+                console.log(resp);
+              })
+              .catch(err => {
+                this.displayErrorMsg(err.message);
+                console.error(err);
+              }); // end of lib_reward_contract.methods.encryptIPFS; //End of lib_ipfs.pin.add
+            this.displayInfoMsg("waiting for wallet transaction's approval and complete...");
+            console.debug('sending encryptIPFS contract', {
+              from: submit_acct,
+              gasPrice: CONFIG.ethereum.reward_contract.gasPrice,
+              gas: CONFIG.ethereum.reward_contract.gas,
+            });
+            lib_reward_contract.methods
+              .encryptIPFS(ipfsmid, potential_key, key2ndIdx, l_rand, encryptedIPFSHash, real_fsize)
+              .send(
+                {
+                  from: submit_acct,
+                  gasPrice: CONFIG.ethereum.reward_contract.gasPrice,
+                  gas: CONFIG.ethereum.reward_contract.gas,
+                },
+                (error, transactionHash) => {
+                  if (transactionHash) {
+                    this.setState({ ['register_result_show']: true });
+                    this.setState({ ['file_size']: real_fsize });
+                    console.log('blockchain confirmed tx=' + transactionHash);
+                    console.log(
+                      'Registration completed for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
+                    );
+                  } else {
+                    this.displayErrorMsg(error.message);
+                    this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+                    this.hideInfoMsg();
+                    console.log(
+                      'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedText=' + encryptedIPFSHash,
+                    );
+                  }
+                },
+              )
+              .catch(err => {
+                console.error(err);
+                this.displayErrorMsg(err.message);
+                this.setState({ ['register_result_show']: false });
+                this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+              })
+              .then(() => {
+                this.setState({ ['register_result_show']: true });
+                this.setState({ ['btn_register_disabled']: false });
+                this.setState({ ['info_msg']: '', ['info_msg_show']: false });
+                this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+                this.hideInfoMsg();
+              }); // end of lib_reward_contract.methods.encryptIPFS
+          }); // end of ipfs.add()
+      })
+      .catch(err => {
+        // getAccounts error
+        this.displayErrorMsg(err.message);
+        this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+        console.error(err);
+      })
+      .then(() => {}); // end of getAccounts and current file submission and registration
   }
   /* jshint ignore:end */
 
   handleErrorMsgDismiss() {
     this.setState({ error_msg_show: false, error_msg: '' });
+  }
+
+  displayInfoMsg(msg) {
+    this.setState({ ['info_msg']: msg, ['info_msg_show']: true });
+  }
+
+  hideInfoMsg() {
+    this.setState({ ['info_msg']: '', ['info_msg_show']: false });
   }
 
   /* jshint ignore:start */
@@ -244,7 +308,7 @@ class FileRegisterBridge extends Component {
           src="loading.gif"
           height="50px"
           width="50px"
-          style={{ display: !this.state.btn_register_disabled ? 'none' : 'inline' }}
+          style={{ display: !this.state.is_loading ? 'none' : 'inline' }}
         />
         <Alert bsStyle="info" style={{ display: this.state.info_msg_show ? 'block' : 'none' }}>
           <p>{this.state.info_msg}</p>
@@ -253,13 +317,22 @@ class FileRegisterBridge extends Component {
         <Alert bsStyle="danger" style={{ display: this.state.error_msg_show ? 'block' : 'none' }}>
           <p>{this.state.error_msg}</p>
           <p />
-          <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>OK</Button>
+          <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>
+            OK
+          </Button>
         </Alert>
         <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
           Thanks for your participation. You will get{' '}
           <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
           <br />
-          <strong>Tips:</strong> Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md' target='_blank'>here</a> to see how to add symbol to your wallet.
+          <strong>Tips:</strong> Click{' '}
+          <a
+            href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md"
+            target="_blank"
+          >
+            here
+          </a>{' '}
+          to see how to add symbol to your wallet.
         </Alert>
       </Form>
     );
