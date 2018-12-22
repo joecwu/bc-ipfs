@@ -256,8 +256,8 @@ class FileRegister extends Component {
                   .send(
                     {
                       from: submit_acct,
-                      gasPrice: CONFIG.ethereum.gasPrice,
-                      gas: CONFIG.ethereum.gas,
+                      gasPrice: CONFIG.ethereum.reward_contract.gasPrice,
+                      gas: CONFIG.ethereum.reward_contract.gas,
                     },
                     (error, transactionHash) => {
                       if (transactionHash) {

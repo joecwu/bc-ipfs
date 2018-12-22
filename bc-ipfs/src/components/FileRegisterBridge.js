@@ -92,7 +92,10 @@ class FileRegisterBridge extends Component {
   manualRegisterToBC(event) {
     this.setState({ ['btn_register_disabled']: true });
     this.setState({ ['register_result_show']: false });
-    this.setState({ ['info_msg']: 'waiting for wallet transaction\'s approval and complete...', ['info_msg_show']: true });
+    this.setState({
+      ['info_msg']: "waiting for wallet transaction's approval and complete...",
+      ['info_msg_show']: true,
+    });
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
@@ -148,8 +151,8 @@ class FileRegisterBridge extends Component {
           .send(
             {
               from: submit_acct,
-              gasPrice: 2000000000,
-              gas: 1500000,
+              gasPrice: CONFIG.ethereum.reward_contract.gasPrice,
+              gas: CONFIG.ethereum.reward_contract.gas,
             },
             (error, transactionHash) => {
               if (transactionHash) {
@@ -253,13 +256,22 @@ class FileRegisterBridge extends Component {
         <Alert bsStyle="danger" style={{ display: this.state.error_msg_show ? 'block' : 'none' }}>
           <p>{this.state.error_msg}</p>
           <p />
-          <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>OK</Button>
+          <Button bsStyle="danger" onClick={this.handleErrorMsgDismiss}>
+            OK
+          </Button>
         </Alert>
         <Alert bsStyle="success" style={{ display: this.state.register_result_show ? 'block' : 'none' }}>
           Thanks for your participation. You will get{' '}
           <strong>{getBMDTokensByFilesize(this.state.file_size)} BMD tokens</strong> as your file register reward.
           <br />
-          <strong>Tips:</strong> Click <a href='https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md' target='_blank'>here</a> to see how to add symbol to your wallet.
+          <strong>Tips:</strong> Click{' '}
+          <a
+            href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/metamaskdocs/add_token_symboles/README.md"
+            target="_blank"
+          >
+            here
+          </a>{' '}
+          to see how to add symbol to your wallet.
         </Alert>
       </Form>
     );
