@@ -9,6 +9,7 @@ import BMDTokens from './BMDTokens';
 import { div18decimals } from '../utils/lib_token';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import isMobile from '../utils/lib_user_agent';
 
 var PropTypes = require('prop-types');
 const bc_resp_hash_default = '*******';
@@ -64,8 +65,21 @@ class FileListItem extends Component {
   /*jshint ignore:start*/
   handleAccessFile(event) {
     if (this.state.btn_access_state == 'accessed') {
-      // open file directly
-      window.open(CONFIG.ipfs.gateway_url + this.state.bc_resp_hash, '_blank');
+      if (!isMobile.any()) {
+        // open file directly
+        window.open(CONFIG.ipfs.gateway_url + this.state.bc_resp_hash, '_blank');
+      } else {
+        let url = CONFIG.ipfs.gateway_url + this.state.bc_resp_hash
+        this.setupWebViewJavascriptBridge(bridge => {
+          bridge.callHandler(
+            'FileListItemDownloadFileButtonDidTap',
+            url,
+            response => {
+              console.log('callback from iOS ' + response);
+            },
+          );
+        });
+      }
     } else {
       confirmAlert({
         title: 'Confirm to access',
