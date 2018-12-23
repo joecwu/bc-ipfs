@@ -9,6 +9,7 @@ import BMDTokens from './BMDTokens';
 import { div18decimals } from '../utils/lib_token';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import isMobile from '../utils/lib_user_agent';
 
 var PropTypes = require('prop-types');
 const bc_resp_hash_default = '*******';
@@ -17,16 +18,24 @@ class FileListItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      hashId: this.props.hashId,
       bc_resp_hash: bc_resp_hash_default,
       btn_access_state: 'normal', //normal, accessing ,accessed
     };
     this.handleAccessFile = this.handleAccessFile.bind(this);
     this.bcAccessFile = this.bcAccessFile.bind(this);
     this.setupWebViewJavascriptBridge = this.setupWebViewJavascriptBridge.bind(this);
+    this.fileListItemFetchKeyForIPFS = this.fileListItemFetchKeyForIPFS.bind(this)
+  }
 
+  componentDidMount() {
+    const {
+      hashId
+    } = this.state
+    
     this.setupWebViewJavascriptBridge(bridge => {
-      // Register
-      bridge.registerHandler('FileListItemFetchKeyForIPFS', (data, responseCallback) => {
+      const key = 'FileListItemFetchKeyForIPFS-' + hashId
+      bridge.registerHandler(key, (data, responseCallback) => {
         console.log('FileListItemFetchKeyForIPFS ipfsMetadataHash from iOS ' + data.ipfsMetadataHash);
         this.fileListItemFetchKeyForIPFS();
         let responseData = { 'callback from JS': 'FileListItemFetchKeyForIPFS' };
@@ -56,8 +65,21 @@ class FileListItem extends Component {
   /*jshint ignore:start*/
   handleAccessFile(event) {
     if (this.state.btn_access_state == 'accessed') {
-      // open file directly
-      window.open(CONFIG.ipfs.gateway_url + this.state.bc_resp_hash, '_blank');
+      if (!isMobile.any()) {
+        // open file directly
+        window.open(CONFIG.ipfs.gateway_url + this.state.bc_resp_hash, '_blank');
+      } else {
+        let url = CONFIG.ipfs.gateway_url + this.state.bc_resp_hash
+        this.setupWebViewJavascriptBridge(bridge => {
+          bridge.callHandler(
+            'FileListItemDownloadFileButtonDidTap',
+            url,
+            response => {
+              console.log('callback from iOS ' + response);
+            },
+          );
+        });
+      }
     } else {
       confirmAlert({
         title: 'Confirm to access',
@@ -107,12 +129,15 @@ class FileListItem extends Component {
               },
               (error, transactionHash) => {
                 if (transactionHash) {
+                  const {
+                    hashId
+                  } = this.state
+
                   console.log('decryptIPFS tx=' + transactionHash);
                   this.setupWebViewJavascriptBridge(bridge => {
-                    // Call
                     bridge.callHandler(
                       'FileListItemAccessButtonDidTap',
-                      { [transactionHash]: 'accessFile' },
+                      { [transactionHash]: {'type': 'accessFile', 'hashId': hashId} },
                       response => {
                         console.log('callback from iOS ' + response);
                       },
@@ -215,8 +240,9 @@ class FileListItem extends Component {
                   );
                   try {
                     realKey = result[0] + '' + result[1];
-                    decryptIPFSHash = crypto_js.AES.decrypt(result[2], realKey).toString(crypto_js.enc.Utf8);
+                    decryptIPFSHash = crypto_js.AES.decrypt('' + result[2], realKey).toString(crypto_js.enc.Utf8);
                     a_encrypted_hash = result[2];
+                    console.log('ipfs=' + decryptIPFSHash);
                   } catch (err) {
                     console.error(err);
                   }
@@ -234,11 +260,11 @@ class FileListItem extends Component {
                 this.setState({ ['bc_resp_hash']: decryptIPFSHash });
                 this.setState({ ['access_encrypted_hash']: a_encrypted_hash });
               } else {
-                console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
+                console.log('decrypted text failed, invalild, or empty, real IPFS hash: ' + decryptIPFSHash);
                 this.setState({ ['btn_access_state']: 'normal' });
               }
             });
-        });
+        }); //submit to contract
     } catch (error) {
       console.log(error);
       this.setState({ ['btn_access_state']: 'normal' });
