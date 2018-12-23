@@ -389,7 +389,7 @@ class FileRegister extends Component {
             <FormControl.Feedback />
           </FormGroup>
 
-          <label for="uploadBtnI" class="uploadBtnL">
+          <label htmlFor="uploadBtnI" className="uploadBtnL">
             Upload File
           </label>
           <input id="uploadBtnI" type="file" onChange={this.captureFileAndMetadata} />
