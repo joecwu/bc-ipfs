@@ -161,6 +161,7 @@ class FileRegister extends Component {
   /* jshint ignore:start */
   registerToBC(event) {
     this.setState({ ['btn_register_disabled']: true, ['is_loading']: true });
+    this.setState({ ['error_msg_show']: false }); // reset error msg for retry
     event.preventDefault();
     let fileDescription = this.state.file_description;
     let fileCategory = this.state.file_category;
@@ -179,7 +180,7 @@ class FileRegister extends Component {
     } else {
       // The metadata file is generated on the fly on IPFS before it gets registered
       let real_fsize = file_obj.size;
-      let ipfs_realhash = '' + this.state.file_ipfs_hash;
+      let ipfs_realhash = this.state.file_ipfs_hash;
       let bc_utilities = new bcutils();
       let potential_key = bc_utilities.genRandomKey();
       let min = 128; // you can redefine the range here
@@ -291,21 +292,30 @@ class FileRegister extends Component {
                       } else {
                         this.displayErrorMsg('Registration canceled.');
                         this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+                        this.setState({ ['register_result_show']: false });
                         this.hideInfoMsg();
                         console.log(
                           'Registration canceled for ipfsMetadata=' + ipfsmid + ' encryptedIdx=' + ipfssha256,
                         );
+                        console.log('error = ' + error);
                       }
                     },
                   )
                   .catch(err => {
                     this.displayErrorMsg(err.message);
+                    this.setState({ ['register_result_show']: false });
                     this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
-                    console.error(err);
+                    console.error('err = ' + err);
                   })
                   .then(() => {
-                    this.setState({ ['register_result_show']: true });
-                    this.setState({ ['file_size']: real_fsize });
+                    if (this.state.error_msg_show) {
+                      // error msg set, some error occured, don't display results.
+                      this.setState({ ['register_result_show']: false });
+                    } else {
+                      // no error occurs, display results
+                      this.setState({ ['register_result_show']: true });
+                    }
+                    // Reset button and progress bar regardless after action
                     this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
                     this.hideInfoMsg();
                   }); // end of lib_reward_contract.methods.encryptIPFS
