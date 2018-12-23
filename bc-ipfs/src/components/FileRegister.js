@@ -40,9 +40,11 @@ class FileRegister extends Component {
     this.hideInfoMsg = this.hideInfoMsg.bind(this);
     this.handleErrorMsgDismiss = this.handleErrorMsgDismiss.bind(this);
     this.setupWebViewJavascriptBridge = this.setupWebViewJavascriptBridge.bind(this);
+    this.fileRegisterCompleted = this.fileRegisterCompleted.bind(this);
+  }
 
+  componentDidMount() {
     this.setupWebViewJavascriptBridge(bridge => {
-      // Register
       bridge.registerHandler('FileRegisterCompleted', (data, responseCallback) => {
         console.log('FileRegisterCompleted ipfsMetadataHash from iOS ' + data['ipfsMetadataHash']);
         this.fileRegisterCompleted();
@@ -280,10 +282,9 @@ class FileRegister extends Component {
                         this.setState({ ['file_size']: real_fsize });
 
                         this.setupWebViewJavascriptBridge(bridge => {
-                          // Call
                           bridge.callHandler(
                             'FileRegisterButtonDidTap',
-                            { [transactionHash]: 'registerFile' },
+                            { [transactionHash]: {'type': 'registerFile'} },
                             response => {
                               console.log('callback from iOS ' + response);
                             },
@@ -342,7 +343,16 @@ class FileRegister extends Component {
 
   /* jshint ignore:start */
   fileRegisterCompleted() {
-    this.setState({ ['btn_register_disabled']: false });
+    if (this.state.error_msg_show) {
+      // error msg set, some error occured, don't display results.
+      this.setState({ ['register_result_show']: false });
+    } else {
+      // no error occurs, display results
+      this.setState({ ['register_result_show']: true });
+    }
+    // Reset button and progress bar regardless after action
+    this.setState({ ['btn_register_disabled']: false, ['is_loading']: false });
+    this.hideInfoMsg();
   }
   /* jshint ignore:end */
 
