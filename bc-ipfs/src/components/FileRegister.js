@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormControl, FormGroup, ControlLabel, Alert, Image } from 'react-bootstrap';
+import { Button, Form, FormControl, FormGroup, ControlLabel, Alert, Image, Label } from 'react-bootstrap';
 
 import lib_ipfs from '../utils/lib_ipfs';
 import lib_web3 from '../utils/lib_web3';
@@ -18,6 +18,7 @@ class FileRegister extends Component {
       file_category: 'data',
       ipfs_realhash: '',
       file_size: 0,
+      file_name: '',
       register_result_show: false,
       btn_register_disabled: false,
       error_msg: '',
@@ -31,7 +32,6 @@ class FileRegister extends Component {
     };
 
     // this.bc_register = [];
-
     this.captureFileAndMetadata = this.captureFileAndMetadata.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.registerToBC = this.registerToBC.bind(this);
@@ -46,7 +46,7 @@ class FileRegister extends Component {
   componentDidMount() {
     this.setupWebViewJavascriptBridge(bridge => {
       bridge.registerHandler('FileRegisterCompleted', (data, responseCallback) => {
-        console.log('FileRegisterCompleted ipfsMetadataHash from iOS ' + data['ipfsMetadataHash']);
+        console.log('FileRegisterCompleted ipfsMetadataHash from iOS ' + data.ipfsMetadataHash);
         this.fileRegisterCompleted();
         let responseData = { 'callback from JS': 'FileRegisterCompleted' };
         responseCallback(responseData);
@@ -142,8 +142,7 @@ class FileRegister extends Component {
       if (event.target.files && event.target.files[0] != undefined) {
         // only support one file upload, so take first file.
         let f = event.target.files[0];
-        this.setState({ ['file_obj']: f });
-
+        this.setState({ ['file_obj']: f, ['file_name']: f.name });
         let reader = new window.FileReader();
         console.log('Loading file ' + f.name);
 
@@ -284,7 +283,7 @@ class FileRegister extends Component {
                         this.setupWebViewJavascriptBridge(bridge => {
                           bridge.callHandler(
                             'FileRegisterButtonDidTap',
-                            { [transactionHash]: {'type': 'registerFile'} },
+                            { [transactionHash]: { type: 'registerFile' } },
                             response => {
                               console.log('callback from iOS ' + response);
                             },
@@ -385,15 +384,17 @@ class FileRegister extends Component {
                 'The better you describe your files, the easier others can discover and find it.\nThis helps to increase the chances of rewards and incentives to use your files.'
               }
               onChange={this.captureFileAndMetadata}
-              style={{ height: '100px' }}
+              style={{ height: '100px', width: '600px' }}
             />
             <FormControl.Feedback />
           </FormGroup>
 
-          <FormGroup controlId="formFile">
-            <FormControl type="file" onChange={this.captureFileAndMetadata} />
-          </FormGroup>
-
+          <label for="uploadBtnI" class="uploadBtnL">
+            Upload File
+          </label>
+          <input id="uploadBtnI" type="file" onChange={this.captureFileAndMetadata} />
+          <label> {this.state.file_name}</label>
+          <p />
           <Button
             disabled={this.state.btn_register_disabled || this.state.file_ipfs_hash == ''}
             bsStyle="primary"

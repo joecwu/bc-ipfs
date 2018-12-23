@@ -52,6 +52,29 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* hide all file type button and replace with label */
+input[type='file'] {
+  display: none;
+}
+.uploadBtnL {
+  background-color: black;
+  color: white;
+  border: 1px;
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+.uploadBtnL:hover {
+  background-color: white;
+  color: purple;
+  border: 1px;
+  padding: 8px 10px;
+  border-radius: 4px;
 }
