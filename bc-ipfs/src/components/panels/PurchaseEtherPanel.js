@@ -124,7 +124,8 @@ class PurchaseEtherPanel extends Component {
               style={{ display: !this.state.has_wallet || !this.state.has_account ? 'block' : 'none' }}
             >
               <strong>
-                Please enter password to unlock Metamask on your top right. Don't have Metamask, see{' '}
+                Please enter password to unlock <abbr title="An Ethereum wallet for Chrome Browser">Metamask</abbr>{' '}
+                <Image src="metamask.png" height="30px" width="30px" /> on your top right ↗. Don't have Metamask, see{' '}
                 <a href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md">here</a>.{' '}
               </strong>
             </Alert>

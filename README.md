@@ -39,7 +39,7 @@ git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
 npm install
-env NODE_ENV=development npm start
+npm test
 ```
 
 * Ubuntu 16.04+
@@ -53,7 +53,7 @@ git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
 npm install
-env NODE_ENV=development npm start
+npm test
 ```
 
 ## Docker
@@ -128,7 +128,7 @@ ipfs daemon &
 * `npm` start to kick off webpack and react, etc. and open your browser to access
 `localhost:3000`.
 ```
-env NODE_ENV=development npm start
+npm test
 ```
 
 # Just looking for an IPFS image to run IPFS?
@@ -253,12 +253,12 @@ npm install -S @types/react-dom@16.0.9 \
 
 Running with specific environment in dev mode.
 
-**Development**
+**Development** - `NODE_ENV` preset to `NODE_ENV=development`
 ```
-env NODE_ENV=development npm start
+npm test
 ```
 
-**Production**
+**Production** - `NODE_ENV` preset to `NODE_ENV=production`
 ```
-env NODE_ENV=production npm start
+npm start
 ```

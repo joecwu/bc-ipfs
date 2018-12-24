@@ -4,9 +4,9 @@
   "description": "A Web page with IPFS functionalities enabled to integrate with various blockchain",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "webpack-dev-server --open"
+    "test": "export NODE_ENV=development; echo NODE_ENV=$NODE_ENV; webpack-dev-server --config webpack.dev.js",
+    "start": "export NODE_ENV=production; echo NODE_ENV=$NODE_ENV; webpack-dev-server --config webpack.prod.js"
   },
   "keywords": [
     "ipfs",
@@ -48,6 +48,7 @@
     "style-loader": "^0.21.0",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "webpack-merge": "^4.1.5"
   }
 }

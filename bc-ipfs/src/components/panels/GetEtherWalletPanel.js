@@ -50,6 +50,7 @@ class EtherWalletInstructionPanel extends Component {
   }
 
   render() {
+    /* jshint ignore:start */
     return (
       // <Alert bsStyle="danger" style={{ display: this.state.wallet_alert_show ? 'block' : 'none' }}>
       //   <h3>Unable to connect with your Ethereum wallet account.</h3>
@@ -80,13 +81,17 @@ class EtherWalletInstructionPanel extends Component {
               style={{ display: this.state.has_wallet && !this.state.has_account ? 'block' : 'none' }}
             >
               <strong>
-                Please enter password to unlock Metamask <Image src="metamask.png" height="30px" width="30px" /> on your
-                top right.
+                Please enter password to unlock <abbr title="An Ethereum wallet for Chrome Browser">Metamask</abbr>{' '}
+                <Image src="metamask.png" height="30px" width="30px" /> ↗ on your top right.
               </strong>
             </Alert>
             <p>
               Click{' '}
-              <Button bsStyle="info" href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md" target="_blank">
+              <Button
+                bsStyle="info"
+                href="https://github.com/BlockMedical/BlockMedical/blob/master/docs/README.md"
+                target="_blank"
+              >
                 here
               </Button>{' '}
               to get a wallet instruction.
@@ -95,6 +100,7 @@ class EtherWalletInstructionPanel extends Component {
         </Panel.Collapse>
       </Panel>
     );
+    /* jshint ignore:end */
   }
 }
 
