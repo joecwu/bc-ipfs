@@ -14,11 +14,11 @@ v8.14.0
 ```
 
 The following branches are locked for several purposes. This current `master` branch is the development branch
-and the current stable one is `encryption-v0.5.3`. All development should be based on `master` and refer to
-`encryption-v0.5.3` for now.
+and the current stable one is `encryption-v0.5.6`. All development should be based on `master` and refer to
+`encryption-v0.5.6` for now.
 
 * `master` - new for development including new features, etc.
-* `encryption-v0.5.3` - stable, tracks all history, bug fix
+* `encryption-v0.5.6` - stable, tracks all history, bug fix
 * `encryption-v0.4` - stable, tracks all history
 * `encryption-v0.3` - stable, and backport features and PR from master if necessary
 * `encryption-v0.2` - old, stable, only for old version and compatibility test.
@@ -38,6 +38,8 @@ brew install node
 git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
+# Delete and re-install all modules, cleanup
+rm -rf node_modules
 npm install
 npm test
 ```
@@ -52,6 +54,8 @@ sudo su - apt-get install -y nodejs
 git clone -b master https://github.com/blcksync/bc-ipfs.git bc-ipfs
 cd bc-ipfs
 cd bc-ipfs
+# Delete and re-install all modules, cleanup
+rm -rf node_modules
 npm install
 npm test
 ```
