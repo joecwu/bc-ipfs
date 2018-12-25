@@ -10,7 +10,7 @@ fi
 # Build base qtum image with the correct non-pivileged UID user
 $build_cmd \
   --rm \
-  -t ipfs-qtum-dev \
+  -t blcksync/ipfs-qtum-dev \
   --build-arg QTUM_UID=$(id -u $USER) \
   --file Dockerfile.qtum \
   .

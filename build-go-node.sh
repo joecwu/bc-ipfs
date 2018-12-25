@@ -11,7 +11,7 @@ if [ "$GO_VER" = "10" ] ; then
   echo "ok - building Go 1.10.x"
   docker build \
     --rm \
-    -t go${GO_VER}-node \
+    -t blcksync/go${GO_VER}-node \
     --build-arg ALPINE_IMAGE="$ALPINE_IMAGE" \
     --file Dockerfile.go${GO_VER}-node \
     .
@@ -19,7 +19,7 @@ elif [ "$GO_VER" = "11" ] ; then
   echo "ok - building Go 1.11.x"
   docker build \
     --rm \
-    -t go${GO_VER}-node \
+    -t blcksync/go${GO_VER}-node \
     --build-arg ALPINE_IMAGE="$ALPINE_IMAGE" \
     --file Dockerfile.go${GO_VER}-node \
     .

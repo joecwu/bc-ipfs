@@ -13,6 +13,6 @@ BUILD_BRANCH=${BUILD_BRANCH:-"master"}
 $build_cmd \
   --rm \
   --build-arg BUILD_BRANCH=$BUILD_BRANCH \
-  -t bc-ipfs-${BUILD_BRANCH} \
+  -t blcksync/bc-ipfs-${BUILD_BRANCH} \
   --file Dockerfile \
   .

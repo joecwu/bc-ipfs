@@ -12,6 +12,6 @@ GO_VER=${GO_VER:-"11"}
 # Build base alpine-node:latest image
 $build_cmd \
   --rm \
-  -t bc-geth-ipfs-dev-${GO_VER} \
+  -t blcksync/bc-geth-ipfs-dev-${GO_VER} \
   --file Dockerfile.dev \
   .

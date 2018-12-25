@@ -1,4 +1,4 @@
-FROM qtum-dev:latest
+FROM blcksync/qtum-dev:latest
 
 LABEL maintainer="matr1xc0in"
 
