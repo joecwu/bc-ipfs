@@ -84,6 +84,11 @@ class EtherWalletInstructionPanel extends Component {
                 Please enter password to unlock <abbr title="An Ethereum wallet for Chrome Browser">Metamask</abbr>{' '}
                 <Image src="metamask.png" height="30px" width="30px" /> ↗ on your top right.
               </strong>
+              <div className="metamask-arrow">
+                <Image src="arrow-up.gif" width="20px" height="20px" style={{ position: 'relative' }} /> Unlock{' '}
+                <Image src="metamask.png" height="20px" width="20px" /> Metamask{' '}
+                <Image src="arrow-up.gif" width="20px" height="20px" style={{ position: 'relative' }} />
+              </div>
             </Alert>
             <p>
               Click{' '}
