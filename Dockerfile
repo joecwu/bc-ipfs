@@ -1,4 +1,4 @@
-FROM go11-node:latest as builder
+FROM blcksync/go11-node:latest as builder
 
 ENV SHELL=/bin/bash \
     IPFS_USER=ipfsuser \

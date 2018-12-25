@@ -10,6 +10,6 @@ fi
 # Build base blcksync/alpine-node:latest image
 $build_cmd \
   --rm \
-  -t go-ipfs-insecure \
+  -t blcksync/go-ipfs-insecure \
   --file Dockerfile.ipfs-insecure \
   .
