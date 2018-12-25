@@ -1,5 +1,5 @@
-# FROM go-node:latest as builder
-FROM go11-node:latest
+# FROM blcksync/go-node:latest as builder
+FROM blcksync/go11-node:latest
 
 WORKDIR /root
 
