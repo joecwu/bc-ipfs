@@ -25,16 +25,14 @@ class FileListItem extends Component {
     this.handleAccessFile = this.handleAccessFile.bind(this);
     this.bcAccessFile = this.bcAccessFile.bind(this);
     this.setupWebViewJavascriptBridge = this.setupWebViewJavascriptBridge.bind(this);
-    this.fileListItemFetchKeyForIPFS = this.fileListItemFetchKeyForIPFS.bind(this)
+    this.fileListItemFetchKeyForIPFS = this.fileListItemFetchKeyForIPFS.bind(this);
   }
 
   componentDidMount() {
-    const {
-      hashId
-    } = this.state
-    
+    const { hashId } = this.state;
+
     this.setupWebViewJavascriptBridge(bridge => {
-      const key = 'FileListItemFetchKeyForIPFS-' + hashId
+      const key = 'FileListItemFetchKeyForIPFS-' + hashId;
       bridge.registerHandler(key, (data, responseCallback) => {
         console.log('FileListItemFetchKeyForIPFS ipfsMetadataHash from iOS ' + data.ipfsMetadataHash);
         this.fileListItemFetchKeyForIPFS();
@@ -69,15 +67,11 @@ class FileListItem extends Component {
         // open file directly
         window.open(CONFIG.ipfs.gateway_url + this.state.bc_resp_hash, '_blank');
       } else {
-        let url = CONFIG.ipfs.gateway_url + this.state.bc_resp_hash
+        let url = CONFIG.ipfs.gateway_url + this.state.bc_resp_hash;
         this.setupWebViewJavascriptBridge(bridge => {
-          bridge.callHandler(
-            'FileListItemDownloadFileButtonDidTap',
-            url,
-            response => {
-              console.log('callback from iOS ' + response);
-            },
-          );
+          bridge.callHandler('FileListItemDownloadFileButtonDidTap', url, response => {
+            console.log('callback from iOS ' + response);
+          });
         });
       }
     } else {
@@ -129,15 +123,13 @@ class FileListItem extends Component {
               },
               (error, transactionHash) => {
                 if (transactionHash) {
-                  const {
-                    hashId
-                  } = this.state
+                  const { hashId } = this.state;
 
                   console.log('decryptIPFS tx=' + transactionHash);
                   this.setupWebViewJavascriptBridge(bridge => {
                     bridge.callHandler(
                       'FileListItemAccessButtonDidTap',
-                      { [transactionHash]: {'type': 'accessFile', 'hashId': hashId} },
+                      { [transactionHash]: { type: 'accessFile', hashId: hashId } },
                       response => {
                         console.log('callback from iOS ' + response);
                       },
