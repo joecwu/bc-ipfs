@@ -85,9 +85,9 @@ class EtherWalletInstructionPanel extends Component {
                 <Image src="metamask.png" height="30px" width="30px" /> ↗ on your top right.
               </strong>
               <div className="metamask-arrow">
-                Install and unlock Metamask
-                <Image src="metamask.png" height="30px" width="30px" />
-                <Image src="arrow-up.gif" width="40px" height="40px" style={{ position: "relative"}} />
+                <Image src="arrow-up.gif" width="20px" height="20px" style={{ position: 'relative' }} /> Unlock{' '}
+                <Image src="metamask.png" height="20px" width="20px" /> Metamask{' '}
+                <Image src="arrow-up.gif" width="20px" height="20px" style={{ position: 'relative' }} />
               </div>
             </Alert>
             <p>
