@@ -78,3 +78,14 @@ input[type='file'] {
   padding: 8px 10px;
   border-radius: 4px;
 }
+
+.metamask-arrow {
+  border-radius: 10px;
+  border: 2px solid #73AD21;
+  color: black;
+  padding: 5px;
+  background-color: lightgoldenrodyellow;
+  position: fixed;
+  right: 20px;
+  top: 0px;
+}
