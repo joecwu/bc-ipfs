@@ -8,7 +8,6 @@ import DateTime from './DateTime';
 import BMDTokens from './BMDTokens';
 import { div18decimals } from '../utils/lib_token';
 import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import isMobile from '../utils/lib_user_agent';
 
 var PropTypes = require('prop-types');
