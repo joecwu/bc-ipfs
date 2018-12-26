@@ -55,7 +55,7 @@ RUN mkdir $HOME/bin && \
     dat@13.10.0 \
     && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ; \
     cd $HOME; \
-    if [ "x${BUILD_BRANCH}" = "x" ]; then git clone --depth 1 -b encryption-v0.5.6 https://github.com/blcksync/bc-ipfs.git; else git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; fi ; \
+    if [ "x${BUILD_BRANCH}" = "x" ]; then git clone --depth 1 -b encryption-v0.5.7 https://github.com/blcksync/bc-ipfs.git; else git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; fi ; \
     cd bc-ipfs/bc-ipfs; npm install; \
     npm install -S react@16.6.3 \
     @types/react@16.7.3 \
