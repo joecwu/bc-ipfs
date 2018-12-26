@@ -40,6 +40,10 @@ RUN cd /root; \
     git clone -b release/1.8 --depth 1 https://github.com/matr1xc0in/go-ethereum.git && \
     cd /root/go-ethereum && make geth
 
+COPY bc-ipfs $HOME/bc-ipfs
+
+RUN chown -R $IPFS_UID:$IPFS_GID $HOME/bc-ipfs
+
 USER $IPFS_UID
 
 WORKDIR $HOME
@@ -54,9 +58,8 @@ RUN mkdir $HOME/bin && \
     ipfs-http-client@28.1.0 \
     dat@13.10.0 \
     && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ; \
-    cd $HOME; \
-    if [ "x${BUILD_BRANCH}" = "x" ]; then git clone --depth 1 -b master https://github.com/blcksync/bc-ipfs.git; else git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; fi ; \
-    cd bc-ipfs/bc-ipfs; npm install; \
+    cd $HOME/bc-ipfs; \
+    npm install; \
     npm install -S react@16.6.3 \
     @types/react@16.7.3 \
     react-router-dom@4.3.1 \
@@ -111,7 +114,7 @@ RUN apk update && apk upgrade && \
 COPY --from=builder /usr/local/go/bin/* /usr/local/go/bin/
 COPY --from=builder /go/bin/* /go/bin/
 COPY --from=builder /root/go-ethereum/build/bin/geth /usr/local/bin/
-COPY --from=builder $HOME/bc-ipfs/bc-ipfs $HOME/
+COPY --from=builder $HOME/bc-ipfs $HOME/
 
 # Install go-ipfs and gx
 RUN addgroup -g $IPFS_GID $IPFS_USER && \
