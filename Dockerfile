@@ -54,7 +54,8 @@ RUN mkdir $HOME/bin && \
     ipfs-http-client@28.1.0 \
     dat@13.10.0 \
     && ln -s $HOME/node_modules/dat/bin/cli.js $HOME/bin/dat ; \
-    cd $HOME; git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; \
+    cd $HOME; \
+    if [ "x${BUILD_BRANCH}" = "x" ]; then git clone --depth 1 -b master https://github.com/blcksync/bc-ipfs.git; else git clone --depth 1 -b $BUILD_BRANCH https://github.com/blcksync/bc-ipfs.git; fi ; \
     cd bc-ipfs/bc-ipfs; npm install; \
     npm install -S react@16.6.3 \
     @types/react@16.7.3 \
