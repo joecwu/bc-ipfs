@@ -39,10 +39,10 @@ class FileAccessView extends Component {
                 unmountOnExit={true}
               >
                 <Tab eventKey="data" title="Data">
-                  <FileList pageSize={10} hideFields={['category', 'latestPurchaseTime']} category="data" />
+                  <FileList pageSize={10} hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']} category="data" />
                 </Tab>
                 <Tab eventKey="code" title="Code">
-                  <FileList pageSize={10} hideFields={['category', 'latestPurchaseTime']} category="code" />
+                  <FileList pageSize={10} hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']} category="code" />
                 </Tab>
               </Tabs>
             </Panel.Body>

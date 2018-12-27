@@ -95,8 +95,10 @@ class FileList extends Component {
             : new Date(hitItem._source.latestPurchaseTime),
         /*jshint ignore:end*/
         noOfAccessed: hitItem._source.purchaseTxRecords.length,
+        encryptionVersion: hitItem._source.metadata.encryptionVersion
       });
     });
+    console.debug('search result items.', items);
     this.setState({ items });
   }
 
@@ -116,6 +118,7 @@ class FileList extends Component {
         metadataCaptureTime={item.metadataCaptureTime}
         latestPurchaseTime={item.latestPurchaseTime}
         noOfAccessed={item.noOfAccessed}
+        encryptionVersion={item.encryptionVersion}
       />
       /*jshint ignore:end*/
     ));
@@ -158,6 +161,7 @@ class FileList extends Component {
               {this.props.hideFields.includes('latestPurchaseTime') ? null : (
                 <th style={{ width: '150px' }}>Last Access Time</th>
               )}
+              {this.props.hideFields.includes('encryptionVersion') ? null : <th>Encryption Version</th>}
             </tr>
           </thead>
           <tbody>{rows}</tbody>

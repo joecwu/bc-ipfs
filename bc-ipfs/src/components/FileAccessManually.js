@@ -3,7 +3,7 @@ import { Button, Form, Grid, Row, Col, Image } from 'react-bootstrap';
 
 import lib_web3 from '../utils/lib_web3';
 import lib_reward_contract from '../utils/lib_reward_contract';
-import crypto_js from '../utils/lib_crypto';
+import { crypto_js, EncryptionVersion } from '../utils/lib_crypto';
 
 class FileAccessManually extends Component {
   constructor() {
