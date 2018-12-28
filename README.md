@@ -228,6 +228,7 @@ npm install -S react@16.6.3 \
   react-bootstrap@0.32.4 \
   react-dom@16.6.3 \
   react-confirm-alert@2.0.7 \
+  react-hotjar@1.0.11 \
   url-parse@1.4.4 \
   web3@1.0.0-beta.36 \
   whatwg-fetch@3.0.0 \
