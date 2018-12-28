@@ -6,7 +6,7 @@ import lib_web3 from '../utils/lib_web3';
 import lib_reward_contract from '../utils/lib_reward_contract';
 import bcutils from '../utils/lib_bcutils';
 import sha256coder from '../utils/lib_hash';
-import crypto_js from '../utils/lib_crypto';
+import { crypto_js, EncryptionVersion } from '../utils/lib_crypto';
 var PropTypes = require('prop-types');
 import { getBMDTokensByFilesize } from '../utils/lib_token';
 
@@ -122,6 +122,7 @@ class FileRegisterBridge extends Component {
     let c_rand = 0;
     let realKey = '';
     let encryptedIPFSHash = '';
+    let encryptionVersion = '';
     lib_web3.eth
       .getAccounts(function(err, accounts) {
         if (err) {
@@ -138,12 +139,14 @@ class FileRegisterBridge extends Component {
         c_rand = Math.floor(l_rand / 13);
         realKey = potential_key + c_rand;
         encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
+        encryptionVersion = EncryptionVersion.CryptoJs
         console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
         let ipfsmeta_json = {
           description: fileDescription,
           category: fileCategory,
           filesize: real_fsize,
           encrypted: encryptedIPFSHash,
+          encryptionVersion: encryptionVersion,
         };
         let ipfsmeta_norm = JSON.stringify(ipfsmeta_json);
         console.log('generated JSON for manual registration ' + ipfsmeta_norm);

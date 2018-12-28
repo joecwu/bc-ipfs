@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import lib_web3 from '../utils/lib_web3';
 import lib_reward_contract from '../utils/lib_reward_contract';
-import crypto_js from '../utils/lib_crypto';
+import { crypto_js, EncryptionVersion } from '../utils/lib_crypto';
 import Bytes from './Bytes';
 import DateTime from './DateTime';
 import BMDTokens from './BMDTokens';
@@ -231,7 +231,13 @@ class FileListItem extends Component {
                   );
                   try {
                     realKey = result[0] + '' + result[1];
-                    decryptIPFSHash = crypto_js.AES.decrypt('' + result[2], realKey).toString(crypto_js.enc.Utf8);
+                    switch(this.props.encryptionVersion) {
+                      case EncryptionVersion.CryptoJs:
+                        decryptIPFSHash = crypto_js.AES.decrypt('' + result[2], realKey).toString(crypto_js.enc.Utf8);
+                        break;
+                      default:
+                        decryptIPFSHash = crypto_js.AES.decrypt('' + result[2], realKey).toString(crypto_js.enc.Utf8);
+                    }
                     a_encrypted_hash = result[2];
                     console.log('ipfs=' + decryptIPFSHash);
                   } catch (err) {
@@ -273,6 +279,7 @@ class FileListItem extends Component {
       metadataCaptureTime,
       latestPurchaseTime,
       noOfAccessed,
+      encryptionVersion,
     } = this.props;
 
     let btn_access_text = 'Access File';
@@ -327,6 +334,7 @@ class FileListItem extends Component {
             <DateTime value={latestPurchaseTime} />
           </td>
         )}
+        {this.props.hideFields.includes('encryptionVersion') ? null : <td style={{ whiteSpace: 'nowrap' }}>{encryptionVersion}</td>}
       </tr>
     );
     /*jshint ignore:end*/
@@ -343,6 +351,7 @@ FileListItem.propTypes = {
   metadataCaptureTime: PropTypes.instanceOf(Date).isRequired,
   latestPurchaseTime: PropTypes.instanceOf(Date),
   noOfAccessed: PropTypes.number,
+  encryptionVersion: PropTypes.string,
 };
 
 FileListItem.defaultProps = {
