@@ -7,9 +7,6 @@ import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
 import ExchangeBMDTokensPanel from '../components/panels/ExchangeBMDTokensPanel';
 import isMobile from '../utils/lib_user_agent';
 import './App.css'; //TODO: defien FileRegisterView own CSS
-import { HOTJAR_ID, HOTJAR_VERSION } from './utils/lib_hotjar';
-
-hotjar.initialize(HOTJAR_ID, HOTJAR_VERSION);
 
 class FileRegisterView extends Component {
   constructor() {
