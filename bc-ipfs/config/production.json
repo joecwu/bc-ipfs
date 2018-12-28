@@ -1,4 +1,8 @@
 {
+  "hotjar": {
+    "id": "1140861",
+    "version": 6
+  },
   "ipfs": {
     "api": {
       "host": "ipfs-api.blcksync.info",
