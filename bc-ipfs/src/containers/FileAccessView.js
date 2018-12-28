@@ -6,6 +6,9 @@ import GetEtherWalletPanel from '../components/panels/GetEtherWalletPanel';
 import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
 import ExchangeBMDTokensPanel from '../components/panels/ExchangeBMDTokensPanel';
 import './App.css'; //TODO: defien FileAccessView own CSS
+import { HOTJAR_ID, HOTJAR_VERSION } from '../utils/lib_hotjar';
+
+hotjar.initialize(HOTJAR_ID, HOTJAR_VERSION);
 
 class FileAccessView extends Component {
   constructor() {
