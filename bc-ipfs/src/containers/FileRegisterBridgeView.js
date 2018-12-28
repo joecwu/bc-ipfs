@@ -6,9 +6,6 @@ import FileRegisterBridge from '../components/FileRegisterBridge';
 import EtherWalletAlert from '../components/EtherWalletAlert';
 import BrowserAlert from '../components/BrowserAlert';
 import './App.css'; //TODO: defien FileRegisterView own CSS
-import { HOTJAR_ID, HOTJAR_VERSION } from '../utils/lib_hotjar';
-
-hotjar.initialize(HOTJAR_ID, HOTJAR_VERSION);
 
 class FileRegisterBridgeView extends Component {
   constructor() {

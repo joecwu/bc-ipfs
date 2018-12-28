@@ -6,9 +6,6 @@ import GetEtherWalletPanel from '../components/panels/GetEtherWalletPanel';
 import PurchaseEtherPanel from '../components/panels/PurchaseEtherPanel';
 import ExchangeBMDTokensPanel from '../components/panels/ExchangeBMDTokensPanel';
 import './App.css'; //TODO: defien FileAccessView own CSS
-import { HOTJAR_ID, HOTJAR_VERSION } from '../utils/lib_hotjar';
-
-hotjar.initialize(HOTJAR_ID, HOTJAR_VERSION);
 
 class FileAccessView extends Component {
   constructor() {
@@ -42,10 +39,18 @@ class FileAccessView extends Component {
                 unmountOnExit={true}
               >
                 <Tab eventKey="data" title="Data">
-                  <FileList pageSize={10} hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']} category="data" />
+                  <FileList
+                    pageSize={10}
+                    hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']}
+                    category="data"
+                  />
                 </Tab>
                 <Tab eventKey="code" title="Code">
-                  <FileList pageSize={10} hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']} category="code" />
+                  <FileList
+                    pageSize={10}
+                    hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']}
+                    category="code"
+                  />
                 </Tab>
               </Tabs>
             </Panel.Body>

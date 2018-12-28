@@ -1,14 +1,7 @@
 /* jshint esversion: 6 */
+import { hotjar } from 'react-hotjar';
 
-export const HOTJAR_ID = () => {
-  return '1140525';
-};
+const HOTJAR_ID = '1140525';
+const HOTJAR_CONFIG = '6';
 
-export const HOTJAR_VERSION = () => {
-  return '6';
-};
-
-module.exports = {
-  HOTJAR_ID: HOTJAR_ID,
-  HOTJAR_VERSION: HOTJAR_VERSION,
-};
+export default hotjar.initialize(HOTJAR_ID, HOTJAR_CONFIG);
