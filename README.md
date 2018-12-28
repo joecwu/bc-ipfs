@@ -250,9 +250,10 @@ npm install -S @types/react-dom@16.0.9 \
     html-loader@0.5.5 \
     html-webpack-plugin@3.2.0 \
     style-loader@0.21.0 \
-    webpack@4.25.1 \
+    webpack@4.28.2 \
     webpack-cli@3.1.2 \
-    webpack-dev-server@3.1.10
+    webpack-dev-server@3.1.10 \
+    webpack-merge@4.1.5
 ```
 ## Appendix
 
