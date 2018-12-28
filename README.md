@@ -72,7 +72,7 @@ GO_VER=11 ./build-alpine-go-node.sh
 # Build dev env with npm packages, ipfs, etc. and run it with run-dev.sh
 ./build-dev.sh
 # Build a ready to run image without development libs and tools and run it
-# with run-prod.sh or run.sh
+# with run-prod.sh or run-test.sh
 ./build.sh
 ```
 
@@ -86,11 +86,14 @@ GO_VER=11 ALPINE_IMAGE="mhart/alpine-node:base-10.8" ./build-go-node.sh
 ./build.sh
 ```
 
-To run the image `bc-ipfs-<BRANCHNAME>`, just invoke `run.sh`
+To run the image `blcksync/bc-ipfs:<BRANCHNAME>`, just invoke `BUILD_BRANCH=<BRANCHNAME> run.sh`
+e.g.
 ```
-./run.sh
+# <BRANCHNAME> is the tag/branch name, this example will try to run the docker
+# image blcksync/bc-ipfs:encryption-v0.5.8
+BRANCHNAME=encryption-v0.5.8 ./run.sh
 ```
-or to kick off the dev image `bc-geth-ipfs-dev-11`, just invoke `run-dev.sh`.
+or to kick off the local dev image `bc-geth-ipfs-dev-11`, just invoke `run-dev.sh`.
 ```
 # Build the dev image first. The dev image does not care about the current
 # bc-ipfs source code and branch. It is agnostic and only provides a run-time
@@ -99,6 +102,7 @@ or to kick off the dev image `bc-geth-ipfs-dev-11`, just invoke `run-dev.sh`.
 # Run the dev image bc-geth-ipfs-dev in container. This mounts the bc-ipfs
 # directory from the host into the container.
 ./run-dev.sh
+# you can then do 'cd bc-ipfs' and 'npm test'/'npm start' to start testing
 ```
 This kicks off a container that `mount` the directory `bc-ipfs`
 into the container if you want to dynamically make changes and verify
@@ -257,7 +261,8 @@ npm install -S @types/react-dom@16.0.9 \
 ```
 ## Appendix
 
-Running with specific environment in dev mode.
+### Command
+Running with specific environment in development or production mode.
 
 **Development** - `NODE_ENV` preset to `NODE_ENV=development`
 ```
@@ -268,3 +273,32 @@ npm test
 ```
 npm start
 ```
+
+### Docker
+Running with specific environment in development or production mode.
+
+**Development**
+```
+./run-test.sh
+```
+
+**Production**
+```
+./run-prod.sh
+```
+
+**Specific Image**
+This kicks off the publically avaialable (TBD) **blcksync/bc-ipfs**:`tag` image on
+[dockerhub](https://hub.docker.com/). e.g. `master` branch. To run a different branch,
+use the `tag` as the branch name. Currently, we only release tags with branch name
+`master` or `encryption-vX.Y.Z` where `vX.Y.Z` is the `git tag` in this github repo.
+```
+docker run --rm -it \
+  --publish 3000:3000 \
+  --publish 5001:5001 \
+  --publish 8888:8080 \
+  --env IPFS_PATH=/data/ipfs \
+  blcksync/bc-ipfs:master \
+  npm test
+```
+Change command `npm test` to `npm start` for production.

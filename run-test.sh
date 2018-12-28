@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 CURR_DIR=$(cd $(dirname $0); pwd)
 
@@ -15,4 +15,4 @@ docker run --rm -it \
   --env IPFS_PATH=/data/ipfs \
   --mount type=bind,source=$IPFS_DIR,target=/home/ipfsuser/ipfs \
   blcksync/bc-ipfs:${BUILD_BRANCH} \
-  npm start
+  npm test
