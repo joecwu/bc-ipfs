@@ -35,12 +35,7 @@ class FileRegisterManuallyView extends Component {
             <Panel.Title componentClass="h3">Registering File Manually</Panel.Title>
           </Panel.Heading>
           <Panel.Body>
-            <FileRegisterManually
-              fileSize={params.fileSize}
-              hashId={params.hashId}
-              category={params.category}
-              description={params.description}
-            />
+            <FileRegisterManually fileSize={params.fileSize} hashId={params.hashId} category={params.category} description={params.description} />
           </Panel.Body>
         </Panel>
       </div>
