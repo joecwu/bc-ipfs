@@ -116,23 +116,22 @@ e.g. `USER $IPFS_UID` when you launch the container. This is the default
 user created along with the image.
 
 Within the development container `bc-geth-ipfs-dev-11`, invoke the following command:
+
 * `npm` installation
 ```
 cd bc-ipfs
 env NODE_ENV=development npm install
 ```
-* `ipfs` init and start
-```
-ipfs init
-ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
-ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
-# See https://github.com/ipfs/js-ipfs-http-client#cors for more refining policies on
-# acceptable URLs (CORS = Cross Origin Resource Sharing)
-# The following policy creates SECURITY BREACH!!!!!!!!!!
-ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
-ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
-ipfs daemon &
-```
+
+* Manual `ipfs` init and start has been **OBSOLETE**. We discourage running a local
+IPFS instance inside the same container of `bc-ipfs`.
+We have moved the IPFS node to its own docker container `blcksync/bc-ipfs:TAGs`.
+You can find them [here](https://hub.docker.com/r/blcksync/bc-ipfs-node).
+For those who still wants to run a local IPFS node, you can still run it, however,
+the ports are no longer exposed and you will need to manually expose them at runtime.
+e.g. `docker run --publish 5001:5001 --publish 8080:8080`.
+See below section for more info.
+
 * `npm` start to kick off webpack and react, etc. and open your browser to access
 `localhost:3000`.
 ```
@@ -171,7 +170,7 @@ docker run  \
   -p 4001:4001 \
   -p 8080:8080 \
   -p 5001:5001 \
-  go-ipfs-insecure
+  blcksync/go-ipfs-insecure
 ```
 
 The following grant access via `docker volume` to your local host filesystem to preserve

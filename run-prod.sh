@@ -10,9 +10,5 @@ chmod -R 777 $IPFS_DIR
 
 docker run --rm -it \
   --publish 3000:3000 \
-  --publish 5001:5001 \
-  --publish 8888:8080 \
-  --env IPFS_PATH=/data/ipfs \
-  --mount type=bind,source=$IPFS_DIR,target=/home/ipfsuser/ipfs \
   blcksync/bc-ipfs:${BUILD_BRANCH} \
   npm start
