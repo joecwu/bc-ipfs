@@ -387,7 +387,7 @@ class FileRegister extends Component {
                 'The better you describe your files, the easier others can discover and find it.\nThis helps to increase the chances of rewards and incentives to use your files.'
               }
               onChange={this.captureFileAndMetadata}
-              style={{ height: '100px', width: '600px' }}
+              style={{ height: '80%', width: '100%' }}
             />
             <FormControl.Feedback />
           </FormGroup>
