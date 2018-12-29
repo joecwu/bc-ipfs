@@ -14,11 +14,11 @@ v8.14.0
 ```
 
 The following branches are locked for several purposes. This current `master` branch is the development branch
-and the current stable one is `encryption-v0.5.7`. All development should be based on `master` and refer to
-`encryption-v0.5.6` for now.
+and the current stable one is `encryption-v0.5.9`. All development should be based on `master` and refer to
+`encryption-v0.5.9` for now.
 
 * `master` - new for development including new features, etc.
-* `encryption-v0.5.7` - stable, tracks all history, bug fix
+* `encryption-v0.5.9` - stable, tracks all history, bug fix
 * `encryption-v0.4` - stable, tracks all history
 * `encryption-v0.3` - stable, and backport features and PR from master if necessary
 * `encryption-v0.2` - old, stable, only for old version and compatibility test.
@@ -90,8 +90,8 @@ To run the image `blcksync/bc-ipfs:<BRANCHNAME>`, just invoke `BUILD_BRANCH=<BRA
 e.g.
 ```
 # <BRANCHNAME> is the tag/branch name, this example will try to run the docker
-# image blcksync/bc-ipfs:encryption-v0.5.8
-BRANCHNAME=encryption-v0.5.8 ./run.sh
+# image blcksync/bc-ipfs:encryption-v0.5.9
+BRANCHNAME=encryption-v0.5.9 ./run.sh
 ```
 or to kick off the local dev image `bc-geth-ipfs-dev-11`, just invoke `run-dev.sh`.
 ```
