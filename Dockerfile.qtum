@@ -29,12 +29,16 @@ WORKDIR $HOME
 
 CMD ["/bin/sh", "-c", "mkdir -p $QTUM_DATADIR && goreman -f /Procfile start"]
 
+# Qtum port configurations
 EXPOSE 13888
 EXPOSE 3888
 EXPOSE 3889
 EXPOSE 9888
 EXPOSE 9899
 
+# Webpack
 EXPOSE 3000
+
+# IPFS
 EXPOSE 5001
 EXPOSE 8080

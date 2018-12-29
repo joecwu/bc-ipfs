@@ -138,15 +138,9 @@ WORKDIR $HOME
 
 COPY ./bin/*.sh $HOME/bin/
 
-CMD ["/home/ipfsuser/bin/launch.sh"]
+CMD ["npm start"]
 
 EXPOSE 3000
 
-# Ports for Swarm TCP, Swarm uTP, API, Gateway, Swarm Websockets
-EXPOSE 4001
-EXPOSE 4002/udp
-EXPOSE 5001
-EXPOSE 8080
-EXPOSE 8081
 # Geth ports
 EXPOSE 8545 8546 30303 30303/udp
