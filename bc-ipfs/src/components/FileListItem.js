@@ -231,7 +231,7 @@ class FileListItem extends Component {
                   );
                   try {
                     realKey = result[0] + '' + result[1];
-                    switch(this.props.encryptionVersion) {
+                    switch (this.props.encryptionVersion) {
                       case EncryptionVersion.CryptoJs:
                         decryptIPFSHash = crypto_js.AES.decrypt('' + result[2], realKey).toString(crypto_js.enc.Utf8);
                         break;
@@ -284,7 +284,7 @@ class FileListItem extends Component {
 
     let btn_access_text = 'Access File';
     if (this.state.btn_access_state == 'accessed') {
-      btn_access_text = 'Download File';
+      btn_access_text = 'Open / Download';
     } else if (this.state.btn_access_state == 'accessing') {
       btn_access_text = 'Accessing';
     }
@@ -334,7 +334,9 @@ class FileListItem extends Component {
             <DateTime value={latestPurchaseTime} />
           </td>
         )}
-        {this.props.hideFields.includes('encryptionVersion') ? null : <td style={{ whiteSpace: 'nowrap' }}>{encryptionVersion}</td>}
+        {this.props.hideFields.includes('encryptionVersion') ? null : (
+          <td style={{ whiteSpace: 'nowrap' }}>{encryptionVersion}</td>
+        )}
       </tr>
     );
     /*jshint ignore:end*/
