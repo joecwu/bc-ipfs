@@ -10,7 +10,7 @@ import FileRegisterBridgeView from './containers/FileRegisterBridgeView';
 import FileAccessManuallyView from './containers/FileAccessManuallyView';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
-import {} from './utils/lib_hotjar';
+// import {} from './utils/lib_hotjar';
 
 /* jshint ignore:start */
 const NoMatch = ({ location }) => (
