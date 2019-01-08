@@ -139,7 +139,7 @@ class FileRegisterBridge extends Component {
         c_rand = Math.floor(l_rand / 13);
         realKey = potential_key + c_rand;
         encryptedIPFSHash = crypto_js.AES.encrypt(ipfs_realhash, realKey).toString();
-        encryptionVersion = EncryptionVersion.CryptoJs
+        encryptionVersion = EncryptionVersion.CryptoJs;
         console.log('Real ipfs ' + ipfs_realhash + ' encrypted to =' + encryptedIPFSHash);
         let ipfsmeta_json = {
           description: fileDescription,
@@ -267,9 +267,8 @@ class FileRegisterBridge extends Component {
           />
         </FormGroup>
         <FormGroup controlId="formFileSize" validationState={null}>
-          <ControlLabel>File Size</ControlLabel>
           <FormControl
-            type="text"
+            type="hidden"
             disabled={this.state.ipfs_filesize_disabled}
             name="ipfs_filesize"
             placeholder="Enter your file size here!"
@@ -278,19 +277,15 @@ class FileRegisterBridge extends Component {
           />
         </FormGroup>
         <FormGroup controlId="formFileCategory">
-          <ControlLabel>Select file category: </ControlLabel>
+          <ControlLabel>Selected file category: </ControlLabel>
           <FormControl
-            componentClass="select"
+            type="text"
             disabled={this.state.file_category_disabled}
             placeholder="file category"
             name="file_category"
             onChange={this.captureFileAndMetadata}
-            style={{ width: '200px' }}
             value={this.state.file_category}
-          >
-            <option value="data">Data</option>
-            <option value="code">Code</option>
-          </FormControl>
+          />
         </FormGroup>
         <FormGroup controlId="formFileDescription">
           <ControlLabel>Enter file description: </ControlLabel>
@@ -299,8 +294,11 @@ class FileRegisterBridge extends Component {
             type="text"
             name="file_description"
             value={this.state.file_description}
-            placeholder="Enter your description here!"
+            placeholder={
+              'The better you describe your files, the easier others can discover and find it.\nThis helps to increase the chances of rewards and incentives to use your files.'
+            }
             onChange={this.captureFileAndMetadata}
+            style={{ height: '80%', width: '100%' }}
           />
           <FormControl.Feedback />
         </FormGroup>
