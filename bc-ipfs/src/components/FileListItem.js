@@ -140,6 +140,20 @@ class FileListItem extends Component {
                 }
               },
             )
+            .catch(err => {
+              this.setState({ ['btn_access_state']: 'normal' });
+              console.error('err = ' + err);
+              confirmAlert({
+                title: 'Error',
+                message: `Either you ran out of gas or your wallet does not have sufficient BMD tokens`,
+                buttons: [
+                  {
+                    label: 'Got it!',
+                    onClick: () => {},
+                  },
+                ],
+              });
+            })
             .then(() => {
               let realKey = '';
               let decryptIPFSHash = '';
