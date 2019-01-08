@@ -568,6 +568,9 @@ const abi = [
 	}
 ];
 
-const lib_token_contract = new lib_web3.eth.Contract(abi, address, { gasPrice: CONFIG.ethereum.token_contract.gasPrice, gas: CONFIG.ethereum.token_contract.gas });
+const lib_token_contract = new lib_web3.eth.Contract(abi, address, {
+	gasPrice: CONFIG.ethereum.token_contract.gasPrice,
+	gas: CONFIG.ethereum.token_contract.gas
+});
 
 export default lib_token_contract;

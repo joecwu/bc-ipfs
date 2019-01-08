@@ -13,18 +13,18 @@
   },
   "ethereum": {
     "reward_contract": {
-      "address": "0xC444dbf4952357a26c5f5C5f7039FA1ECd1cC4Ec",
+      "address": "0xD722a1651F84241cDaf467F92Fb7d168BF970578",
       "gasPrice": 12000000000,
       "gas": 1500000
     },
     "trading_contract": {
-      "address": "0x4bd13679EB719937676af1CeA42A95efc30cE69E",
+      "address": "0xf12bE19b07E60a0351e1060a3e702d75575b1DFd",
       "gasPrice": 12000000000,
       "gas": 75000,
       "minimal_fund": 5000000000000000
     },
     "token_contract": {
-      "address": "0xe90051496b797f5a04196ff3196aa21ed36bc392",
+      "address": "0xb67e1a2BfDb54f5E30dAD2eF938D1468f37d2e6c",
       "gasPrice": 9000000000,
       "gas": 300000
     },
