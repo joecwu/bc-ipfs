@@ -221,7 +221,6 @@ class FileListItem extends Component {
   fileListItemFetchKeyForIPFS(ipfsMHash) {
     let a_encrypted_hash = '';
     let submit_acct = '';
-    let ios_local_status = 'normal';
 
     try {
       lib_web3.eth
@@ -265,33 +264,28 @@ class FileListItem extends Component {
                     console.log('ipfs=' + decryptIPFSHash);
                   } catch (err) {
                     console.error(err);
-                    ios_local_status = 'error';
                   }
                 } else {
                   console.log(
                     'decryptIPFS failed for ipfsMetadata=' + a_ipfsmeta + ' encryptedHash=' + a_encrypted_hash,
                   );
-                  ios_local_status = 'error';
                 }
               },
             )
             .then(() => {
               if (decryptIPFSHash != '') {
-                ios_local_status = 'normal';
                 this.setState({ ['btn_access_state']: 'accessed' });
                 console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
                 this.setState({ ['bc_resp_hash']: decryptIPFSHash });
                 this.setState({ ['access_encrypted_hash']: a_encrypted_hash });
               } else {
                 console.log('decrypted text failed, invalild, or empty, real IPFS hash: ' + decryptIPFSHash);
-                ios_local_status = 'error';
-                this.setState({ ['btn_access_state']: 'error' });
               }
             });
         }); //submit to contract
     } catch (error) {
-      console.log(error); // the error occurs here is probably something we don't care
-      this.setState({ ['btn_access_state']: ios_local_status });
+      // the error occurs here is probably something we don't care, we just need to retry
+      console.log(error);
     }
   }
   /*jshint ignore:end*/
