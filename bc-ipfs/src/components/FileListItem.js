@@ -280,13 +280,15 @@ class FileListItem extends Component {
                 this.setState({ ['access_encrypted_hash']: a_encrypted_hash });
               } else {
                 console.log('decrypted text failed, invalild, or empty, real IPFS hash: ' + decryptIPFSHash);
-                this.setState({ ['btn_access_state']: 'error' });
+                this.setState({ ['btn_access_state']: 'normal' });
               }
             });
         }); //submit to contract
     } catch (error) {
+      // the error occurs here is probably something we don't care, we just need to retry
       console.log(error);
-      this.setState({ ['btn_access_state']: 'error' });
+      // TODO: This should be a simple re-try that does not cost any eth gas
+      this.setState({ ['btn_access_state']: 'normal' });
     }
   }
   /*jshint ignore:end*/
