@@ -541,6 +541,7 @@ const abi = [
 		"type": "event"
 	}
 ];
+
 const lib_reward_contract = new lib_web3.eth.Contract(abi, address, {
 	gasPrice: CONFIG.ethereum.reward_contract.gasPrice, 
 	gas: CONFIG.ethereum.reward_contract.gas 

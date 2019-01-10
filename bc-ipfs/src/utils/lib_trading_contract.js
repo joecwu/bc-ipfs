@@ -136,20 +136,6 @@ const abi = [
     type: 'function',
   },
   {
-    constant: false,
-    inputs: [
-      {
-        name: '_target_wallet',
-        type: 'address',
-      },
-    ],
-    name: 'updateWithdrawAddress',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     constant: true,
     inputs: [
       {
@@ -400,6 +386,7 @@ const abi = [
     type: 'event',
   },
 ];
+
 const lib_trading_contract = new lib_web3.eth.Contract(abi, address, {
   gasPrice: CONFIG.ethereum.trading_contract.gasPrice,
   gas: CONFIG.ethereum.trading_contract.gas,
