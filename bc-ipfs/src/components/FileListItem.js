@@ -34,7 +34,7 @@ class FileListItem extends Component {
       const key = 'FileListItemFetchKeyForIPFS-' + hashId;
       bridge.registerHandler(key, (data, responseCallback) => {
         console.log('FileListItemFetchKeyForIPFS ipfsMetadataHash from iOS ' + data.ipfsMetadataHash);
-        this.fileListItemFetchKeyForIPFS(data.ipfsMetadataHash);
+        this.fileListItemFetchKeyForIPFS();
         let responseData = { 'callback from JS': 'FileListItemFetchKeyForIPFS' };
         responseCallback(responseData);
       });
@@ -218,7 +218,7 @@ class FileListItem extends Component {
   /*jshint ignore:end*/
 
   /* jshint ignore:start */
-  fileListItemFetchKeyForIPFS(ipfsMHash) {
+  fileListItemFetchKeyForIPFS() {
     let a_encrypted_hash = '';
     let submit_acct = '';
 
@@ -232,9 +232,8 @@ class FileListItem extends Component {
         .then(() => {
           let realKey = '';
           let decryptIPFSHash = '';
-          console.log('Triggered 2nd call with metadata ' + ipfsMHash);
           lib_reward_contract.methods
-            .fetchParallelKeyForIPFS(ipfsMHash)
+            .fetchKeyForIPFS()
             .call(
               {
                 from: submit_acct,
