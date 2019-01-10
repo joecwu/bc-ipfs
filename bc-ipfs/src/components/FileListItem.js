@@ -273,7 +273,7 @@ class FileListItem extends Component {
               },
             )
             .then(() => {
-              if (decryptIPFSHash != '' && this.state.btn_access_state != 'error') {
+              if (decryptIPFSHash != '') {
                 this.setState({ ['btn_access_state']: 'accessed' });
                 console.log('decrypted text shows real IPFS hash: ' + decryptIPFSHash);
                 this.setState({ ['bc_resp_hash']: decryptIPFSHash });
