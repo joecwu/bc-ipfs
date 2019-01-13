@@ -40,14 +40,14 @@ class FileAccessView extends Component {
               >
                 <Tab eventKey="data" title="Data">
                   <FileList
-                    pageSize={10}
+                    pageSize={30}
                     hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']}
                     category="data"
                   />
                 </Tab>
                 <Tab eventKey="code" title="Code">
                   <FileList
-                    pageSize={10}
+                    pageSize={30}
                     hideFields={['category', 'latestPurchaseTime', 'encryptionVersion']}
                     category="code"
                   />
